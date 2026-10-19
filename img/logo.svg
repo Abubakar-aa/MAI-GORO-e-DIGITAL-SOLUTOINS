@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 180" role="img" aria-label="Mai Goro logo">
+  <defs>
+    <linearGradient id="mgGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#0d6fb8"/>
+      <stop offset="52%" stop-color="#0a5ea6"/>
+      <stop offset="100%" stop-color="#0f4b86"/>
+    </linearGradient>
+  </defs>
+  <rect width="260" height="180" fill="none"/>
+  <g transform="translate(18 18)">
+    <path d="M12 134V18L62 86L108 18V134H84V58L62 89L40 58V134H12Z" fill="url(#mgGrad)"/>
+    <path d="M124 134C107 157 70 160 51 142C30 121 30 81 56 59C84 35 130 36 159 64L159 90C136 69 108 67 88 82C71 95 71 118 85 128C98 138 115 137 128 126L142 136L124 134Z" fill="url(#mgGrad)"/>
+    <path d="M145 69H183V96H145Z" fill="url(#mgGrad)"/>
+    <g fill="url(#mgGrad)">
+      <rect x="175" y="18" width="16" height="16"/>
+      <rect x="195" y="18" width="16" height="16"/>
+      <rect x="215" y="18" width="16" height="16"/>
+      <rect x="195" y="40" width="16" height="16"/>
+      <rect x="215" y="40" width="16" height="16"/>
+      <rect x="175" y="40" width="16" height="16"/>
+      <rect x="175" y="60" width="16" height="16"/>
+    </g>
+  </g>
+</svg>

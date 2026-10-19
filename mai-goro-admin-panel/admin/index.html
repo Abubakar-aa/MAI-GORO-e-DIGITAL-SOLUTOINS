@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin Dashboard | Mai Goro e-Digital Solution</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#152a63; --blue:#2563eb; --blue-dark:#1d4ed8;
+    --bg:#f2f5fb; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
+    --border:#e3e8f2; --green:#16a34a; --green-dark:#15803d;
+    --danger:#dc2626; --danger-dark:#b91c1c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text)}
+
+  /* ── Header ── */
+  header{background:var(--navy);color:#fff;padding:14px 24px;
+         display:flex;align-items:center;justify-content:space-between;
+         flex-wrap:wrap;gap:10px}
+  .brand{font-size:20px;font-weight:700;letter-spacing:1px}
+  .brand span{color:#7ea4ff}
+  .brand small{display:block;font-size:10px;font-weight:400;
+               letter-spacing:3px;text-transform:uppercase;color:#aebadd}
+  .header-right{display:flex;align-items:center;gap:14px}
+  #adminEmail{font-size:13px;color:#c7d4f5}
+  #logoutBtn{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3);
+             padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;
+             font-family:inherit;cursor:pointer;transition:background .2s}
+  #logoutBtn:hover{background:rgba(255,255,255,.25)}
+
+  /* ── Layout ── */
+  main{max-width:960px;margin:0 auto;padding:28px 20px 60px}
+  .tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+  .tab{padding:10px 20px;border-radius:10px;border:1px solid var(--border);
+       background:#fff;font-family:inherit;font-size:14px;font-weight:500;
+       color:var(--muted);cursor:pointer;transition:all .2s}
+  .tab.active{background:var(--blue);border-color:var(--blue);color:#fff}
+  .panel{display:none}
+  .panel.active{display:block}
+  .card{background:#fff;border:1px solid var(--border);border-radius:14px;
+        padding:24px;margin-bottom:22px;box-shadow:0 2px 8px rgba(21,42,99,.05)}
+  .card h2{font-size:17px;color:var(--navy);margin-bottom:4px}
+  .card .hint{font-size:13px;color:var(--muted);margin-bottom:16px}
+
+  /* ── Forms ── */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .form-grid .full{grid-column:1 / -1}
+  @media(max-width:640px){.form-grid{grid-template-columns:1fr}}
+  label{display:block;font-size:13px;font-weight:500;margin-bottom:6px}
+  input,textarea{width:100%;padding:11px 13px;border:1px solid var(--border);
+       border-radius:9px;font-size:14px;font-family:inherit;transition:border .2s, box-shadow .2s}
+  input:focus,textarea:focus{outline:none;border-color:var(--blue);
+       box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+  textarea{resize:vertical;min-height:80px}
+  .btn{border:none;border-radius:9px;padding:12px 22px;font-size:14px;font-weight:600;
+       font-family:inherit;cursor:pointer;transition:all .2s}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+  .btn-green{background:var(--green);color:#fff}
+  .btn-green:hover:not(:disabled){background:var(--green-dark)}
+  .btn-danger{background:#fef2f2;color:var(--danger);border:1px solid #fecaca;padding:7px 14px;font-size:13px}
+  .btn-danger:hover{background:var(--danger);color:#fff;border-color:var(--danger)}
+  .msg{display:none;border-radius:9px;padding:10px 14px;font-size:13px;margin-top:14px}
+  .msg.ok{display:block;background:#f0fdf4;color:var(--green-dark);border:1px solid #bbf7d0}
+  .msg.bad{display:block;background:#fef2f2;color:var(--danger);border:1px solid #fecaca}
+  .file-note{font-size:12px;color:var(--muted);margin-top:4px}
+  #previewImg{max-width:100%;max-height:160px;border-radius:9px;margin-top:10px;display:none;
+              border:1px solid var(--border)}
+
+  /* ── Lists ── */
+  .list-title{font-size:15px;font-weight:600;color:var(--navy);margin:22px 0 12px}
+  .empty{font-size:13px;color:var(--muted);padding:14px;background:#f8fafc;
+         border-radius:9px;border:1px dashed var(--border)}
+  .slide-item{display:flex;align-items:center;gap:14px;padding:12px;border:1px solid var(--border);
+              border-radius:11px;margin-bottom:10px;background:#fff}
+  .slide-item img{width:110px;height:64px;object-fit:cover;border-radius:7px;flex-shrink:0}
+  .slide-item .info{flex:1;min-width:0}
+  .slide-item .info b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .slide-item .info small{color:var(--muted);font-size:12px}
+  .act-item{padding:13px 15px;border:1px solid var(--border);border-radius:11px;
+            margin-bottom:10px;background:#fff}
+  .act-item .top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .act-item .date{font-size:12px;font-weight:600;color:var(--blue);background:#eff6ff;
+                  padding:3px 10px;border-radius:20px}
+  .act-item b{font-size:14px}
+  .act-item p{font-size:13px;color:var(--muted);margin-top:6px;white-space:pre-wrap}
+  .spinner{display:inline-block;width:16px;height:16px;border:2px solid #fff;
+           border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;
+           vertical-align:-3px;margin-right:6px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">MAI<span>GORO</span><small>e-Digital Solution · Admin</small></div>
+  <div class="header-right">
+    <span id="adminEmail"></span>
+    <button id="logoutBtn">Sign Out</button>
+  </div>
+</header>
+
+<main>
+  <div class="tabs">
+    <button class="tab active" data-tab="slides">📢 Opportunity Slides</button>
+    <button class="tab" data-tab="activities">📋 Daily Activities</button>
+    <button class="tab" data-tab="messages">✉️ Contact Messages</button>
+    <a class="tab" href="pin-orders.html" style="text-decoration:none">🎫 Pin Orders</a>
+    <a class="tab" href="verify-requests.html" style="text-decoration:none">🔍 Verifications</a>
+  </div>
+
+  <!-- ══════════ SLIDES PANEL ══════════ -->
+  <section class="panel active" id="panel-slides">
+    <div class="card">
+      <h2>Add New Slide</h2>
+      <p class="hint">Upload a flyer image and give it a title. It will appear immediately in the "Current Opportunities" slider on your homepage.</p>
+      <div class="form-grid">
+        <div>
+          <label for="slideTitle">Slide Title *</label>
+          <input type="text" id="slideTitle" placeholder="e.g. FG Nigeria AI Skills Initiative">
+        </div>
+        <div>
+          <label for="slideLink">Link (optional)</label>
+          <input type="url" id="slideLink" placeholder="https://…">
+        </div>
+        <div class="full">
+          <label for="slideImage">Flyer Image *</label>
+          <input type="file" id="slideImage" accept="image/*">
+          <p class="file-note">JPG, PNG or WebP — landscape images look best.</p>
+          <img id="previewImg" alt="Preview">
+        </div>
+        <div class="full">
+          <button class="btn btn-green" id="addSlideBtn">Publish Slide</button>
+          <div class="msg" id="slideMsg"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Current Slides</h2>
+      <p class="hint">These are live on your website right now.</p>
+      <div id="slidesList"><p class="empty">Loading…</p></div>
+    </div>
+  </section>
+
+  <!-- ══════════ ACTIVITIES PANEL ══════════ -->
+  <section class="panel" id="panel-activities">
+    <div class="card">
+      <h2>Record Today's Activity</h2>
+      <p class="hint">Keep a daily log of company work — registrations done, trainings held, designs completed, etc.</p>
+      <div class="form-grid">
+        <div>
+          <label for="actDate">Date *</label>
+          <input type="date" id="actDate">
+        </div>
+        <div>
+          <label for="actTitle">Activity Title *</label>
+          <input type="text" id="actTitle" placeholder="e.g. Trained 8 students on MS Excel">
+        </div>
+        <div class="full">
+          <label for="actNotes">Details (optional)</label>
+          <textarea id="actNotes" placeholder="Any extra details, names, amounts, follow-ups…"></textarea>
+        </div>
+        <div class="full">
+          <button class="btn btn-green" id="addActBtn">Save Activity</button>
+          <div class="msg" id="actMsg"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Activity Log</h2>
+      <p class="hint">Newest entries first. Only admins can see this page.</p>
+      <div id="actsList"><p class="empty">Loading…</p></div>
+    </div>
+  </section>
+
+  <!-- ══════════ CONTACT MESSAGES PANEL ══════════ -->
+  <section class="panel" id="panel-messages">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h2>Incoming Contact Messages</h2>
+          <p class="hint" style="margin-bottom:0;">Customer inquiries submitted from the website contact form (stored in SQLite).</p>
+        </div>
+        <button class="btn btn-green" id="refreshMsgsBtn" style="padding:8px 16px; font-size:13px;">🔄 Refresh Messages</button>
+      </div>
+      <div id="messagesList"><p class="empty">Loading messages…</p></div>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script>
+/* ═══ Auth guard ═══ */
+const API_BASE = (window.location.protocol === 'file:' || (window.location.hostname === 'localhost' && window.location.port !== '5000'))
+  ? 'http://localhost:5000/api'
+  : '/api';
+
+let currentUser = null;
+const token = localStorage.getItem('maigoro_token') || sessionStorage.getItem('maigoro_token');
+
+if (token) {
+  fetch(`${API_BASE}/auth/me`, {
+    headers: { 'Authorization': 'Bearer ' + token }
+  })
+  .then(res => {
+    if (!res.ok) throw new Error('Unauthorized');
+    return res.json();
+  })
+  .then(data => {
+    currentUser = data.user;
+    document.getElementById('adminEmail').textContent = currentUser.username + ' (' + currentUser.email + ')';
+    loadSlides();
+    loadActivities();
+    loadContactMessages();
+  })
+  .catch(() => {
+    localStorage.removeItem('maigoro_token');
+    sessionStorage.removeItem('maigoro_token');
+    window.location.href = 'login.html';
+  });
+} else if (typeof sb !== 'undefined') {
+  sb.auth.getSession().then(({data}) => {
+    if (!data.session) { window.location.href = 'login.html'; return; }
+    currentUser = data.session.user;
+    document.getElementById('adminEmail').textContent = currentUser.email;
+    loadSlides();
+    loadActivities();
+  });
+} else {
+  window.location.href = 'login.html';
+}
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  localStorage.removeItem('maigoro_token');
+  localStorage.removeItem('maigoro_user');
+  sessionStorage.removeItem('maigoro_token');
+  sessionStorage.removeItem('maigoro_user');
+  if (typeof sb !== 'undefined') {
+    try { await sb.auth.signOut(); } catch(e){}
+  }
+  window.location.href = 'login.html';
+});
+
+/* ═══ Tabs ═══ */
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    if (tab.dataset.tab === 'messages') loadContactMessages();
+  });
+});
+
+function showMsg(el, text, ok) {
+  el.textContent = text;
+  el.className = 'msg ' + (ok ? 'ok' : 'bad');
+  setTimeout(() => { el.className = 'msg'; }, 4000);
+}
+function setBtnLoading(btn, loading, label) {
+  btn.disabled = loading;
+  btn.innerHTML = loading ? '<span class="spinner"></span>Working…' : label;
+}
+
+/* ══════════ SLIDES ══════════ */
+const imgInput = document.getElementById('slideImage');
+const preview = document.getElementById('previewImg');
+imgInput.addEventListener('change', () => {
+  const file = imgInput.files[0];
+  if (file) { preview.src = URL.createObjectURL(file); preview.style.display = 'block'; }
+});
+
+async function loadSlides() {
+  const { data, error } = await sb.from('slides').select('*').order('created_at', {ascending:false});
+  const list = document.getElementById('slidesList');
+  if (error) { list.innerHTML = '<p class="empty">Could not load slides.</p>'; return; }
+  if (!data.length) { list.innerHTML = '<p class="empty">No slides yet — add your first one above.</p>'; return; }
+  list.innerHTML = data.map(s => `
+    <div class="slide-item">
+      <img src="${s.image_url}" alt="">
+      <div class="info">
+        <b>${escapeHtml(s.title)}</b>
+        <small>Added ${new Date(s.created_at).toLocaleDateString()}</small>
+      </div>
+      <button class="btn btn-danger" onclick="deleteSlide('${s.id}', this)">Delete</button>
+    </div>`).join('');
+}
+
+document.getElementById('addSlideBtn').addEventListener('click', async () => {
+  const title = document.getElementById('slideTitle').value.trim();
+  const link = document.getElementById('slideLink').value.trim();
+  const file = imgInput.files[0];
+  const msg = document.getElementById('slideMsg');
+  const btn = document.getElementById('addSlideBtn');
+
+  if (!title || !file) { showMsg(msg, 'Please enter a title and choose an image.', false); return; }
+
+  setBtnLoading(btn, true);
+  try {
+    // 1. Upload image to storage
+    const ext = file.name.split('.').pop();
+    const path = currentUser.id + '/' + Date.now() + '.' + ext;
+    const { error: upErr } = await sb.storage.from('slide-images').upload(path, file);
+    if (upErr) throw upErr;
+    const { data: urlData } = sb.storage.from('slide-images').getPublicUrl(path);
+
+    // 2. Save slide record
+    const { error: dbErr } = await sb.from('slides')
+      .insert({ title, image_url: urlData.publicUrl, link: link || null });
+    if (dbErr) throw dbErr;
+
+    showMsg(msg, '✅ Slide published! It is now live on your homepage.', true);
+    document.getElementById('slideTitle').value = '';
+    document.getElementById('slideLink').value = '';
+    imgInput.value = '';
+    preview.style.display = 'none';
+    loadSlides();
+  } catch (e) {
+    showMsg(msg, 'Error: ' + e.message, false);
+  }
+  setBtnLoading(btn, false, 'Publish Slide');
+});
+
+async function deleteSlide(id, btn) {
+  if (!confirm('Delete this slide? It will disappear from the website immediately.')) return;
+  btn.disabled = true; btn.textContent = 'Deleting…';
+  const { error } = await sb.from('slides').delete().eq('id', id);
+  if (error) { alert('Delete failed: ' + error.message); btn.disabled = false; btn.textContent = 'Delete'; return; }
+  loadSlides();
+}
+
+/* ══════════ ACTIVITIES ══════════ */
+document.getElementById('actDate').valueAsDate = new Date();
+
+async function loadActivities() {
+  const { data, error } = await sb.from('activities').select('*')
+    .order('entry_date', {ascending:false}).order('created_at', {ascending:false}).limit(200);
+  const list = document.getElementById('actsList');
+  if (error) { list.innerHTML = '<p class="empty">Could not load activities.</p>'; return; }
+  if (!data.length) { list.innerHTML = '<p class="empty">No activities recorded yet.</p>'; return; }
+  list.innerHTML = data.map(a => `
+    <div class="act-item">
+      <div class="top">
+        <span class="date">${a.entry_date}</span>
+        <button class="btn btn-danger" onclick="deleteActivity('${a.id}', this)">Delete</button>
+      </div>
+      <b>${escapeHtml(a.title)}</b>
+      ${a.notes ? `<p>${escapeHtml(a.notes)}</p>` : ''}
+    </div>`).join('');
+}
+
+document.getElementById('addActBtn').addEventListener('click', async () => {
+  const date = document.getElementById('actDate').value;
+  const title = document.getElementById('actTitle').value.trim();
+  const notes = document.getElementById('actNotes').value.trim();
+  const msg = document.getElementById('actMsg');
+  const btn = document.getElementById('addActBtn');
+
+  if (!date || !title) { showMsg(msg, 'Please enter a date and a title.', false); return; }
+
+  setBtnLoading(btn, true);
+  const { error } = await sb.from('activities').insert({ entry_date: date, title, notes: notes || null });
+  if (error) { showMsg(msg, 'Error: ' + error.message, false); }
+  else {
+    showMsg(msg, '✅ Activity saved.', true);
+    document.getElementById('actTitle').value = '';
+    document.getElementById('actNotes').value = '';
+    loadActivities();
+  }
+  setBtnLoading(btn, false, 'Save Activity');
+});
+
+async function deleteActivity(id, btn) {
+  if (!confirm('Delete this activity entry?')) return;
+  btn.disabled = true; btn.textContent = 'Deleting…';
+  const { error } = await sb.from('activities').delete().eq('id', id);
+  if (error) { alert('Delete failed: ' + error.message); btn.disabled = false; btn.textContent = 'Delete'; return; }
+  loadActivities();
+}
+
+/* ══════════ CONTACT MESSAGES (SQLite Backend) ══════════ */
+const BACKEND_API = API_BASE;
+
+async function loadContactMessages() {
+  const list = document.getElementById('messagesList');
+  if (!list) return;
+  list.innerHTML = '<p class="empty">Loading messages…</p>';
+  try {
+    const token = localStorage.getItem('maigoro_token');
+    const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+    const res = await fetch(`${BACKEND_API}/contact`, { headers });
+    if (!res.ok) throw new Error('Backend responded with ' + res.status);
+    const result = await res.json();
+    if (!result.messages || !result.messages.length) {
+      list.innerHTML = '<p class="empty">No messages received yet.</p>';
+      return;
+    }
+    list.innerHTML = result.messages.map(m => `
+      <div class="act-item" style="border-left: 4px solid var(--blue);">
+        <div class="top">
+          <span class="date">${new Date(m.created_at).toLocaleString()}</span>
+          <button class="btn btn-danger" onclick="deleteContactMsg(${m.id}, this)">Delete</button>
+        </div>
+        <b style="font-size:15px; color:var(--navy);">${escapeHtml(m.name)} &lt;${escapeHtml(m.email)}&gt;</b>
+        <div style="font-size:13px; color:var(--muted); margin-top:3px;">
+          📞 ${escapeHtml(m.phone || 'No phone')} &nbsp;·&nbsp; 📌 <b>${escapeHtml(m.subject || 'No subject')}</b>
+        </div>
+        <p style="background:#f8fafc; padding:10px 14px; border-radius:8px; margin-top:8px; font-size:13px; color:#374151; border:1px solid var(--border);">
+          ${escapeHtml(m.message)}
+        </p>
+      </div>
+    `).join('');
+  } catch (err) {
+    list.innerHTML = '<p class="empty" style="color:var(--danger);">⚠️ Could not connect to backend server. Make sure it is running at <code>http://localhost:5000</code>.</p>';
+  }
+}
+
+async function deleteContactMsg(id, btn) {
+  if (!confirm(`Delete message #${id}?`)) return;
+  btn.disabled = true; btn.textContent = 'Deleting…';
+  try {
+    const token = localStorage.getItem('maigoro_token');
+    const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+    const res = await fetch(`${BACKEND_API}/contact/${id}`, { method: 'DELETE', headers });
+    if (!res.ok) throw new Error('Delete failed');
+    loadContactMessages();
+  } catch (err) {
+    alert('Delete failed: ' + err.message);
+    btn.disabled = false; btn.textContent = 'Delete';
+  }
+}
+
+document.getElementById('refreshMsgsBtn')?.addEventListener('click', loadContactMessages);
+
+/* ═══ Safety: escape user text before putting it in HTML ═══ */
+function escapeHtml(str) {
+  return (str || '').replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+</script>
+</body>
+</html>

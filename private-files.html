@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <title>Private Files | Mai Goro</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="vault-page">
+    <main class="vault-shell">
+        <a class="vault-back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to website</a>
+
+        <section class="vault-card" id="loginPanel" aria-labelledby="loginTitle">
+            <div class="vault-mark"><i class="fa-solid fa-lock"></i></div>
+            <p class="eyebrow">Mai Goro workspace</p>
+            <h1 id="loginTitle">Private files</h1>
+            <p class="vault-muted">A quiet place for files used by the team.</p>
+            <form id="loginForm" class="vault-form">
+                <label for="vaultEmail">Staff Email</label>
+                <input id="vaultEmail" name="email" type="email" placeholder="admin@maigoro.com" required style="width:100%; padding:11px 14px; border:1px solid #d9e2ef; border-radius:8px; margin-bottom:12px; font-size:14px;">
+                <label for="vaultPassword">Password</label>
+                <div class="vault-input-row">
+                    <input id="vaultPassword" name="password" type="password" placeholder="••••••••" required>
+                    <button type="submit" class="vault-button" aria-label="Unlock private files"><i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+                <p class="vault-error" id="loginError" role="alert" hidden>Invalid email or password.</p>
+            </form>
+            <p class="vault-note"><i class="fa-solid fa-shield-halved"></i> Secure vault: files are stored on server disk with JWT protection.</p>
+        </section>
+
+        <section class="vault-card vault-content" id="vaultPanel" aria-labelledby="vaultTitle" hidden>
+            <div class="vault-header">
+                <div>
+                    <p class="eyebrow">Team workspace</p>
+                    <h1 id="vaultTitle">Private files</h1>
+                </div>
+                <button type="button" class="vault-logout" id="logoutButton"><i class="fa-solid fa-right-from-bracket"></i> Lock</button>
+            </div>
+            <p class="vault-muted">Add working documents here for this browser session.</p>
+
+            <label class="upload-zone" for="filePicker">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <strong>Add files</strong>
+                <span>Choose documents, images or other files from this device</span>
+                <input id="filePicker" type="file" multiple>
+            </label>
+
+            <div class="vault-toolbar">
+                <h2>Your files <span id="fileCount">0</span></h2>
+                <button type="button" class="vault-clear" id="clearFilesButton" hidden>Clear all</button>
+            </div>
+            <div class="file-list" id="fileList" aria-live="polite"></div>
+            <p class="vault-empty" id="emptyState">No files have been added yet.</p>
+
+            <div class="vault-warning" style="background:#ecfdf5; border-color:#a7f3d0; color:#065f46;"><i class="fa-solid fa-shield-halved" style="color:#059669;"></i><span>Secure Authenticated Vault: Uploaded files are safely stored on the server filesystem and cataloged in the SQLite database with JWT token authentication.</span></div>
+        </section>
+    </main>
+    <script src="script.js"></script>
+    <script src="private-vault.js"></script>
+</body>
+</html>

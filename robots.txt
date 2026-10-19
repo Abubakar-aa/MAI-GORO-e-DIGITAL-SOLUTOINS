@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /private-files.html
+
+Sitemap: https://maigoro.netlify.app/sitemap.xml
