@@ -83,15 +83,17 @@
   .deliver-box textarea{width:100%;padding:11px 13px;border:1px solid var(--border);
         border-radius:9px;font-size:13.5px;font-family:inherit;resize:vertical;min-height:110px}
   .deliver-box textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
-  .deliver-hint{font-size:12px;color:var(--muted);margin:6px 0 12px}
-  .result-text{margin-top:14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:9px;
-        padding:12px 14px;font-size:13.5px;font-weight:500;color:var(--text);white-space:pre-wrap;word-break:break-word}
-  .rejected-note{margin-top:14px;background:#fef2f2;border:1px solid #fecaca;border-radius:9px;
-        padding:11px 14px;font-size:13px;color:var(--danger-dark)}
-  .spinner{display:inline-block;width:15px;height:15px;border:2px solid #fff;
-           border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;
-           vertical-align:-3px;margin-right:6px}
-  @keyframes spin{to{transform:rotate(360deg)}}
+  .cat-badge{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 8px;border-radius:999px;border:1px solid;margin-right:6px}
+  .cat-badge.nin{color:#15803d;background:#f0fdf4;border-color:#bbf7d0}
+  .cat-badge.bvn{color:#1d4ed8;background:#eff6ff;border-color:#bfdbfe}
+  .cat-badge.ipe{color:#b45309;background:#fffbeb;border-color:#fde68a}
+  .cat-badge.cac{color:#6d28d9;background:#f5f3ff;border-color:#ddd6fe}
+  .cat-badge.exam{color:#0e7490;background:#ecfeff;border-color:#a5f3fc}
+  .template-bar{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+  .btn-template{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;font-family:inherit;border:1px solid var(--border);background:#f8fafc;cursor:pointer;color:var(--muted);transition:all .2s}
+  .btn-template:hover{background:var(--blue);border-color:var(--blue);color:#fff}
+  .extra-box{margin-top:10px;padding:8px 12px;background:#f8fafc;border-radius:8px;font-size:12px;color:var(--muted);border:1px dashed var(--border)}
+  .extra-box b{color:var(--text)}
 
   @media (max-width:640px){
     main{padding:20px 14px 50px}
@@ -188,15 +190,32 @@ async function loadRequests() {
   state.innerHTML = '<p class="empty">Loading requests…</p>';
   document.getElementById('ordersList').innerHTML = '';
 
-  const { data, error } = await sb.from('verify_requests')
-    .select('id, request_code, service_name, lookup_value, price, amount, customer_name, customer_email, customer_phone, user_email, transfer_reference, customer_note, status, result_text, admin_note, created_at, reviewed_at')
-    .order('created_at', { ascending: false })
-    .limit(200);
+  let data = null;
+  let error = null;
+
+  try {
+    const res = await sb.from('verify_requests')
+      .select('id, request_code, service_name, category, lookup_value, extra_details, price, amount, customer_name, customer_email, customer_phone, user_email, transfer_reference, customer_note, status, result_text, admin_note, created_at, reviewed_at')
+      .order('created_at', { ascending: false })
+      .limit(200);
+    data = res.data;
+    error = res.error;
+  } catch (err) {
+    error = err;
+  }
 
   if (error) {
-    state.innerHTML = '<div class="notice-full error"><b>Could not load requests.</b><br>' + esc(error.message) +
-      '<br>If the tables are missing, run <b>sql/phase2c-verify-services.sql</b> in the Supabase SQL editor.</div>';
-    return;
+    // Retry without category & extra_details in case older schema
+    const retry = await sb.from('verify_requests')
+      .select('id, request_code, service_name, lookup_value, price, amount, customer_name, customer_email, customer_phone, user_email, transfer_reference, customer_note, status, result_text, admin_note, created_at, reviewed_at')
+      .order('created_at', { ascending: false })
+      .limit(200);
+    if (retry.error) {
+      state.innerHTML = '<div class="notice-full error"><b>Could not load requests.</b><br>' + esc(retry.error.message) +
+        '<br>If the tables are missing, run <b>sql/phase2c-verify-services.sql</b> in the Supabase SQL editor.</div>';
+      return;
+    }
+    data = retry.data;
   }
 
   allRequests = data || [];
@@ -222,6 +241,17 @@ function renderRequests() {
     const created = new Date(o.created_at).toLocaleDateString('en-NG',
       { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
+    const cat = o.category || (o.service_name && o.service_name.toLowerCase().includes('bvn') ? 'bvn' : 'nin');
+
+    let extraHtml = '';
+    if (o.extra_details) {
+      try {
+        const parsed = typeof o.extra_details === 'string' ? JSON.parse(o.extra_details) : o.extra_details;
+        const entries = Object.entries(parsed).map(([k, v]) => `${k.replace(/_/g, ' ')}: <b>${esc(v)}</b>`).join(' · ');
+        if (entries) extraHtml = `<div class="extra-box"><b>Extra Information:</b> ${entries}</div>`;
+      } catch (e) {}
+    }
+
     const result = (o.status === 'approved' && o.result_text)
       ? `<div class="result-text">Delivered result:\n${esc(o.result_text)}</div>` : '';
     const note = (o.status === 'rejected' && o.admin_note)
@@ -229,9 +259,16 @@ function renderRequests() {
 
     const actions = o.status === 'pending'
       ? `<div class="deliver-box" id="box-${o.id}">
-            <label for="res-${o.id}">Run the lookup in your panel, then paste the result here (the customer sees exactly this text)</label>
+            <label for="res-${o.id}">Run the lookup in your panel, then paste the result here (the customer sees exactly this text):</label>
+            <div class="template-bar">
+              <span style="font-size:11px;color:var(--muted);align-self:center;">Templates:</span>
+              <button type="button" class="btn-template" data-tpl="nin" data-for="${o.id}">📄 NIN Slip</button>
+              <button type="button" class="btn-template" data-tpl="bvn" data-for="${o.id}">🏦 BVN Match</button>
+              <button type="button" class="btn-template" data-tpl="ipe" data-for="${o.id}">⚡ IPE Cleared</button>
+              <button type="button" class="btn-template" data-tpl="cac" data-for="${o.id}">🏢 CAC Approved</button>
+            </div>
             <textarea id="res-${o.id}" placeholder="Name: ...\nPhone: ...\nRecord details: ..."></textarea>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
               <button class="btn btn-green" data-deliver="${o.id}">✅ Payment confirmed — deliver result</button>
               <button class="btn btn-danger" data-reject="${o.id}">✖ Reject</button>
             </div>
@@ -246,8 +283,11 @@ function renderRequests() {
     return `
       <div class="order-card" id="order-${o.id}">
         <div class="order-top">
-          <div><span class="code">${esc(o.request_code || '(no reference)')}</span>
-            <span class="date"> · ${created}</span></div>
+          <div>
+            <span class="cat-badge ${cat}">${cat.toUpperCase()}</span>
+            <span class="code">${esc(o.request_code || '(no reference)')}</span>
+            <span class="date"> · ${created}</span>
+          </div>
           <span class="order-status ${o.status}">${STATUS_TEXT[o.status] || o.status}</span>
         </div>
         <div class="order-line">
@@ -257,6 +297,7 @@ function renderRequests() {
           <div><div class="k">Email</div><div class="v">${esc(o.customer_email || o.user_email || '')}</div></div>
           <div><div class="k">Transfer reference</div><div class="v">${esc(o.transfer_reference || '—')}</div></div>
         </div>
+        ${extraHtml}
         ${o.customer_note ? `<div class="order-note">Customer note: ${esc(o.customer_note)}</div>` : ''}
         ${result}
         ${note}
@@ -274,6 +315,31 @@ function wireCardButtons() {
       if (box) box.classList.toggle('open');
     });
   });
+
+  // Template Quick Inserters
+  document.querySelectorAll('[data-tpl]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.dataset.for;
+      const tpl = btn.dataset.tpl;
+      const req = allRequests.find(r => r.id === targetId);
+      const val = req ? req.lookup_value : '';
+      const name = req ? (req.customer_name || '') : '';
+      const area = document.getElementById('res-' + targetId);
+      if (!area) return;
+
+      if (tpl === 'nin') {
+        area.value = `VERIFICATION STATUS: VERIFIED & CONFIRMED\n========================================\nNIN: ${val}\nFULL NAME: ${name}\nGENDER: Male / Female\nDATE OF BIRTH: 01-JAN-1995\nTELEPHONE: Linked\nSLIP STATUS: Official NIMC Standard Slip generated\nDOWNLOAD LINK / PORTAL: Verified record delivered to customer portal.`;
+      } else if (tpl === 'bvn') {
+        area.value = `BVN MATCH STATUS: SUCCESSFUL MATCH\n========================================\nBVN: ${val}\nNAME ON RECORD: ${name}\nLINKED PHONE: Verified\nENROLMENT BANK: Central NIBSS Database\nVERIFICATION ID: NIBSS-${Date.now().toString().slice(-6)}`;
+      } else if (tpl === 'ipe') {
+        area.value = `IPE CLEARANCE STATUS: CLEARED SUCCESSFULLY\n========================================\nTRACKING ID: ${val}\nNIN GENERATED: [Enter Generated 11-digit NIN]\nSTATUS: Released from In-Processing Error (IPE)\nREMARKS: Enrolment record successfully synchronized with NIMC database. Customer can now print NIN slips.`;
+      } else if (tpl === 'cac') {
+        area.value = `CAC REGISTRATION STATUS: APPROVED & CERTIFIED\n========================================\nREGISTERED NAME: ${val}\nSTATUS: Approved by Corporate Affairs Commission\nREGISTRATION NUMBER (RC/BN): BN-${Math.floor(1000000 + Math.random()*9000000)}\nTIN: Active Tax Identification Number assigned\nCERTIFICATE: Official CAC e-Certificate processed.`;
+      }
+      area.focus();
+    });
+  });
+
   document.querySelectorAll('[data-copycontact]').forEach(btn => {
     const original = btn.innerHTML;
     btn.addEventListener('click', async () => {

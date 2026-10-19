@@ -1436,6 +1436,12 @@ html { scroll-behavior: smooth; }
             .services-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
+        @media (min-width: 761px) and (max-width: 900px) {
+            .nav-wrap .nav-links, .nav-wrap .nav-cta, .nav-wrap .nav-auth { display: none; }
+            .nav-wrap .theme-toggle { order: 2; margin-left: auto; margin-right: 8px; }
+            .nav-wrap .burger { order: 3; display: flex; margin-left: 0; }
+        }
+
         @media (max-width: 760px) {
             .nav-wrap { padding: 14px 16px; }
             .nav-wrap.scrolled { padding: 9px 16px; }
@@ -1481,7 +1487,7 @@ html { scroll-behavior: smooth; }
             .training-feature { width: min(92%, 520px); grid-template-columns: 1fr; margin-bottom: 40px; }
             .training-feature-image { min-height: 250px; aspect-ratio: 4 / 3; }
             .training-feature-content { padding: 30px 24px 34px; }
-            .services-grid { grid-template-columns: 1fr; }
+            .services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
             .section-padding.gray-bg .service-card { justify-content: center; }
             .about-intro,
             .about-values,
@@ -1530,6 +1536,10 @@ html { scroll-behavior: smooth; }
             .mobile-panel { left: 10px; right: 10px; top: 68px; }
             .contact-form-section { padding-left: 12px; padding-right: 12px; }
             .section-padding { padding-left: 14px; padding-right: 14px; }
+            .services-grid { gap: 10px; }
+            .service-card { min-width: 0; padding: 12px 10px; }
+            .service-card i { width: 30px; height: 30px; margin-right: 9px; font-size: 16px; }
+            .service-card span { font-size: 11px; line-height: 1.3; overflow-wrap: anywhere; }
             .hero { padding-left: 14px; padding-right: 14px; }
             .hero h1,
             .about-hero h1,

@@ -263,8 +263,24 @@
         body.dark-mode .order-copy { border-color: rgba(94,234,212,.45); color: var(--teal); }
         body.dark-mode .order-copy:hover { background: var(--teal); color: var(--night); }
         .o-codes-wrap { width: 100%; display: flex; gap: 10px; align-items: start; justify-content: space-between; }
-        .verify-result { width: 100%; background: rgba(59,102,178,.07); border: 1px dashed rgba(59,102,178,.4); border-radius: 10px; padding: 10px 14px; font-size: 13.5px; font-weight: 500; color: var(--text); white-space: pre-wrap; word-break: break-word; }
+        .verify-result { width: 100%; background: rgba(59,102,178,.07); border: 1px dashed rgba(59,102,178,.4); border-radius: 10px; padding: 12px 16px; font-size: 13.5px; font-weight: 500; color: var(--text); white-space: pre-wrap; word-break: break-word; }
         body.dark-mode .verify-result { background: rgba(94,234,212,.07); border-color: rgba(94,234,212,.4); color: var(--dark-text); }
+        .v-badge { font-size: 10.5px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; border: 1px solid; margin-right: 6px; }
+        .v-badge.nin  { color: #059669; background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.3); }
+        .v-badge.bvn  { color: #2563eb; background: rgba(37, 99, 235, 0.12); border-color: rgba(37, 99, 235, 0.3); }
+        .v-badge.ipe  { color: #d97706; background: rgba(217, 119, 6, 0.12); border-color: rgba(217, 119, 6, 0.3); }
+        .v-badge.cac  { color: #7c3aed; background: rgba(124, 58, 237, 0.12); border-color: rgba(124, 58, 237, 0.3); }
+        .v-badge.exam { color: #0891b2; background: rgba(8, 145, 178, 0.12); border-color: rgba(8, 145, 178, 0.3); }
+        .v-extra { width: 100%; font-size: 12px; color: var(--text-muted); background: rgba(0,0,0,0.03); border-radius: 8px; padding: 6px 10px; margin-top: 4px; }
+        body.dark-mode .v-extra { background: rgba(255,255,255,0.04); color: var(--dark-muted); }
+        .v-actions { width: 100%; display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+        .v-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; transition: all 0.2s; border: 1px solid; }
+        .v-btn-copy { border-color: rgba(59,102,178,.35); color: var(--brand); background: transparent; }
+        .v-btn-copy:hover { background: var(--brand); color: #fff; }
+        body.dark-mode .v-btn-copy { border-color: rgba(94,234,212,.4); color: var(--teal); }
+        body.dark-mode .v-btn-copy:hover { background: var(--teal); color: var(--night); }
+        .v-btn-wa { border-color: #25d366; color: #16a34a; background: rgba(37, 211, 102, 0.08); }
+        .v-btn-wa:hover { background: #25d366; color: #fff; }
 
         /* ── Dark mode ── */
         body.dark-mode .portal-card,
@@ -340,36 +356,53 @@
                 <p>Buy exam pins, verify your NIN and manage your Mai Goro services — all from one place.</p>
             </section>
 
-            <h2 class="portal-section-title">Services</h2>
+            <h2 class="portal-section-title">Identity &amp; Digital Services</h2>
             <section class="portal-grid">
-                <article class="portal-card wallet reveal">
-                    <span class="badge soon">Launching soon</span>
-                    <div class="card-icon"><i class="fa-solid fa-wallet"></i></div>
-                    <h3>Wallet</h3>
-                    <div class="balance">₦0.00</div>
-                    <p>Fund your wallet and pay for pins and verification in seconds. Payments open shortly.</p>
+                <article class="portal-card nin reveal">
+                    <span class="badge">Instant Slips</span>
+                    <div class="card-icon"><i class="fa-solid fa-id-card"></i></div>
+                    <h3>NIN Identity Suite</h3>
+                    <p>Standard &amp; Premium PVC slips, NIN by phone, demographics lookup and vNIN validation.</p>
+                    <a class="card-link" href="verify.html?cat=nin">Verify NIN <i class="fa-solid fa-arrow-right"></i></a>
+                </article>
+
+                <article class="portal-card reveal">
+                    <span class="badge">Verified Match</span>
+                    <div class="card-icon"><i class="fa-solid fa-building-columns"></i></div>
+                    <h3>BVN Services</h3>
+                    <p>Instant financial BVN match, lost BVN retrieval via phone/account, and record modification help.</p>
+                    <a class="card-link" href="verify.html?cat=bvn">BVN Services <i class="fa-solid fa-arrow-right"></i></a>
+                </article>
+
+                <article class="portal-card reveal" style="border-top:3px solid #d97706;">
+                    <span class="badge" style="background:rgba(217,119,6,0.14);color:#d97706;border-color:rgba(217,119,6,0.35);">Fast Clearance</span>
+                    <div class="card-icon" style="background:rgba(217,119,6,0.12);color:#d97706;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <h3>IPE Clearance (Stuck NIN)</h3>
+                    <p>Clear stuck In-Processing Error (IPE) on enrolment tracking slips to immediately generate your NIN.</p>
+                    <a class="card-link" href="verify.html?cat=ipe" style="color:#d97706;">Clear IPE <i class="fa-solid fa-arrow-right"></i></a>
+                </article>
+
+                <article class="portal-card reveal" style="border-top:3px solid #7c3aed;">
+                    <span class="badge" style="background:rgba(124,58,237,0.14);color:#7c3aed;border-color:rgba(124,58,237,0.35);">CAC Official</span>
+                    <div class="card-icon" style="background:rgba(124,58,237,0.12);color:#7c3aed;"><i class="fa-solid fa-briefcase"></i></div>
+                    <h3>CAC Corporate Services</h3>
+                    <p>Business Name &amp; Limited Company (LLC) registration with official certificates, status reports &amp; TIN.</p>
+                    <a class="card-link" href="verify.html?cat=cac" style="color:#7c3aed;">Register CAC <i class="fa-solid fa-arrow-right"></i></a>
                 </article>
 
                 <article class="portal-card reveal">
                     <div class="card-icon"><i class="fa-solid fa-ticket"></i></div>
-                    <h3>Exam Pins</h3>
-                    <p>NECO &amp; WAEC official pins — pay by bank transfer, delivered to your portal after confirmation.</p>
-                    <a class="card-link" href="buy-pins.html">Buy pins <i class="fa-solid fa-arrow-right"></i></a>
+                    <h3>Exam PINs &amp; Tokens</h3>
+                    <p>NECO &amp; WAEC official examination scratch tokens — delivered instantly to your portal after payment.</p>
+                    <a class="card-link" href="buy-pins.html">Buy PINs <i class="fa-solid fa-arrow-right"></i></a>
                 </article>
 
-                <article class="portal-card nin reveal">
-                    <span class="badge">Available now</span>
-                    <div class="card-icon"><i class="fa-solid fa-id-card"></i></div>
-                    <h3>NIN Verification</h3>
-                    <p>Official NIN and BVN lookups — request online, pay by bank transfer, receive the verified record in your portal.</p>
-                    <a class="card-link" href="verify.html">Verify now <i class="fa-solid fa-arrow-right"></i></a>
-                </article>
-
-                <article class="portal-card support reveal">
-                    <div class="card-icon"><i class="fa-solid fa-headset"></i></div>
-                    <h3>Need help?</h3>
-                    <p>Our team responds quickly — reach us for order issues, training or design work.</p>
-                    <a class="card-link" href="https://wa.me/2349067997551" target="_blank" rel="noreferrer">Chat on WhatsApp <i class="fa-solid fa-arrow-right"></i></a>
+                <article class="portal-card wallet reveal">
+                    <span class="badge soon">Coming Soon</span>
+                    <div class="card-icon"><i class="fa-solid fa-wallet"></i></div>
+                    <h3>Prepaid Wallet</h3>
+                    <div class="balance">₦0.00</div>
+                    <p>Top-up your wallet for 1-click verification lookups and automated slip printing without manual transfers.</p>
                 </article>
             </section>
 
@@ -476,43 +509,102 @@
         async function loadVerifyRequests() {
             const state = document.getElementById('verifyState');
             const list  = document.getElementById('verifyList');
-            const { data, error } = await sb.from('verify_requests')
-                .select('request_code, service_name, lookup_value, amount, status, result_text, admin_note, created_at')
-                .order('created_at', { ascending: false })
-                .limit(25);
+            let data = null;
+            let error = null;
+
+            try {
+                const res = await sb.from('verify_requests')
+                    .select('request_code, service_name, category, lookup_value, extra_details, amount, status, result_text, admin_note, created_at')
+                    .order('created_at', { ascending: false })
+                    .limit(30);
+                data = res.data;
+                error = res.error;
+            } catch (err) {
+                error = err;
+            }
 
             if (error) {
-                state.textContent = 'Couldn’t load your verification requests — refresh the page to try again.';
-                return;
+                // Retry without category & extra_details in case older schema
+                const retry = await sb.from('verify_requests')
+                    .select('request_code, service_name, lookup_value, amount, status, result_text, admin_note, created_at')
+                    .order('created_at', { ascending: false })
+                    .limit(30);
+                if (retry.error) {
+                    state.textContent = 'Couldn’t load your verification requests — refresh the page to try again.';
+                    return;
+                }
+                data = retry.data;
             }
 
             const requests = data || [];
             if (!requests.length) {
                 document.getElementById('verifySection').innerHTML =
-                    '<p class="orders-empty">No verification requests yet — <a href="verify.html">verify a BVN or NIN</a>.</p>';
+                    '<p class="orders-empty">No verification requests yet — <a href="verify.html">verify a NIN, BVN, or clear stuck IPE</a>.</p>';
                 return;
             }
 
             state.style.display = 'none';
-            list.innerHTML = requests.map(v => {
+            list.innerHTML = requests.map((v, idx) => {
                 const date = new Date(v.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' });
-                const statusText = { pending: 'Waiting for confirmation', approved: 'Delivered', rejected: 'Rejected' }[v.status] || v.status;
+                const statusText = { pending: 'Waiting for confirmation', approved: 'Delivered / Ready', rejected: 'Rejected' }[v.status] || v.status;
+                const cat = v.category || (v.service_name && v.service_name.toLowerCase().includes('bvn') ? 'bvn' : 'nin');
+                
+                let extraHtml = '';
+                if (v.extra_details) {
+                    try {
+                        const parsed = typeof v.extra_details === 'string' ? JSON.parse(v.extra_details) : v.extra_details;
+                        const items = Object.entries(parsed).map(([k, val]) => `${k.replace(/_/g, ' ')}: <b>${esc(val)}</b>`).join(' · ');
+                        if (items) extraHtml = `<div class="v-extra"><i class="fa-solid fa-circle-info"></i> ${items}</div>`;
+                    } catch(e) {}
+                }
+
                 const result = (v.status === 'approved' && v.result_text)
-                    ? `<div class="o-codes-wrap"><div class="verify-result">${esc(v.result_text)}</div></div>` : '';
+                    ? `<div class="o-codes-wrap" style="flex-direction:column;width:100%;">
+                         <div class="verify-result">${esc(v.result_text)}</div>
+                         <div class="v-actions">
+                             <button type="button" class="v-btn v-btn-copy" data-vcopy="${esc(v.result_text).replace(/"/g, '&quot;')}"><i class="fa-regular fa-copy"></i> Copy Result</button>
+                             <a class="v-btn v-btn-wa" target="_blank" href="https://wa.me/2349067997551?text=${encodeURIComponent('Hello Mai Goro Desk! Regarding my verification ' + (v.request_code || '') + ' (' + v.service_name + '):')}"><i class="fa-brands fa-whatsapp"></i> Chat Support</a>
+                         </div>
+                       </div>` : '';
+
                 const note = (v.status === 'rejected' && v.admin_note)
-                    ? `<div class="order-admin-note">Admin note: ${esc(v.admin_note)}</div>` : '';
+                    ? `<div class="order-admin-note">
+                         <i class="fa-solid fa-circle-exclamation"></i> Admin note: ${esc(v.admin_note)}
+                         <div style="margin-top:6px;">
+                            <a class="v-btn v-btn-wa" target="_blank" href="https://wa.me/2349067997551?text=${encodeURIComponent('Hello Mai Goro! My request ' + (v.request_code || '') + ' was rejected (' + v.admin_note + '). I need assistance:')}"><i class="fa-brands fa-whatsapp"></i> Resolve on WhatsApp</a>
+                         </div>
+                       </div>` : '';
+
                 return `
                     <div class="order-item">
-                        <div class="o-main">
-                            <b>${esc(v.service_name)}</b>
-                            <small>${esc(v.request_code || '#')} · ${date}</small>
+                        <div class="o-main" style="width:100%;">
+                            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                                <div>
+                                    <span class="v-badge ${cat}">${cat.toUpperCase()}</span>
+                                    <b style="display:inline;">${esc(v.service_name)}</b>
+                                </div>
+                                <div class="o-amount">${naira(v.amount)}</div>
+                            </div>
+                            <small>${esc(v.request_code || '#')} · ${date} · Lookup: <b>${esc(v.lookup_value || '—')}</b></small>
+                            ${extraHtml}
                         </div>
-                        <div class="o-amount">${naira(v.amount)}</div>
-                        <span class="order-status ${v.status}">${statusText}</span>
+                        <div style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px;">
+                            <span class="order-status ${v.status}">${statusText}</span>
+                            ${v.status === 'pending' ? `<a class="v-btn v-btn-wa" style="font-size:11px;" target="_blank" href="https://wa.me/2349067997551?text=${encodeURIComponent('Hello Mai Goro Desk! Following up on request ' + (v.request_code || '') + ' (' + v.service_name + ').')}"><i class="fa-brands fa-whatsapp"></i> Check Status</a>` : ''}
+                        </div>
                         ${result}
                         ${note}
                     </div>`;
             }).join('');
+
+            list.querySelectorAll('[data-vcopy]').forEach(btn => {
+                const original = btn.innerHTML;
+                btn.addEventListener('click', async () => {
+                    try { await navigator.clipboard.writeText(btn.dataset.vcopy); } catch (e) {}
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                    setTimeout(() => { btn.innerHTML = original; }, 1600);
+                });
+            });
         }
 
         /* ── Pin orders (pending → approved / rejected) ── */
