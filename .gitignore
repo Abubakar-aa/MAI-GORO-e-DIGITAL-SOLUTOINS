@@ -25,7 +25,3 @@ server/uploads/vault/*
 Thumbs.db
 .DS_Store
 
-# Large video files (exceeding GitHub 100MB limit)
-videos/slide-2.mp4
-videos/slide-3.mp4
-
