@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Fund Wallet | Mai Goro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/webp" href="img/logo.webp">
+    <style>
+        .fund-main { max-width: 700px; margin: 0 auto; padding: 140px 24px 70px; }
+        .fund-hero { background: linear-gradient(120deg, #0f2a5e 0%, var(--brand) 70%, #4a7bc9 100%); border-radius: 24px; padding: 38px 40px 36px; color: #fff; box-shadow: 0 20px 50px rgba(15, 42, 94, 0.25); margin-bottom: 30px; }
+        .fund-hero .eyebrow { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--teal); font-weight: 700; margin-bottom: 10px; }
+        .fund-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(24px, 4vw, 36px); font-weight: 700; line-height: 1.15; }
+        .fund-hero h1 span { color: #ffd977; }
+        .fund-hero p { margin-top: 10px; font-size: 14.5px; color: rgba(255,255,255,.8); max-width: 620px; line-height: 1.6; }
+        .fund-hero .trust { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 12.5px; color: rgba(255,255,255,.85); }
+        .fund-hero .trust i { color: var(--teal); margin-right: 6px; }
+
+        .wallet-balance { text-align: center; padding: 24px; background: linear-gradient(135deg, #0f2a5e 0%, #174579 100%); border-radius: 20px; color: #fff; margin-bottom: 24px; }
+        .wallet-balance .label { font-size: 14px; color: var(--teal); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .wallet-balance .amount { font-family: 'Space Grotesk', sans-serif; font-size: 42px; font-weight: 700; color: #fff; }
+        .wallet-balance .amount small { font-size: 14px; font-weight: 500; color: var(--teal); margin-left: 8px; }
+
+        .fund-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 28px; margin-bottom: 20px; }
+        body.dark-mode .fund-card { background: var(--dark-surface); border-color: var(--dark-border); }
+        .fund-card h2 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+        .fund-card .hint { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.6; }
+        body.dark-mode .fund-card .hint { color: var(--dark-muted); }
+
+        .field { margin-bottom: 16px; text-align: left; }
+        .field label { display: block; font-size: 12.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 7px; }
+        .field input, .field textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 12px; font-size: 14px; font-family: inherit; color: var(--text); background: transparent; transition: border .2s ease, box-shadow .2s ease; }
+        .field input:focus, .field textarea:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(59, 102, 178, 0.18); }
+        body.dark-mode .field label { color: var(--dark-muted); }
+        body.dark-mode .field input, body.dark-mode .field textarea { color: var(--dark-text); border-color: var(--dark-border); }
+        body.dark-mode .field input:focus, body.dark-mode .field textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.15); }
+        .field .hint { font-size: 11.5px; color: var(--text-muted); margin-top: 5px; }
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        @media (max-width: 640px) { .field-row { grid-template-columns: 1fr; } }
+
+        .pay-box { border: 1.5px dashed rgba(59, 102, 178, 0.45); border-radius: 16px; padding: 18px 20px; margin-bottom: 18px; }
+        body.dark-mode .pay-box { border-color: rgba(94, 234, 212, 0.4); }
+        .pay-line { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(59, 102, 178, 0.12); }
+        body.dark-mode .pay-line { border-bottom-color: rgba(94, 234, 212, 0.12); }
+        .pay-line:last-child { border-bottom: none; }
+        .pay-line .k { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; }
+        body.dark-mode .pay-line .k { color: var(--dark-muted); }
+        .pay-line .v { font-size: 14px; font-weight: 700; color: var(--text); user-select: all; text-align: right; }
+        body.dark-mode .pay-line .v { color: var(--dark-text); }
+        .pay-line .v.amount { color: var(--brand); font-family: 'Space Grotesk', sans-serif; font-size: 18px; }
+        body.dark-mode .pay-line .v.amount { color: var(--teal); }
+
+        .copy-btn { border: 1px solid rgba(59, 102, 178, 0.35); background: transparent; color: var(--brand); border-radius: 8px; padding: 4px 10px; font-size: 11px; font-weight: 700; font-family: inherit; cursor: pointer; flex: none; transition: background .2s, color .2s; }
+        .copy-btn:hover { background: var(--brand); color: #fff; }
+        body.dark-mode .copy-btn { border-color: rgba(94, 234, 212, 0.4); color: var(--teal); }
+        body.dark-mode .copy-btn:hover { background: var(--teal); color: var(--night); }
+
+        .fund-btn { width: 100%; padding: 15px 22px; border: none; border-radius: 999px; background: var(--brand); color: #fff; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer; box-shadow: 0 14px 32px -8px rgba(59, 102, 178, 0.5); transition: transform .16s ease, box-shadow .2s ease; }
+        .fund-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 18px 38px -8px rgba(59, 102, 178, 0.6); }
+        .fund-btn:disabled { opacity: .65; cursor: not-allowed; }
+        .fund-btn.is-loading::before { content: ''; display: inline-block; width: 14px; height: 14px; margin-right: 8px; vertical-align: -2px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+        body.dark-mode .fund-btn { background: var(--teal); color: var(--night); box-shadow: 0 14px 32px -8px rgba(94, 234, 212, 0.35); }
+        body.dark-mode .fund-btn.is-loading::before { border-color: rgba(11,17,32,.4); border-top-color: var(--night); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .notice { display: none; border-radius: 12px; padding: 11px 14px; font-size: 13px; margin-top: 16px; text-align: left; line-height: 1.6; }
+        .notice.error { background: rgba(220, 38, 38, 0.1); color: #b91c1c; border: 1px solid rgba(220, 38, 38, 0.35); }
+        .notice.info { background: rgba(59, 102, 178, 0.1); color: var(--brand); border: 1px solid rgba(59, 102, 178, 0.35); }
+        .notice.ok { background: rgba(16, 185, 129, 0.1); color: #059669; border: 1px solid rgba(16, 185, 129, 0.35); }
+        body.dark-mode .notice.error { background: rgba(220,38,38,.16); color: #fca5a5; }
+        body.dark-mode .notice.info { background: rgba(59,102,178,.16); color: var(--teal); }
+        body.dark-mode .notice.ok { background: rgba(16,185,129,.16); color: #34d399; }
+
+        .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 20px; }
+        .step { background: rgba(59, 102, 178, 0.05); border: 1px solid rgba(59, 102, 178, 0.15); border-radius: 12px; padding: 16px; text-align: center; }
+        body.dark-mode .step { background: rgba(94, 234, 212, 0.05); border-color: rgba(94, 234, 212, 0.15); }
+        .step .num { width: 36px; height: 36px; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 700; font-size: 15px; display: grid; place-items: center; margin: 0 auto 10px; }
+        body.dark-mode .step .num { background: var(--teal); color: var(--night); }
+        .step p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+        body.dark-mode .step p { color: var(--dark-muted); }
+
+        .min-fund { font-size: 12.5px; color: var(--text-muted); margin-top: 10px; text-align: center; }
+        body.dark-mode .min-fund { color: var(--dark-muted); }
+
+        @media (max-width: 640px) {
+            .fund-main { padding: 118px 16px 50px; }
+            .fund-hero { padding: 28px 24px; border-radius: 20px; }
+            .fund-card { padding: 20px 18px; }
+            .wallet-balance .amount { font-size: 32px; }
+        }
+        @media (prefers-reduced-motion: reduce) { .fund-btn, .copy-btn { transition: none; } .fund-btn:hover, .copy-btn:hover { transform: none; } }
+    </style>
+</head>
+<body>
+
+<div class="page-container">
+    <div class="nav-wrap" id="navWrap">
+        <header class="navbar">
+            <a class="brand" href="index.html" aria-label="Mai Goro home"><img src="img/logo.webp" alt="Mai Goro logo" class="brand-mark"><span></span></a>
+            <nav class="nav-links" id="navLinks" aria-label="Primary navigation">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About Us</a>
+                <a href="services.html" class="nav-link">Our Services</a>
+                <a href="contact.html" class="nav-link">Contact Us</a>
+            </nav>
+            <a href="contact.html" class="nav-cta">Get started</a>
+            <a href="login.html" class="nav-auth" aria-label="Login or register"><i class="fa-solid fa-user"></i> Login / Register</a>
+            <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><i class="fa-solid fa-moon"></i></button>
+            <button class="burger" id="burger" type="button" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+        </header>
+    </div>
+    <div class="mobile-panel" id="mobilePanel" aria-label="Mobile navigation">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About Us</a>
+        <a href="services.html" class="nav-link">Our Services</a>
+        <a href="contact.html" class="nav-link">Contact Us</a>
+        <a href="contact.html" class="nav-cta">Get started</a>
+        <a href="login.html" class="nav-auth" aria-label="Login or register"><i class="fa-solid fa-user"></i> Login / Register</a>
+    </div>
+
+    <main class="fund-main">
+        <section class="fund-hero">
+            <div class="eyebrow">Wallet</div>
+            <h1>Fund Your <span>Wallet</span></h1>
+            <p>Add funds to your wallet via bank transfer. Once confirmed, you can instantly use any verification service or buy exam pins without waiting for admin approval.</p>
+            <div class="trust">
+                <span><i class="fa-solid fa-bolt"></i> Instant credit after confirmation</span>
+                <span><i class="fa-solid fa-shield-halved"></i> Secure & transparent</span>
+                <span><i class="fa-solid fa-receipt"></i> Full transaction history</span>
+            </div>
+        </section>
+
+        <div class="wallet-balance" id="walletBalance">
+            <div class="label">Current Balance</div>
+            <div class="amount" id="balanceDisplay">₦0.00<small> NGN</small></div>
+        </div>
+
+        <form id="fundForm">
+            <section class="fund-card">
+                <h2>Add Funds</h2>
+                <p class="hint">Enter the amount you want to deposit (minimum ₦1,000), make the transfer, and submit the reference. Your wallet will be credited once admin confirms the payment.</p>
+
+                <div class="field">
+                    <label for="fundAmount">Amount to Fund (₦)</label>
+                    <input type="number" id="fundAmount" required min="1000" step="100" placeholder="e.g. 5000">
+                    <div class="hint">Minimum deposit: ₦1,000</div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label for="fundName">Account Name</label>
+                        <input type="text" id="fundName" required readonly placeholder="Your name">
+                    </div>
+                    <div class="field">
+                        <label for="fundPhone">Phone Number</label>
+                        <input type="tel" id="fundPhone" required readonly placeholder="Your phone">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="transferRef">Bank Transfer Reference *</label>
+                    <input type="text" id="transferRef" required maxlength="50" placeholder="e.g. 1000049283921 / TRF-8392X">
+                    <div class="hint">Copy the 10-to-30 digit Transaction Ref / Session ID from your mobile banking receipt.</div>
+                </div>
+
+                <button type="submit" class="fund-btn" id="fundBtn"><i class="fa-solid fa-wallet"></i> Submit Funding Request</button>
+                <div class="notice error" id="fundNotice" role="alert" aria-live="polite"></div>
+            </section>
+        </form>
+
+        <section class="fund-card">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step"><div class="num">1</div><p>Enter amount and submit your bank transfer reference</p></div>
+                <div class="step"><div class="num">2</div><p>Our team verifies the payment (usually within minutes)</p></div>
+                <div class="step"><div class="num">3</div><p>Wallet credited instantly — use for any service immediately</p></div>
+            </div>
+        </section>
+
+        <div class="pay-box" style="margin-top: 20px;">
+            <div class="pay-line"><span class="k">Bank Name</span><span class="v" id="bankName">—</span></div>
+            <div class="pay-line"><span class="k">Account Number</span><span class="v" id="bankNumber">—</span><button type="button" class="copy-btn" id="copyAcct"><i class="fa-regular fa-copy"></i> Copy</button></div>
+            <div class="pay-line"><span class="k">Account Name</span><span class="v" id="bankHolder">—</span></div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-brand"><img src="img/logo.webp" alt="Mai Goro logo" class="footer-logo"><p>Helping students, businesses and individuals with digital skills, professional design and reliable support.</p></div>
+            <div class="footer-column"><h3>Quick Links</h3><a href="index.html">Home</a><a href="about.html">About Us</a><a href="services.html">Our Services</a><a href="contact.html">Contact Us</a><a href="login.html">Customer Login</a></div>
+            <div class="footer-column"><h3>Contact</h3><a href="tel:+2348144372466">08144372466</a><a href="tel:+2348065493687">08065493687</a><a href="mailto:maigoroedigitalsolution@gmail.com">maigoroedigitalsolution@gmail.com</a><span>Opp. Babba Milk, Nassarawa, Kano</span></div>
+            <div class="footer-column"><h3>Hours</h3><span>Mon - Sat</span><span>10:00 AM - 10:00 PM</span><a href="https://wa.me/2349067997551" target="_blank" rel="noreferrer">WhatsApp Support</a><a href="mai-goro-admin-panel/admin/login.html">Admin Login</a></div>
+        </div>
+        <div class="footer-bottom">&copy; 2026 MAI GORO e-DIGITAL SOLUTIONS. All rights reserved.</div>
+    </footer>
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/slider-config.js"></script>
+<script src="js/shop-config.js"></script>
+<script>
+    /* ── Bank details from shop-config.js ── */
+    document.getElementById('bankName').textContent = BANK_DETAILS.bank;
+    document.getElementById('bankNumber').textContent = BANK_DETAILS.accountNumber;
+    document.getElementById('bankHolder').textContent = BANK_DETAILS.accountName;
+    document.getElementById('copyAcct').addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(BANK_DETAILS.accountNumber); } catch (e) {}
+    });
+
+    const naira = (n) => '₦' + Number(n).toLocaleString('en-NG', { maximumFractionDigits: 2 });
+
+    /* ── Session guard ── */
+    (async function() {
+        const { data, error } = await sb.auth.getSession();
+        if (error || !data.session) { window.location.replace('login.html?next=fund-wallet.html'); return; }
+        const user = data.session.user;
+        const meta = user.user_metadata || {};
+        document.getElementById('fundName').value = meta.full_name || '';
+        document.getElementById('fundPhone').value = meta.phone || '';
+        await loadBalance(user.id);
+    })();
+
+    async function loadBalance(userId) {
+        const { data, error } = await sb.from('wallets').select('balance').eq('user_id', userId).single();
+        if (!error && data) {
+            document.getElementById('balanceDisplay').textContent = naira(data.balance) + ' NGN';
+        }
+    }
+
+    /* ── Submit funding ── */
+    document.getElementById('fundForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const notice = document.getElementById('fundNotice');
+        notice.style.display = 'none';
+
+        const { data: ses } = await sb.auth.getSession();
+        if (!ses?.session) { window.location.replace('login.html?next=fund-wallet.html'); return; }
+
+        const amount = parseFloat(document.getElementById('fundAmount').value);
+        const ref = document.getElementById('transferRef').value.trim();
+
+        if (!amount || amount < 1000) { showNotice('Minimum deposit is ₦1,000.', 'error'); return; }
+        if (ref.length < 3) { showNotice('Enter the transfer reference from your bank app.', 'error'); return; }
+
+        const btn = document.getElementById('fundBtn');
+        btn.disabled = true;
+        btn.classList.add('is-loading');
+        btn.textContent = 'Submitting…';
+
+        const { error } = await sb.from('wallet_transactions').insert({
+            user_id: ses.session.user.id,
+            type: 'funding',
+            amount: amount,
+            balance_before: 0, // will be set by trigger/function
+            balance_after: 0,
+            reference: ref,
+            status: 'pending',
+            description: 'Wallet funding via bank transfer'
+        });
+
+        btn.disabled = false;
+        btn.classList.remove('is-loading');
+        btn.textContent = 'Submit Funding Request';
+
+        if (error) {
+            showNotice('Could not submit funding request: ' + (error.message || 'try again'), 'error');
+            return;
+        }
+
+        notice.style.display = 'block';
+        notice.className = 'notice ok';
+        notice.textContent = 'Funding request submitted! Our team will verify the payment and credit your wallet within minutes. You\'ll receive a confirmation.';
+        document.getElementById('fundForm').reset();
+        setTimeout(() => { notice.style.display = 'none'; }, 8000);
+    });
+
+    function showNotice(text, type) {
+        const box = document.getElementById('fundNotice');
+        box.textContent = text;
+        box.className = 'notice ' + type;
+        box.style.display = 'block';
+    }
+</script>
+</body>
+</html>

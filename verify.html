@@ -3,1891 +3,674 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Nigeria's Trusted Verification Platform — Official NIN Standard & Premium Slips, BVN Lookups, IPE Clearance for Stuck Tracking IDs, CAC Registrations & Exam PINs. Fast, reliable & NDPR compliant.">
-    <title>Verification Portal | NIN, BVN, IPE Clearance &amp; CAC Services | Mai Goro</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Verification Portal | NIN, BVN, IPE & CAC Services | Mai Goro</title>
+    <script>document.documentElement.classList.add('verify-auth-pending');</script>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/webp" href="img/logo.webp">
     <style>
-        /* ═══════════════════════════════════════════════════════════
-           STANDARD VERIFIER STYLES (UnifyVerifier & Dotaverify Class)
-           ═══════════════════════════════════════════════════════════ */
-        .verify-main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 130px 20px 80px;
-        }
-
-        /* ── Hero & Trust Banner ── */
-        .verifier-hero {
-            background: linear-gradient(130deg, #091b3e 0%, #174579 50%, #245da8 100%);
-            border-radius: 24px;
-            padding: 44px 40px;
-            color: #fff;
-            box-shadow: 0 20px 50px rgba(9, 27, 62, 0.3);
-            margin-bottom: 26px;
-            position: relative;
-            overflow: hidden;
-        }
-        .verifier-hero::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 420px;
-            height: 420px;
-            background: radial-gradient(circle, rgba(94, 234, 212, 0.18) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-        .verifier-hero .eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 11.5px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--teal);
-            font-weight: 700;
-            background: rgba(94, 234, 212, 0.12);
-            padding: 6px 14px;
-            border-radius: 999px;
-            border: 1px solid rgba(94, 234, 212, 0.28);
-            margin-bottom: 16px;
-        }
-        .verifier-hero h1 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(26px, 4.2vw, 42px);
-            font-weight: 700;
-            line-height: 1.15;
-            margin-bottom: 12px;
-        }
-        .verifier-hero h1 span.gold { color: #ffd977; }
-        .verifier-hero h1 span.teal { color: var(--teal); }
-        .verifier-hero p {
-            font-size: 15px;
-            color: rgba(255, 255, 255, 0.85);
-            max-width: 720px;
-            line-height: 1.65;
-            margin-bottom: 28px;
-        }
-
-        /* ── Trust Metrics Bar ── */
-        .trust-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 14px;
-            border-top: 1px solid rgba(255, 255, 255, 0.14);
-            padding-top: 24px;
-        }
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            background: rgba(255, 255, 255, 0.06);
-            padding: 12px 16px;
-            border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(8px);
-        }
-        .stat-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: rgba(94, 234, 212, 0.18);
-            color: var(--teal);
+        html.verify-auth-pending .page-container { visibility: hidden; }
+        .verify-auth-status { display: none; }
+        html.verify-auth-pending .verify-auth-status {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
             display: grid;
             place-items: center;
-            font-size: 17px;
-            flex-shrink: 0;
-        }
-        .stat-info .num {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: #fff;
-            display: block;
-            line-height: 1.2;
-        }
-        .stat-info .lbl {
-            font-size: 11.5px;
-            color: rgba(255, 255, 255, 0.72);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* ── Auth Alert Banner ── */
-        .login-banner {
-            display: none;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            flex-wrap: wrap;
-            font-size: 13.5px;
-            color: var(--text);
-            background: rgba(36, 93, 168, 0.08);
-            border: 1px solid rgba(36, 93, 168, 0.25);
-            border-radius: 14px;
-            padding: 14px 20px;
-            margin-bottom: 24px;
-        }
-        body.dark-mode .login-banner {
-            background: rgba(94, 234, 212, 0.08);
-            border-color: rgba(94, 234, 212, 0.3);
-            color: var(--dark-text);
-        }
-        .login-banner .banner-text { display: flex; align-items: center; gap: 10px; }
-        .login-banner a.btn-inline {
-            background: var(--brand);
-            color: #fff;
-            padding: 7px 16px;
-            border-radius: 999px;
-            font-weight: 700;
-            font-size: 12.5px;
-            text-decoration: none;
-            transition: opacity 0.2s;
-        }
-        body.dark-mode .login-banner a.btn-inline { background: var(--teal); color: var(--night); }
-        .login-banner a.btn-inline:hover { opacity: 0.9; }
-
-        /* ── Category Filter Tabs (UnifyVerifier & Dotaverify standard) ── */
-        .cat-nav-wrap {
-            margin-bottom: 22px;
-            overflow-x: auto;
-            padding-bottom: 6px;
-            scrollbar-width: thin;
-        }
-        .cat-nav {
-            display: flex;
-            gap: 8px;
-            min-width: max-content;
-        }
-        .cat-tab {
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            background: var(--surface);
-            border: 1.5px solid var(--border);
-            border-radius: 999px;
-            padding: 10px 18px;
-            font-family: inherit;
-            font-size: 13.5px;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .cat-tab:hover {
-            border-color: var(--brand);
-            color: var(--brand);
-            transform: translateY(-1px);
-        }
-        .cat-tab.active {
-            background: var(--brand);
-            border-color: var(--brand);
-            color: #fff;
-            box-shadow: 0 6px 18px rgba(36, 93, 168, 0.25);
-        }
-        .cat-tab .count {
-            background: rgba(0, 0, 0, 0.08);
-            color: inherit;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 2px 7px;
-            border-radius: 999px;
-        }
-        .cat-tab.active .count {
-            background: rgba(255, 255, 255, 0.25);
-            color: #fff;
-        }
-        body.dark-mode .cat-tab {
-            background: var(--dark-surface);
-            border-color: var(--dark-border);
-            color: var(--dark-muted);
-        }
-        body.dark-mode .cat-tab:hover {
-            border-color: var(--teal);
-            color: var(--teal);
-        }
-        body.dark-mode .cat-tab.active {
-            background: var(--teal);
-            border-color: var(--teal);
-            color: var(--night);
-            box-shadow: 0 6px 18px rgba(94, 234, 212, 0.22);
-        }
-
-        /* ── Grid Layout ── */
-        .verifier-grid {
-            display: grid;
-            grid-template-columns: 1.35fr 0.85fr;
-            gap: 24px;
-            align-items: start;
-        }
-        @media (max-width: 960px) {
-            .verifier-grid { grid-template-columns: 1fr; }
-        }
-
-        .verifier-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 28px;
-            margin-bottom: 22px;
-            box-shadow: 0 4px 18px rgba(15, 30, 60, 0.04);
-        }
-        body.dark-mode .verifier-card {
-            background: var(--dark-surface);
-            border-color: var(--dark-border);
-        }
-        .verifier-card h2 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 19px;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-        }
-        body.dark-mode .verifier-card h2 { color: var(--dark-text); }
-        .verifier-card .hint {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 18px;
-            line-height: 1.6;
-        }
-        body.dark-mode .verifier-card .hint { color: var(--dark-muted); }
-
-        /* ── Service Cards Grid ── */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 14px;
-        }
-        .service-card {
-            position: relative;
-            border: 1.5px solid var(--border);
-            border-radius: 16px;
-            padding: 18px 18px 16px;
-            background: transparent;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.22s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .service-card:hover {
-            transform: translateY(-2px);
-            border-color: rgba(36, 93, 168, 0.45);
-            box-shadow: 0 10px 24px -10px rgba(36, 93, 168, 0.15);
-        }
-        .service-card.selected {
-            border-color: var(--brand);
-            background: rgba(36, 93, 168, 0.03);
-            box-shadow: 0 12px 28px -8px rgba(36, 93, 168, 0.35);
-        }
-        body.dark-mode .service-card { border-color: var(--dark-border); }
-        body.dark-mode .service-card:hover { border-color: rgba(94, 234, 212, 0.4); }
-        body.dark-mode .service-card.selected {
-            border-color: var(--teal);
-            background: rgba(94, 234, 212, 0.03);
-            box-shadow: 0 12px 28px -8px rgba(94, 234, 212, 0.25);
-        }
-
-        .service-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-        .cat-badge {
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            padding: 3px 8px;
-            border-radius: 999px;
-            border: 1px solid;
-        }
-        .cat-badge.nin  { color: #059669; background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.3); }
-        .cat-badge.bvn  { color: #2563eb; background: rgba(37, 99, 235, 0.12); border-color: rgba(37, 99, 235, 0.3); }
-        .cat-badge.ipe  { color: #d97706; background: rgba(217, 119, 6, 0.12); border-color: rgba(217, 119, 6, 0.3); }
-        .cat-badge.cac  { color: #7c3aed; background: rgba(124, 58, 237, 0.12); border-color: rgba(124, 58, 237, 0.3); }
-        .cat-badge.exam { color: #0891b2; background: rgba(8, 145, 178, 0.12); border-color: rgba(8, 145, 178, 0.3); }
-
-        .service-card .tick {
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: grid;
-            place-items: center;
-            font-size: 10px;
-            color: #fff;
-            background: var(--border);
-            transition: all 0.2s;
-        }
-        .service-card.selected .tick { background: var(--brand); }
-        body.dark-mode .service-card.selected .tick { background: var(--teal); color: var(--night); }
-
-        .service-card .s-name {
-            font-size: 14.5px;
-            font-weight: 700;
-            color: var(--text);
-            line-height: 1.35;
-            margin-bottom: 6px;
-        }
-        body.dark-mode .service-card .s-name { color: var(--dark-text); }
-        .service-card .s-desc {
-            font-size: 12px;
-            color: var(--text-muted);
-            line-height: 1.5;
-            margin-bottom: 12px;
-        }
-        body.dark-mode .service-card .s-desc { color: var(--dark-muted); }
-
-        .service-bottom {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 8px;
-            margin-top: auto;
-            padding-top: 10px;
-            border-top: 1px dashed var(--border);
-        }
-        body.dark-mode .service-bottom { border-top-color: var(--dark-border); }
-        .service-bottom .s-price {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--brand);
-        }
-        body.dark-mode .service-bottom .s-price { color: var(--teal); }
-        .service-bottom .s-turn {
-            font-size: 11px;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-        body.dark-mode .service-bottom .s-turn { color: var(--dark-muted); }
-
-        /* ── Interactive Slip Sample Modal / Preview (UnifyVerifier Style) ── */
-        .slip-preview-box {
-            display: none;
-            background: rgba(36, 93, 168, 0.05);
-            border: 1.5px dashed rgba(36, 93, 168, 0.35);
-            border-radius: 16px;
-            padding: 16px 20px;
-            margin-top: 16px;
-        }
-        body.dark-mode .slip-preview-box {
-            background: rgba(94, 234, 212, 0.05);
-            border-color: rgba(94, 234, 212, 0.35);
-        }
-        .slip-preview-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--brand);
-            margin-bottom: 10px;
-        }
-        body.dark-mode .slip-preview-header { color: var(--teal); }
-        .slip-card-mock {
-            background: #fff;
-            border: 1px solid #c8d8ec;
-            border-radius: 10px;
-            padding: 12px 14px;
-            color: #1a2533;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-        .slip-card-mock.premium {
-            background: linear-gradient(135deg, #093721 0%, #0d5f38 100%);
-            border: 1.5px solid #d4af37;
-            color: #fff;
-        }
-        .mock-photo {
-            width: 52px;
-            height: 64px;
-            background: #e2e8f0;
-            border-radius: 6px;
-            display: grid;
-            place-items: center;
-            color: #64748b;
-            font-size: 22px;
-            flex-shrink: 0;
-        }
-        .slip-card-mock.premium .mock-photo {
-            background: rgba(255,255,255,0.15);
-            color: #ffd977;
-        }
-        .mock-details { flex: 1; font-size: 11px; line-height: 1.5; }
-        .mock-details b { font-size: 12px; display: block; color: #0d4a2b; }
-        .slip-card-mock.premium .mock-details b { color: #ffd977; }
-        .mock-qr {
-            width: 44px;
-            height: 44px;
-            background: #f1f5f9;
-            border: 1px dashed #94a3b8;
-            border-radius: 6px;
-            display: grid;
-            place-items: center;
-            font-size: 18px;
-            color: #475569;
-            flex-shrink: 0;
-        }
-
-        /* ── Dynamic Order Form ── */
-        .form-section { margin-top: 10px; }
-        .field { margin-bottom: 16px; text-align: left; }
-        .field label {
-            display: block;
-            font-size: 12.5px;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-        }
-        body.dark-mode .field label { color: var(--dark-muted); }
-        .field input, .field select, .field textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            padding: 24px;
+            background: #f3f7fb;
+            color: #536579;
             font-size: 14px;
-            font-family: inherit;
-            background: transparent;
-            color: var(--text);
-            transition: border-color 0.2s, box-shadow 0.2s;
         }
-        body.dark-mode .field input, body.dark-mode .field select, body.dark-mode .field textarea {
-            color: var(--dark-text);
-            border-color: var(--dark-border);
-            background: var(--dark-surface);
-        }
-        .field input:focus, .field select:focus, .field textarea:focus {
-            outline: none;
-            border-color: var(--brand);
-            box-shadow: 0 0 0 3px rgba(36, 93, 168, 0.15);
-        }
-        body.dark-mode .field input:focus, body.dark-mode .field select:focus, body.dark-mode .field textarea:focus {
-            border-color: var(--teal);
-            box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.15);
-        }
-        .field .field-hint {
-            font-size: 11.5px;
-            color: var(--text-muted);
-            margin-top: 5px;
-            line-height: 1.4;
-        }
-        body.dark-mode .field .field-hint { color: var(--dark-muted); }
-        .field-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        @media (max-width: 600px) { .field-row { grid-template-columns: 1fr; } }
+        body.dark-mode .verify-auth-status { background: var(--night); color: var(--dark-muted); }
 
-        /* Dynamic Field Sets */
+        /* ── Dynamic Form Fields ── */
         .dynamic-set { display: none; }
         .dynamic-set.active { display: block; animation: fadeIn 0.25s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* ── Price and Payment Summary ── */
-        .total-box {
-            background: rgba(36, 93, 168, 0.07);
-            border: 1px solid rgba(36, 93, 168, 0.25);
-            border-radius: 14px;
-            padding: 14px 18px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 14px;
-            margin: 18px 0;
-        }
-        body.dark-mode .total-box {
-            background: rgba(94, 234, 212, 0.07);
-            border-color: rgba(94, 234, 212, 0.25);
-        }
-        .total-box .total-title {
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.6px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
+        
+        /* ── Wallet Notice ── */
+        .wallet-notice { display: none; background: rgba(227,167,47,0.1); border: 1px solid rgba(227,167,47,0.3); border-radius: 12px; padding: 12px 16px; margin: 16px 0; font-size: 13px; color: #8a620d; }
+        .wallet-notice i { margin-right: 8px; }
+        body.dark-mode .wallet-notice { background: rgba(227,167,47,0.15); color: #ffd977; }
+        
+        /* ── Service Badges ── */
+        .v-badge { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; border: 1px solid; margin-bottom: 8px; }
+        .v-badge.nin  { color: #059669; background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.3); }
+        .v-badge.bvn  { color: #2563eb; background: rgba(37, 99, 235, 0.12); border-color: rgba(37, 99, 235, 0.3); }
+        .v-badge.ipe  { color: #d97706; background: rgba(217, 119, 6, 0.12); border-color: rgba(217, 119, 6, 0.3); }
+        .v-badge.cac  { color: #7c3aed; background: rgba(124, 58, 237, 0.12); border-color: rgba(124, 58, 237, 0.3); }
+        .v-badge.exam { color: #0891b2; background: rgba(8, 145, 178, 0.12); border-color: rgba(8, 145, 178, 0.3); }
+        
+        /* ── Form Elements ── */
+        .field { margin-bottom: 16px; text-align: left; }
+        .field label { display: block; font-size: 12.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 7px; }
+        body.dark-mode .field label { color: var(--dark-muted); }
+        .field input, .field select, .field textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 12px; font-size: 14px; font-family: inherit; background: transparent; color: var(--text); transition: border .2s ease, box-shadow .2s ease; }
+        body.dark-mode .field input, body.dark-mode .field select, body.dark-mode .field textarea { color: var(--dark-text); border-color: var(--dark-border); }
+        .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(59, 102, 178, 0.18); }
+        body.dark-mode .field input:focus, body.dark-mode .field select:focus, body.dark-mode .field textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.15); }
+        .field .field-hint { font-size: 11.5px; color: var(--text-muted); margin-top: 5px; }
+        body.dark-mode .field .field-hint { color: var(--dark-muted); }
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        @media (max-width: 640px) { .field-row { grid-template-columns: 1fr; } }
+        
+        /* ── Price Display ── */
+        .total-box { background: rgba(59, 102, 178, 0.07); border: 1px solid rgba(59, 102, 178, 0.25); border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 18px 0; }
+        body.dark-mode .total-box { background: rgba(94, 234, 212, 0.07); border-color: rgba(94, 234, 212, 0.25); }
+        .total-box .total-title { font-size: 12px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: var(--text-muted); }
         body.dark-mode .total-box .total-title { color: var(--dark-muted); }
-        .total-box .total-val {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--brand);
-        }
+        .total-box .total-val { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--brand); }
         body.dark-mode .total-box .total-val { color: var(--teal); }
-
-        /* ── Where to Pay Card ── */
-        .pay-box {
-            border: 1.5px dashed rgba(36, 93, 168, 0.45);
-            border-radius: 16px;
-            padding: 16px 18px;
-            margin-bottom: 16px;
-            background: rgba(36, 93, 168, 0.02);
-        }
-        body.dark-mode .pay-box {
-            border-color: rgba(94, 234, 212, 0.35);
-            background: rgba(94, 234, 212, 0.02);
-        }
-        .pay-line {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 9px 0;
-            border-bottom: 1px solid rgba(36, 93, 168, 0.1);
-        }
-        body.dark-mode .pay-line { border-bottom-color: rgba(94, 234, 212, 0.1); }
-        .pay-line:last-child { border-bottom: none; }
-        .pay-line .k {
-            font-size: 11px;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            font-weight: 700;
-            color: var(--text-muted);
-        }
-        body.dark-mode .pay-line .k { color: var(--dark-muted); }
-        .pay-line .v {
-            font-size: 13.5px;
-            font-weight: 700;
-            color: var(--text);
-            user-select: all;
-            text-align: right;
-        }
-        body.dark-mode .pay-line .v { color: var(--dark-text); }
-        .pay-line .v.amount {
-            color: var(--brand);
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 17px;
-        }
-        body.dark-mode .pay-line .v.amount { color: var(--teal); }
-
-        .copy-btn {
-            border: 1px solid rgba(36, 93, 168, 0.35);
-            background: transparent;
-            color: var(--brand);
-            border-radius: 8px;
-            padding: 4px 10px;
-            font-size: 11px;
-            font-weight: 700;
-            font-family: inherit;
-            cursor: pointer;
-            flex-shrink: 0;
-            transition: all 0.2s;
-        }
-        .copy-btn:hover { background: var(--brand); color: #fff; }
-        body.dark-mode .copy-btn { border-color: rgba(94, 234, 212, 0.4); color: var(--teal); }
-        body.dark-mode .copy-btn:hover { background: var(--teal); color: var(--night); }
-
-        /* ── Submit Button ── */
-        .submit-btn {
-            width: 100%;
-            padding: 15px 24px;
-            border: none;
-            border-radius: 999px;
-            background: var(--brand);
-            color: #fff;
-            font-size: 15.5px;
-            font-weight: 700;
-            font-family: inherit;
-            cursor: pointer;
-            box-shadow: 0 14px 30px -8px rgba(36, 93, 168, 0.45);
-            transition: transform 0.16s, box-shadow 0.2s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .submit-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 18px 36px -8px rgba(36, 93, 168, 0.55);
-        }
-        .submit-btn:disabled { opacity: 0.65; cursor: not-allowed; }
-        .submit-btn.is-loading::before {
-            content: '';
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: vSpin 0.7s linear infinite;
-        }
-        body.dark-mode .submit-btn {
-            background: var(--teal);
-            color: var(--night);
-            box-shadow: 0 14px 30px -8px rgba(94, 234, 212, 0.35);
-        }
-        body.dark-mode .submit-btn.is-loading::before {
-            border-color: rgba(11, 17, 32, 0.4);
-            border-top-color: var(--night);
-        }
-        @keyframes vSpin { to { transform: rotate(360deg); } }
-
-        /* ── Notification Callout ── */
-        .notice {
-            display: none;
-            margin-top: 14px;
-            border-radius: 12px;
-            padding: 12px 16px;
-            font-size: 13.5px;
-            line-height: 1.6;
-        }
-        .notice.error {
-            background: rgba(220, 38, 38, 0.1);
-            color: #b91c1c;
-            border: 1px solid rgba(220, 38, 38, 0.35);
-        }
-        body.dark-mode .notice.error {
-            background: rgba(220, 38, 38, 0.16);
-            color: #fca5a5;
-        }
-
-        /* ── Success Card ── */
+        
+        /* ── Buttons ── */
+        .submit-btn { width: 100%; padding: 15px 22px; border: none; border-radius: 999px; background: var(--brand); color: #fff; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer; box-shadow: 0 14px 32px -8px rgba(59, 102, 178, 0.5); transition: transform .16s ease, box-shadow .2s ease; }
+        .submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 18px 38px -8px rgba(59, 102, 178, 0.6); }
+        .submit-btn:disabled { opacity: .65; cursor: not-allowed; }
+        .submit-btn.is-loading::before { content: ''; display: inline-block; width: 14px; height: 14px; margin-right: 8px; vertical-align: -2px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+        body.dark-mode .submit-btn { background: var(--teal); color: var(--night); box-shadow: 0 14px 32px -8px rgba(94, 234, 212, 0.35); }
+        body.dark-mode .submit-btn.is-loading::before { border-color: rgba(11,17,32,.4); border-top-color: var(--night); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* ── Notices ── */
+        .notice { display: none; border-radius: 12px; padding: 11px 14px; font-size: 13px; margin-top: 16px; text-align: left; line-height: 1.6; }
+        .notice.error { background: rgba(220, 38, 38, 0.1); color: #b91c1c; border: 1px solid rgba(220, 38, 38, 0.35); }
+        body.dark-mode .notice.error { background: rgba(220,38,38,.16); color: #fca5a5; }
+        
+        /* ── Success View ── */
         #successView { display: none; }
-        .success-code {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: var(--brand);
-            background: rgba(36, 93, 168, 0.08);
-            border: 1.5px dashed var(--brand);
-            border-radius: 14px;
-            padding: 12px 20px;
-            display: inline-block;
-            user-select: all;
-            margin: 12px 0;
-        }
-        body.dark-mode .success-code {
-            color: var(--teal);
-            background: rgba(94, 234, 212, 0.08);
-            border-color: var(--teal);
-        }
-        .status-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 6px 14px;
-            border-radius: 999px;
-            background: rgba(227, 167, 47, 0.14);
-            color: #a1720c;
-            border: 1px solid rgba(227, 167, 47, 0.45);
-            margin-bottom: 14px;
-        }
-        body.dark-mode .status-chip { color: #ffd977; }
-        .success-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 18px;
-        }
-        .btn-wa {
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            padding: 12px 22px;
-            border-radius: 999px;
-            text-decoration: none;
-            background: #25d366;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 700;
-            transition: transform 0.15s, box-shadow 0.2s;
-            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
-        }
-        .btn-wa:hover { transform: translateY(-2px); }
-        .btn-portal {
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            padding: 12px 22px;
-            border-radius: 999px;
-            text-decoration: none;
-            border: 1.5px solid var(--brand);
-            color: var(--brand);
-            font-size: 14px;
-            font-weight: 700;
-            transition: background 0.2s, color 0.2s, transform 0.15s;
-        }
-        .btn-portal:hover {
-            background: var(--brand);
-            color: #fff;
-            transform: translateY(-2px);
-        }
+        .success-code { font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: 2px; color: var(--brand); background: rgba(59, 102, 178, 0.08); border: 1.5px dashed var(--brand); border-radius: 14px; padding: 12px 20px; display: inline-block; user-select: all; margin: 12px 0; }
+        body.dark-mode .success-code { color: var(--teal); background: rgba(94, 234, 212, 0.08); border-color: var(--teal); }
+        .status-chip { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 999px; background: rgba(16, 185, 129, 0.12); color: #059669; border: 1px solid rgba(16, 185, 129, 0.25); margin-bottom: 14px; }
+        body.dark-mode .status-chip { color: #6ee7b7; }
+        .success-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+        .btn-wa { display: inline-flex; align-items: center; gap: 9px; padding: 12px 22px; border-radius: 999px; text-decoration: none; background: #25d366; color: #fff; font-size: 14px; font-weight: 700; transition: transform .15s, box-shadow .2s; }
+        .btn-wa:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3); }
+        .btn-portal { display: inline-flex; align-items: center; gap: 9px; padding: 12px 22px; border-radius: 999px; text-decoration: none; border: 1.5px solid var(--brand); color: var(--brand); font-size: 14px; font-weight: 700; transition: background .2s, color .2s, transform .15s; }
+        .btn-portal:hover { background: var(--brand); color: #fff; transform: translateY(-2px); }
         body.dark-mode .btn-portal { border-color: var(--teal); color: var(--teal); }
         body.dark-mode .btn-portal:hover { background: var(--teal); color: var(--night); }
-
-        /* ── How It Works & NDPR Compliance ── */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 16px;
-            margin-top: 36px;
-        }
-        .feat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 22px 20px;
-        }
-        body.dark-mode .feat-card {
-            background: var(--dark-surface);
-            border-color: var(--dark-border);
-        }
-        .feat-num {
-            width: 32px;
-            height: 32px;
-            border-radius: 10px;
-            background: rgba(36, 93, 168, 0.12);
-            color: var(--brand);
-            font-weight: 800;
-            font-size: 14px;
-            display: grid;
-            place-items: center;
-            margin-bottom: 12px;
-        }
-        body.dark-mode .feat-num {
-            background: rgba(94, 234, 212, 0.14);
-            color: var(--teal);
-        }
-        .feat-card h3 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 6px;
-        }
-        body.dark-mode .feat-card h3 { color: var(--dark-text); }
-        .feat-card p {
-            font-size: 12.5px;
-            color: var(--text-muted);
-            line-height: 1.6;
-        }
-        body.dark-mode .feat-card p { color: var(--dark-muted); }
-
-        .ndpr-banner {
-            margin-top: 24px;
-            background: linear-gradient(135deg, rgba(36, 93, 168, 0.05), rgba(94, 234, 212, 0.05));
-            border: 1px solid rgba(36, 93, 168, 0.2);
-            border-radius: 18px;
-            padding: 20px 24px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        body.dark-mode .ndpr-banner {
-            border-color: rgba(94, 234, 212, 0.2);
-        }
-        .ndpr-icon {
-            font-size: 28px;
-            color: #059669;
-            flex-shrink: 0;
-        }
-        .ndpr-text h4 {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 3px;
-        }
-        body.dark-mode .ndpr-text h4 { color: var(--dark-text); }
-        .ndpr-text p {
-            font-size: 12px;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-        body.dark-mode .ndpr-text p { color: var(--dark-muted); }
-
+        
+        /* ── Wallet Balance Card ── */
+        .verifier-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 28px; margin-bottom: 22px; }
+        body.dark-mode .verifier-card { background: var(--dark-surface); border-color: var(--dark-border); }
+        .verifier-card h2 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+        .verifier-card .hint { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.6; }
+        body.dark-mode .verifier-card .hint { color: var(--dark-muted); }
+        
+        /* ── Layout ── */
+        .verify-main { max-width: 1200px; margin: 0 auto; padding: 140px 24px 70px; }
+        .verifier-hero { background: linear-gradient(120deg, #0f2a5e 0%, var(--brand) 70%, #4a7bc9 100%); border-radius: 24px; padding: 38px 40px 36px; color: #fff; box-shadow: 0 20px 50px rgba(15, 42, 94, 0.25); margin-bottom: 26px; position: relative; overflow: hidden; }
+        .verifier-hero::after { content: ''; position: absolute; top: -50%; right: -10%; width: 420px; height: 420px; background: radial-gradient(circle, rgba(94, 234, 212, 0.18) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+        .verifier-hero .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 11.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--teal); font-weight: 700; background: rgba(94, 234, 212, 0.12); padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(94, 234, 212, 0.28); margin-bottom: 16px; }
+        .verifier-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(26px, 4.2vw, 42px); font-weight: 700; line-height: 1.15; margin-bottom: 12px; }
+        .verifier-hero h1 span.gold { color: #ffd977; }
+        .verifier-hero h1 span.teal { color: var(--teal); }
+        .verifier-hero p { margin-top: 10px; font-size: 14.5px; color: rgba(255, 255, 255, 0.85); max-width: 720px; line-height: 1.65; }
+        .verifier-hero .trust { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 12.5px; color: rgba(255,255,255,.85); }
+        .verifier-hero .trust i { color: var(--teal); margin-right: 6px; }
+        
+        .cat-nav-wrap { margin-bottom: 22px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
+        .cat-nav { display: flex; gap: 8px; min-width: max-content; }
+        .cat-tab { display: inline-flex; align-items: center; gap: 9px; background: var(--surface); border: 1.5px solid var(--border); border-radius: 999px; padding: 10px 18px; font-family: inherit; font-size: 13.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease; }
+        .cat-tab:hover { border-color: var(--brand); color: var(--brand); transform: translateY(-1px); }
+        .cat-tab.active { background: var(--brand); border-color: var(--brand); color: #fff; box-shadow: 0 6px 18px rgba(36, 93, 168, 0.25); }
+        .cat-tab .count { background: rgba(0, 0, 0, 0.08); color: inherit; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; }
+        .cat-tab.active .count { background: rgba(255, 255, 255, 0.25); color: #fff; }
+        body.dark-mode .cat-tab { background: var(--dark-surface); border-color: var(--dark-border); color: var(--dark-muted); }
+        body.dark-mode .cat-tab:hover { border-color: var(--teal); color: var(--teal); }
+        body.dark-mode .cat-tab.active { background: var(--teal); border-color: var(--teal); color: var(--night); box-shadow: 0 6px 18px rgba(94, 234, 212, 0.22); }
+        
+        .verifier-grid { display: grid; grid-template-columns: 1.35fr 0.85fr; gap: 24px; align-items: start; }
+        @media (max-width: 960px) { .verifier-grid { grid-template-columns: 1fr; } }
+        
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+        .service-card { position: relative; border: 1.5px solid var(--border); border-radius: 16px; padding: 18px 18px 16px; background: transparent; cursor: pointer; text-align: left; transition: all 0.22s ease; display: flex; flex-direction: column; justify-content: space-between; }
+        .service-card:hover { transform: translateY(-2px); border-color: rgba(59, 102, 178, 0.45); box-shadow: 0 10px 24px -10px rgba(59, 102, 178, 0.15); }
+        .service-card.selected { border-color: var(--brand); background: rgba(59, 102, 178, 0.03); box-shadow: 0 12px 28px -8px rgba(59, 102, 178, 0.35); }
+        body.dark-mode .service-card { border-color: var(--dark-border); }
+        body.dark-mode .service-card:hover { border-color: rgba(94, 234, 212, 0.4); }
+        body.dark-mode .service-card.selected { border-color: var(--teal); background: rgba(94, 234, 212, 0.03); box-shadow: 0 12px 28px -8px rgba(94, 234, 212, 0.25); }
+        
+        .service-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+        .service-card .s-name { font-size: 14.5px; font-weight: 700; color: var(--text); line-height: 1.35; margin-bottom: 6px; }
+        body.dark-mode .service-card .s-name { color: var(--dark-text); }
+        .service-card .s-price { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; color: var(--brand); display: block; margin-top: 10px; }
+        body.dark-mode .service-card .s-price { color: var(--teal); }
+        
         @media (max-width: 640px) {
-            .verify-main { padding: 110px 16px 50px; }
-            .verifier-hero { padding: 30px 20px; border-radius: 20px; }
-            .verifier-card { padding: 22px 18px; }
-            .services-grid { grid-template-columns: 1fr; }
+            .verify-main { padding: 118px 16px 50px; }
+            .verifier-hero { padding: 28px 22px; border-radius: 20px; }
+            .verifier-card { padding: 20px 18px; }
+            .verifier-grid { grid-template-columns: 1fr; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .service-card, .submit-btn, .btn-wa, .btn-portal { transition: none; }
+            .service-card:hover, .submit-btn:hover, .btn-wa:hover, .btn-portal:hover { transform: none; }
+            .submit-btn.is-loading::before { animation: none; }
         }
     </style>
 </head>
 <body>
 
-    <div class="page-container">
+<div class="verify-auth-status" role="status" aria-live="polite">Checking your account access…</div>
+<div class="page-container">
 
-        <!-- Navigation Bar -->
-        <div class="nav-wrap" id="navWrap">
-            <header class="navbar">
-                <a class="brand" href="index.html" aria-label="Mai Goro home">
-                    <img src="img/logo.webp" alt="Mai Goro logo" class="brand-mark">
-                    <span></span>
-                </a>
-                <nav class="nav-links" id="navLinks" aria-label="Primary navigation">
-                    <a href="index.html" class="nav-link">Home</a>
-                    <a href="about.html" class="nav-link">About Us</a>
-                    <a href="services.html" class="nav-link">Our Services</a>
-                    <a href="contact.html" class="nav-link">Contact Us</a>
-                </nav>
-                <a href="contact.html" class="nav-cta">Get started</a>
-                <a href="login.html" class="nav-auth" id="navAuthLink" aria-label="Login or register">
-                    <i class="fa-solid fa-user"></i> Login / Register
-                </a>
-                <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
-                    <i class="fa-solid fa-moon"></i>
-                </button>
-                <button class="burger" id="burger" type="button" aria-label="Toggle menu" aria-expanded="false">
-                    <span></span>
-                </button>
-            </header>
-        </div>
-
-        <!-- Mobile Navigation Panel -->
-        <div class="mobile-panel" id="mobilePanel" aria-label="Mobile navigation">
-            <a href="index.html" class="nav-link">Home</a>
-            <a href="about.html" class="nav-link">About Us</a>
-            <a href="services.html" class="nav-link">Our Services</a>
-            <a href="contact.html" class="nav-link">Contact Us</a>
+    <!-- Navigation -->
+    <div class="nav-wrap" id="navWrap">
+        <header class="navbar">
+            <a class="brand" href="index.html" aria-label="Mai Goro home"><img src="img/logo.webp" alt="Mai Goro logo" class="brand-mark"><span></span></a>
+            <nav class="nav-links" id="navLinks" aria-label="Primary navigation">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About Us</a>
+                <a href="services.html" class="nav-link">Our Services</a>
+                <a href="contact.html" class="nav-link">Contact Us</a>
+            </nav>
             <a href="contact.html" class="nav-cta">Get started</a>
             <a href="login.html" class="nav-auth" aria-label="Login or register"><i class="fa-solid fa-user"></i> Login / Register</a>
-        </div>
-
-        <main class="verify-main">
-
-            <!-- Hero Section with Trust Metrics (Benchmark: UnifyVerifier & Dotaverify) -->
-            <section class="verifier-hero">
-                <div class="eyebrow">
-                    <i class="fa-solid fa-shield-check"></i> Nigeria's Trusted Verification Platform
-                </div>
-                <h1>Verify with Confidence: <span class="gold">NIN</span>, <span class="teal">BVN</span>, IPE Clearance &amp; CAC</h1>
-                <p>Fast, reliable, and compliant identity verification suite for individuals, agents, and organizations. Instant official slip generation, stuck tracking ID resolution, corporate searches, and examination tokens.</p>
-
-                <div class="trust-stats">
-                    <div class="stat-item">
-                        <div class="stat-icon"><i class="fa-solid fa-file-check"></i></div>
-                        <div class="stat-info">
-                            <span class="num">10,000+</span>
-                            <span class="lbl">Records Verified</span>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-icon"><i class="fa-solid fa-bolt"></i></div>
-                        <div class="stat-info">
-                            <span class="num">99.9%</span>
-                            <span class="lbl">Platform Uptime</span>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-icon"><i class="fa-solid fa-id-card"></i></div>
-                        <div class="stat-info">
-                            <span class="num">Instant PDF</span>
-                            <span class="lbl">&amp; PVC Slip Ready</span>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-icon"><i class="fa-solid fa-lock"></i></div>
-                        <div class="stat-info">
-                            <span class="num">NDPR &amp; NIMC</span>
-                            <span class="lbl">Compliant Security</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Authentication Alert Banner -->
-            <div class="login-banner" id="loginBanner">
-                <div class="banner-text">
-                    <i class="fa-solid fa-circle-info" style="color:var(--brand);font-size:16px;"></i>
-                    <span>You can browse services and pricing freely — sign in or register to submit requests and store your slips securely.</span>
-                </div>
-                <div>
-                    <a href="login.html?next=verify.html" class="btn-inline"><i class="fa-solid fa-right-to-bracket"></i> Log In / Register</a>
-                </div>
-            </div>
-
-            <!-- Service Category Filter Tabs (UnifyVerifier standard) -->
-            <div class="cat-nav-wrap">
-                <div class="cat-nav" id="categoryNav">
-                    <button type="button" class="cat-tab active" data-category="all">
-                        <i class="fa-solid fa-grid-2"></i> All Services <span class="count" id="countAll">16</span>
-                    </button>
-                    <button type="button" class="cat-tab" data-category="nin">
-                        <i class="fa-solid fa-id-badge"></i> NIN Services <span class="count" id="countNin">6</span>
-                    </button>
-                    <button type="button" class="cat-tab" data-category="bvn">
-                        <i class="fa-solid fa-building-columns"></i> BVN Services <span class="count" id="countBvn">3</span>
-                    </button>
-                    <button type="button" class="cat-tab" data-category="ipe">
-                        <i class="fa-solid fa-triangle-exclamation"></i> IPE Clearance <span class="count" id="countIpe">2</span>
-                    </button>
-                    <button type="button" class="cat-tab" data-category="cac">
-                        <i class="fa-solid fa-briefcase"></i> CAC Corporate <span class="count" id="countCac">3</span>
-                    </button>
-                    <button type="button" class="cat-tab" data-category="exam">
-                        <i class="fa-solid fa-graduation-cap"></i> Exam &amp; Utilities <span class="count" id="countExam">2</span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="verifier-grid">
-
-                <!-- Left Column: Service Selector & Dynamic Form -->
-                <div>
-                    <!-- Step 1: Select Verification Service -->
-                    <section class="verifier-card">
-                        <h2>
-                            <span>1. Select Service</span>
-                            <small style="font-size:12.5px;font-weight:500;color:var(--text-muted);" id="activeCategoryTitle">Showing all services</small>
-                        </h2>
-                        <p class="hint">Choose the exact lookup, slip type, or clearance task you need completed.</p>
-                        <div class="services-grid" id="servicesGrid">
-                            <!-- Injected dynamically via script -->
-                        </div>
-
-                        <!-- Interactive Slip Sample Preview (Standard & Premium Card) -->
-                        <div class="slip-preview-box" id="slipPreviewBox">
-                            <div class="slip-preview-header">
-                                <span><i class="fa-solid fa-eye"></i> Format Preview</span>
-                                <span id="slipPreviewBadge">Official Standard Slip</span>
-                            </div>
-                            <div class="slip-card-mock" id="slipMock">
-                                <div class="mock-photo"><i class="fa-solid fa-user"></i></div>
-                                <div class="mock-details">
-                                    <b>FEDERAL REPUBLIC OF NIGERIA</b>
-                                    <span>NIN: ••• ••• •••• (Full 11 Digits)</span><br>
-                                    <span>Tracking ID: 1000000••••••••</span><br>
-                                    <span style="color:#059669;font-weight:600;">✓ Official NIMC Security QR Included</span>
-                                </div>
-                                <div class="mock-qr"><i class="fa-solid fa-qrcode"></i></div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Step 2: Dynamic Detail Form -->
-                    <section class="verifier-card" id="formCard">
-                        <h2>2. Provide Information &amp; Payment Proof</h2>
-                        <p class="hint" id="formInstruction">Fill in the required details accurately to prevent verification delays.</p>
-
-                        <form id="verifierForm">
-
-                            <!-- Dynamic Inputs (Changes according to selected service) -->
-                            <div class="form-section">
-
-                                <!-- Type 1: 11-Digit NIN -->
-                                <div class="dynamic-set" id="set-nin">
-                                    <div class="field">
-                                        <label for="inputNin">National Identification Number (NIN) *</label>
-                                        <input type="text" id="inputNin" inputmode="numeric" maxlength="11" placeholder="Enter full 11-digit NIN (e.g. 12345678901)">
-                                        <div class="field-hint"><i class="fa-solid fa-lock"></i> Must be exactly 11 digits without hyphens or spaces.</div>
-                                    </div>
-                                </div>
-
-                                <!-- Type 2: 11-Digit BVN -->
-                                <div class="dynamic-set" id="set-bvn">
-                                    <div class="field">
-                                        <label for="inputBvn">Bank Verification Number (BVN) *</label>
-                                        <input type="text" id="inputBvn" inputmode="numeric" maxlength="11" placeholder="Enter full 11-digit BVN (e.g. 22233344455)">
-                                        <div class="field-hint"><i class="fa-solid fa-shield"></i> Instant financial verification match directly from central NIBSS records.</div>
-                                    </div>
-                                </div>
-
-                                <!-- Type 3: Phone Lookup / Retrieval -->
-                                <div class="dynamic-set" id="set-phone">
-                                    <div class="field-row">
-                                        <div class="field">
-                                            <label for="inputPhoneLookup">Registered Phone Number *</label>
-                                            <input type="tel" id="inputPhoneLookup" inputmode="tel" maxlength="14" placeholder="e.g. 08012345678">
-                                            <div class="field-hint">The phone number registered during your enrolment.</div>
-                                        </div>
-                                        <div class="field">
-                                            <label for="inputNetwork">Network Provider</label>
-                                            <select id="inputNetwork">
-                                                <option value="MTN">MTN Nigeria</option>
-                                                <option value="Airtel">Airtel Nigeria</option>
-                                                <option value="Glo">Globacom (Glo)</option>
-                                                <option value="9mobile">9mobile</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Type 4: IPE Clearance (Tracking ID) -->
-                                <div class="dynamic-set" id="set-tracking_id">
-                                    <div class="field">
-                                        <label for="inputTrackingId">Enrolment Tracking ID (15 Characters) *</label>
-                                        <input type="text" id="inputTrackingId" maxlength="20" placeholder="e.g. 100000012345678 or 20240901ABCD123">
-                                        <div class="field-hint">Found on the small slip given at the NIMC enrolment center when your NIN got stuck in processing.</div>
-                                    </div>
-                                    <div class="field-row">
-                                        <div class="field">
-                                            <label for="inputCenter">Enrolment Center / State *</label>
-                                            <input type="text" id="inputCenter" placeholder="e.g. Kano Central NIMC / Nassarawa LGA">
-                                        </div>
-                                        <div class="field">
-                                            <label for="inputEnrolYear">Approx. Date / Year</label>
-                                            <input type="text" id="inputEnrolYear" placeholder="e.g. August 2024">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Type 5: Demographics Search -->
-                                <div class="dynamic-set" id="set-demographics">
-                                    <div class="field">
-                                        <label for="inputDemoName">Full Legal Name (Surname First) *</label>
-                                        <input type="text" id="inputDemoName" placeholder="e.g. MAHMOUD ABUBAKAR BELLO">
-                                    </div>
-                                    <div class="field-row">
-                                        <div class="field">
-                                            <label for="inputDemoDob">Date of Birth *</label>
-                                            <input type="date" id="inputDemoDob">
-                                        </div>
-                                        <div class="field">
-                                            <label for="inputDemoGender">Gender</label>
-                                            <select id="inputDemoGender">
-                                                <option value="Male">Male</option>
-                                                <option value="Female">Female</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="field-row">
-                                        <div class="field">
-                                            <label for="inputDemoState">State of Origin *</label>
-                                            <input type="text" id="inputDemoState" placeholder="e.g. Kano State">
-                                        </div>
-                                        <div class="field">
-                                            <label for="inputDemoLga">Local Government Area *</label>
-                                            <input type="text" id="inputDemoLga" placeholder="e.g. Nassarawa LGA">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Type 6: CAC Corporate Services -->
-                                <div class="dynamic-set" id="set-cac">
-                                    <div class="field">
-                                        <label for="inputCacName1">Proposed Business / Company Name (Option 1) *</label>
-                                        <input type="text" id="inputCacName1" placeholder="e.g. MAI GORO VENTURES">
-                                    </div>
-                                    <div class="field">
-                                        <label for="inputCacName2">Alternative Name (Option 2) *</label>
-                                        <input type="text" id="inputCacName2" placeholder="e.g. MAI GORO DIGITAL INTEGRATED">
-                                    </div>
-                                    <div class="field">
-                                        <label for="inputCacNature">Nature of Business / Objective *</label>
-                                        <input type="text" id="inputCacNature" placeholder="e.g. General Merchandise, ICT, Printing & Digital Services">
-                                    </div>
-                                </div>
-
-                                <!-- Type 7: JAMB Exam Profile Code & PIN -->
-                                <div class="dynamic-set" id="set-jamb">
-                                    <div class="field-row">
-                                        <div class="field">
-                                            <label for="inputJambProfile">10-Digit JAMB Profile Code *</label>
-                                            <input type="text" id="inputJambProfile" maxlength="12" placeholder="e.g. 1234567890">
-                                        </div>
-                                        <div class="field">
-                                            <label for="inputJambEmail">Candidate Email Address *</label>
-                                            <input type="email" id="inputJambEmail" placeholder="candidate@gmail.com">
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <!-- Customer Contact Details -->
-                            <div class="field-row" style="margin-top:14px;">
-                                <div class="field">
-                                    <label for="custName">Your Full Name *</label>
-                                    <input type="text" id="custName" required maxlength="120" placeholder="e.g. Ibrahim Aliyu">
-                                </div>
-                                <div class="field">
-                                    <label for="custPhone">WhatsApp / Phone Number *</label>
-                                    <input type="tel" id="custPhone" required maxlength="20" placeholder="e.g. 08144372466">
-                                </div>
-                            </div>
-
-                            <!-- Live Price Display -->
-                            <div class="total-box">
-                                <div>
-                                    <span class="total-title">Total Service Fee</span>
-                                    <div style="font-size:12px;color:var(--text-muted);" id="selectedServiceName">NIN Standard Slip</div>
-                                </div>
-                                <div class="total-val" id="priceDisplay">₦400</div>
-                            </div>
-
-                            <!-- Bank Transfer Proof -->
-                            <div class="field">
-                                <label for="transferRef">Bank Transfer Reference / Session ID *</label>
-                                <input type="text" id="transferRef" required maxlength="50" placeholder="e.g. 1000049283921 / TRF-8392X">
-                                <div class="field-hint">Copy the 10-to-30 digit Transaction Ref / Session ID from your mobile banking receipt.</div>
-                            </div>
-
-                            <div class="field">
-                                <label for="custNote">Additional Instructions / Note (Optional)</label>
-                                <textarea id="custNote" rows="2" placeholder="Any specific details you want our verification desk to take note of…"></textarea>
-                            </div>
-
-                            <button type="submit" class="submit-btn" id="submitBtn">
-                                <i class="fa-solid fa-shield-check"></i> Submit Verification Request
-                            </button>
-
-                            <div class="notice error" id="orderNotice" role="alert" aria-live="polite"></div>
-                        </form>
-                    </section>
-                </div>
-
-                <!-- Right Column: Payment Details & Success Confirmation -->
-                <aside>
-                    <!-- Bank Account Details Card -->
-                    <section class="verifier-card" id="paymentDetailsCard">
-                        <h2>
-                            <span>Payment Details</span>
-                            <i class="fa-solid fa-building-columns" style="color:var(--brand);font-size:17px;"></i>
-                        </h2>
-                        <p class="hint">Make a bank transfer of <b id="payAmountInline" style="color:var(--brand);">₦400</b> to our verified settlement account:</p>
-
-                        <div class="pay-box">
-                            <div class="pay-line">
-                                <span class="k">Bank Name</span>
-                                <span class="v" id="bankName">Opay / GTBank</span>
-                            </div>
-                            <div class="pay-line">
-                                <span class="k">Account Number</span>
-                                <span class="v" id="bankNumber">0000000000</span>
-                                <button type="button" class="copy-btn" id="copyAcct"><i class="fa-regular fa-copy"></i> Copy</button>
-                            </div>
-                            <div class="pay-line">
-                                <span class="k">Account Name</span>
-                                <span class="v" id="bankHolder">MAI GORO E-DIGITAL SOLUTIONS</span>
-                            </div>
-                            <div class="pay-line">
-                                <span class="k">Amount to Send</span>
-                                <span class="v amount" id="amountLine">₦400</span>
-                                <button type="button" class="copy-btn" id="copyAmount"><i class="fa-regular fa-copy"></i> Copy</button>
-                            </div>
-                        </div>
-
-                        <div style="font-size:12px;color:var(--text-muted);line-height:1.6;margin-top:12px;">
-                            <i class="fa-solid fa-circle-check" style="color:#059669;margin-right:5px;"></i>
-                            <b>Automated &amp; Fast Desk:</b> Your request is picked up within minutes of payment confirmation (10:00 AM – 10:00 PM Daily).
-                        </div>
-                    </section>
-
-                    <!-- Request Submitted Success View -->
-                    <section class="verifier-card" id="successView">
-                        <h2>
-                            <span>Request Received!</span>
-                            <i class="fa-solid fa-circle-check" style="color:#059669;"></i>
-                        </h2>
-                        <div class="success-code" id="successRef">VR-XXXXXX</div>
-                        <div><span class="status-chip"><i class="fa-solid fa-hourglass-half"></i> Processing Verification</span></div>
-                        <p class="hint" id="successSummary"></p>
-                        <p class="hint" style="margin-top:10px;">
-                            <i class="fa-brands fa-whatsapp" style="color:#25d366;font-size:15px;"></i>
-                            Send your transfer receipt on WhatsApp to expedite processing.
-                        </p>
-                        <div class="success-actions">
-                            <a class="btn-wa" id="waConfirm" target="_blank" rel="noreferrer">
-                                <i class="fa-brands fa-whatsapp"></i> Send Receipt via WhatsApp
-                            </a>
-                            <a class="btn-portal" href="portal.html#verifications">
-                                <i class="fa-solid fa-list-check"></i> View in My Portal
-                            </a>
-                        </div>
-                    </section>
-
-                    <!-- How It Works 4-Step Card -->
-                    <section class="verifier-card">
-                        <h2>How It Works</h2>
-                        <div style="display:flex;flex-direction:column;gap:14px;margin-top:12px;">
-                            <div style="display:flex;gap:12px;align-items:flex-start;">
-                                <div class="feat-num">1</div>
-                                <div>
-                                    <b style="font-size:13.5px;display:block;color:var(--text);">Select Service</b>
-                                    <span style="font-size:12px;color:var(--text-muted);">Choose NIN slip, BVN retrieval, IPE clearance, or CAC filing.</span>
-                                </div>
-                            </div>
-                            <div style="display:flex;gap:12px;align-items:flex-start;">
-                                <div class="feat-num">2</div>
-                                <div>
-                                    <b style="font-size:13.5px;display:block;color:var(--text);">Enter Record Info</b>
-                                    <span style="font-size:12px;color:var(--text-muted);">Provide your 11-digit NIN/BVN, tracking ID, or company details.</span>
-                                </div>
-                            </div>
-                            <div style="display:flex;gap:12px;align-items:flex-start;">
-                                <div class="feat-num">3</div>
-                                <div>
-                                    <b style="font-size:13.5px;display:block;color:var(--text);">Complete Payment</b>
-                                    <span style="font-size:12px;color:var(--text-muted);">Transfer the service fee and input your bank transaction reference.</span>
-                                </div>
-                            </div>
-                            <div style="display:flex;gap:12px;align-items:flex-start;">
-                                <div class="feat-num">4</div>
-                                <div>
-                                    <b style="font-size:13.5px;display:block;color:var(--text);">Instant Delivery</b>
-                                    <span style="font-size:12px;color:var(--text-muted);">View, print, or download your verified result directly in your portal.</span>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- NDPR & Privacy Guarantee -->
-                    <div class="ndpr-banner">
-                        <i class="fa-solid fa-shield-halved ndpr-icon"></i>
-                        <div class="ndpr-text">
-                            <h4>NDPR &amp; Data Privacy Compliant</h4>
-                            <p>We uphold strict data security standards. Customer verification requests are end-to-end encrypted and never disclosed to unauthorized parties.</p>
-                        </div>
-                    </div>
-                </aside>
-
-            </div>
-
-        </main>
-
-        <!-- Footer -->
-        <footer class="site-footer">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <img src="img/logo.webp" alt="Mai Goro logo" class="footer-logo">
-                    <p>Helping students, businesses and individuals with digital skills, professional design, examination utilities, and trusted verification services.</p>
-                </div>
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <a href="index.html">Home</a>
-                    <a href="about.html">About Us</a>
-                    <a href="services.html">Our Services</a>
-                    <a href="buy-pins.html">Exam Tokens &amp; PINs</a>
-                    <a href="portal.html">Customer Portal</a>
-                </div>
-                <div class="footer-column">
-                    <h3>Contact &amp; Desk</h3>
-                    <a href="tel:+2348144372466">08144372466</a>
-                    <a href="tel:+2348065493687">08065493687</a>
-                    <a href="mailto:maigoroedigitalsolution@gmail.com">maigoroedigitalsolution@gmail.com</a>
-                    <span>Opp. Babba Milk, Nassarawa, Kano</span>
-                </div>
-                <div class="footer-column">
-                    <h3>Hours &amp; Portal</h3>
-                    <span>Mon - Sat</span>
-                    <span>10:00 AM - 10:00 PM</span>
-                    <a href="https://wa.me/2349067997551" target="_blank" rel="noreferrer">WhatsApp Support Desk</a>
-                    <a href="mai-goro-admin-panel/admin/login.html">Admin Panel</a>
-                </div>
-            </div>
-            <div class="footer-bottom">&copy; 2026 MAI GORO e-DIGITAL SOLUTIONS. All rights reserved.</div>
-        </footer>
-
+            <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><i class="fa-solid fa-moon"></i></button>
+            <button class="burger" id="burger" type="button" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+        </header>
+    </div>
+    <div class="mobile-panel" id="mobilePanel" aria-label="Mobile navigation">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About Us</a>
+        <a href="services.html" class="nav-link">Our Services</a>
+        <a href="contact.html" class="nav-link">Contact Us</a>
+        <a href="contact.html" class="nav-cta">Get started</a>
+        <a href="login.html" class="nav-auth" aria-label="Login or register"><i class="fa-solid fa-user"></i> Login / Register</a>
     </div>
 
-    <!-- Scripts -->
-    <script src="script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/shop-config.js"></script>
-    <script src="js/slider-config.js"></script>
+    <!-- Main Content -->
+    <main class="verify-main">
 
-    <script>
-        /* ═══════════════════════════════════════════════════════════
-           COMPREHENSIVE STANDARD VERIFICATION SERVICES CATALOG
-           Matches UnifyVerifier, Dotaverify & 9jaTrust benchmarks
-           ═══════════════════════════════════════════════════════════ */
-        const DEFAULT_SERVICES = [
-            // NIN Suite
-            {
-                id: 'nin_standard_slip',
-                code: 'nin_standard_slip',
-                category: 'nin',
-                name: 'NIN Standard Slip (PDF)',
-                description: 'Instant NIMC standard identity slip with official QR code, photo box, and full demographic record.',
-                badge: 'INSTANT SLIP',
-                field_kind: 'nin',
-                price: 400,
-                turnaround: '⚡ Instant (1 - 5 Mins)'
-            },
-            {
-                id: 'nin_premium_slip',
-                code: 'nin_premium_slip',
-                category: 'nin',
-                name: 'NIN Premium Slip (Card Style)',
-                description: 'High-resolution full color card-format slip with holographic design, ready for PVC card printing.',
-                badge: 'PREMIUM CARD',
-                field_kind: 'nin',
-                price: 600,
-                turnaround: '⚡ Instant (1 - 5 Mins)'
-            },
-            {
-                id: 'nin_regular_slip',
-                code: 'nin_regular_slip',
-                category: 'nin',
-                name: 'NIN Regular Slip',
-                description: 'Official basic black & white NIN verification slip for standard office and bank use.',
-                badge: 'INSTANT SLIP',
-                field_kind: 'nin',
-                price: 300,
-                turnaround: '⚡ Instant (1 - 5 Mins)'
-            },
-            {
-                id: 'nin_by_phone',
-                code: 'nin_by_phone',
-                category: 'nin',
-                name: 'NIN Search by Phone Number',
-                description: 'Retrieve registered NIN details and identity profile using the linked phone number.',
-                badge: 'LOOKUP',
-                field_kind: 'phone',
-                price: 450,
-                turnaround: '⏱ 5 - 15 Mins'
-            },
-            {
-                id: 'nin_demographics',
-                code: 'nin_demographics',
-                category: 'nin',
-                name: 'NIN Search by Demographics',
-                description: 'Search and retrieve lost NIN using Full Legal Name, Date of Birth, and State of Origin.',
-                badge: 'ADVANCED LOOKUP',
-                field_kind: 'demographics',
-                price: 1200,
-                turnaround: '⏱ 15 - 30 Mins'
-            },
-            {
-                id: 'vnin_nibss',
-                code: 'vnin_nibss',
-                category: 'nin',
-                name: 'vNIN to NIBSS Integration',
-                description: 'Virtual NIN verification and validation via official NIBSS framework for banking and fintech.',
-                badge: 'NIBSS SYNC',
-                field_kind: 'nin',
-                price: 600,
-                turnaround: '⚡ Instant'
-            },
+        <!-- Hero Section -->
+        <section class="verifier-hero">
+            <div class="eyebrow">Identity Verification</div>
+            <h1>Verify with Confidence:<span class="gold"> NIN</span>, <span class="teal">BVN</span>, IPE & CAC</h1>
+            <p>Fast, reliable, and compliant identity verification suite for individuals, agents, and organizations. Instant official slip generation, stuck tracking ID resolution, corporate searches, and examination tokens.</p>
+        </section>
 
-            // BVN Suite
-            {
-                id: 'bvn_verification',
-                code: 'bvn_verification',
-                category: 'bvn',
-                name: 'BVN Verification & Match',
-                description: 'Instant financial verification confirming BVN owner name, linked phone number, and photo match.',
-                badge: 'VERIFIED MATCH',
-                field_kind: 'bvn',
-                price: 350,
-                turnaround: '⚡ Instant'
-            },
-            {
-                id: 'bvn_retrieval',
-                code: 'bvn_retrieval',
-                category: 'bvn',
-                name: 'BVN Retrieval by Phone / Bank',
-                description: 'Find and retrieve lost BVN record using registered phone number and bank account details.',
-                badge: 'RETRIEVAL',
-                field_kind: 'phone',
-                price: 1400,
-                turnaround: '⏱ 10 - 25 Mins'
-            },
-            {
-                id: 'bvn_modification',
-                code: 'bvn_modification',
-                category: 'bvn',
-                name: 'BVN Data Modification Support',
-                description: 'Guided assistance for correcting BVN Name spelling, Date of Birth, or Phone number records.',
-                badge: 'ASSISTANCE',
-                field_kind: 'bvn',
-                price: 2500,
-                turnaround: '⏱ 24 - 48 Hours'
-            },
+        <!-- Category Filter Tabs -->
+        <div class="cat-nav-wrap">
+            <div class="cat-nav" id="categoryNav">
+                <button type="button" class="cat-tab active" data-category="all"><i class="fa-solid fa-grid-2"></i> All Services <span class="count" id="countAll">16</span></button>
+                <button type="button" class="cat-tab" data-category="nin"><i class="fa-solid fa-id-badge"></i> NIN Services <span class="count" id="countNin">6</span></button>
+                <button type="button" class="cat-tab" data-category="bvn"><i class="fa-solid fa-building-columns"></i> BVN Services <span class="count" id="countBvn">3</span></button>
+                <button type="button" class="cat-tab" data-category="ipe"><i class="fa-solid fa-triangle-exclamation"></i> IPE Clearance <span class="count" id="countIpe">2</span></button>
+                <button type="button" class="cat-tab" data-category="cac"><i class="fa-solid fa-briefcase"></i> CAC Corporate <span class="count" id="countCac">3</span></button>
+                <button type="button" class="cat-tab" data-category="exam"><i class="fa-solid fa-graduation-cap"></i> Exam & Utilities <span class="count" id="countExam">2</span></button>
+            </div>
+        </div>
 
-            // IPE & Validation Suite
-            {
-                id: 'nin_ipe_clearance',
-                code: 'nin_ipe_clearance',
-                category: 'ipe',
-                name: 'NIN IPE Clearance (Tracking ID)',
-                description: 'Clear In-Processing Error (IPE) to force generate stuck NIN from enrollment tracking slips.',
-                badge: 'GOVT CLEARANCE',
-                field_kind: 'tracking_id',
-                price: 4500,
-                turnaround: '⏱ 1 - 4 Hours'
-            },
-            {
-                id: 'nin_validation',
-                code: 'nin_validation',
-                category: 'ipe',
-                name: 'NIN Central Validation & Bank Link',
-                description: 'Re-validate NIN records with NIMC central database for banking, NYSC, and SIM unbarring.',
-                badge: 'VALIDATION',
-                field_kind: 'nin',
-                price: 800,
-                turnaround: '⏱ 15 - 45 Mins'
-            },
+        <!-- Service Cards -->
+        <div class="verifier-grid">
 
-            // CAC Corporate Services
-            {
-                id: 'cac_business_name',
-                code: 'cac_business_name',
-                category: 'cac',
-                name: 'CAC Business Name Registration',
-                description: 'Full business name reservation, document processing, and official CAC certificate with BN number.',
-                badge: 'CAC OFFICIAL',
-                field_kind: 'cac',
-                price: 18000,
-                turnaround: '⏱ 3 - 5 Days'
-            },
-            {
-                id: 'cac_company_ltd',
-                code: 'cac_company_ltd',
-                category: 'cac',
-                name: 'CAC Limited Company (LLC)',
-                description: 'Complete Incorporation of Limited Liability Company with Status Report, TIN, and Certified MEMART.',
-                badge: 'LLC CORPORATE',
-                field_kind: 'cac',
-                price: 45000,
-                turnaround: '⏱ 5 - 7 Days'
-            },
-            {
-                id: 'cac_status_report',
-                code: 'cac_status_report',
-                category: 'cac',
-                name: 'CAC Status Report & Search',
-                description: 'Official CAC status report, company search, and certified true copies of registered entities.',
-                badge: 'CAC REPORT',
-                field_kind: 'cac',
-                price: 3500,
-                turnaround: '⏱ 24 Hours'
-            },
+            <!-- Left Column: Service Selector & Dynamic Form -->
+            <div>
+                <!-- Step 1: Select Verification Service -->
+                <section class="verifier-card">
+                    <h2><span>1. Select Service</span><small style="font-size:12.5px;font-weight:500;color:var(--text-muted);" id="activeCategoryTitle">Showing all services</small></h2>
+                    <p class="hint">Choose the exact lookup, slip type, or clearance task you need completed.</p>
+                    <div class="services-grid" id="servicesGrid">
+                        <!-- Injected dynamically via script -->
+                    </div>
+                </section>
 
-            // Exam & Telecom Utilities
-            {
-                id: 'jamb_pin_profile',
-                code: 'jamb_pin_profile',
-                category: 'exam',
-                name: 'JAMB Profile Code & UTME PIN',
-                description: 'Instant generation of JAMB Profile Code and purchase of official UTME registration e-PIN.',
-                badge: 'OFFICIAL PIN',
-                field_kind: 'jamb',
-                price: 8500,
-                turnaround: '⚡ Instant'
-            },
-            {
-                id: 'puk_sim_retrieval',
-                code: 'puk_sim_retrieval',
-                category: 'exam',
-                name: 'SIM PUK Code Retrieval',
-                description: 'Fast recovery of blocked SIM PUK code across MTN, Airtel, Glo, and 9mobile networks.',
-                badge: 'SIM RECOVER',
-                field_kind: 'phone',
-                price: 500,
-                turnaround: '⏱ 5 - 15 Mins'
-            }
-        ];
+                <!-- Step 2: Dynamic Detail Form -->
+                <section class="verifier-card" id="formCard">
+                    <h2>2. Provide Details & Verify Instantly</h2>
+                    <p class="hint" id="formInstruction">Fill in the required details accurately. The amount will be deducted from your wallet instantly.</p>
 
-        /* Setup Payment UI from shop-config.js */
-        document.getElementById('bankName').textContent = BANK_DETAILS.bank;
-        document.getElementById('bankNumber').textContent = BANK_DETAILS.accountNumber;
-        document.getElementById('bankHolder').textContent = BANK_DETAILS.accountName;
+                    <form id="verifierForm">
 
-        document.getElementById('copyAcct').addEventListener('click', async () => {
-            try {
-                await navigator.clipboard.writeText(BANK_DETAILS.accountNumber);
-                const original = document.getElementById('copyAcct').innerHTML;
-                document.getElementById('copyAcct').innerHTML = '✓ Copied';
-                setTimeout(() => { document.getElementById('copyAcct').innerHTML = original; }, 1400);
-            } catch (e) {}
+                        <!-- Type 1: 11-Digit NIN -->
+                        <div class="dynamic-set" id="set-nin">
+                            <div class="field">
+                                <label for="inputNin">National Identification Number (NIN) *</label>
+                                <input type="text" id="inputNin" inputmode="numeric" maxlength="11" placeholder="Enter full 11-digit NIN (e.g. 12345678901)">
+                                <div class="field-hint"><i class="fa-solid fa-lock"></i> Must be exactly 11 digits without hyphens or spaces.</div>
+                            </div>
+                        </div>
+
+                        <!-- Type 2: 11-Digit BVN -->
+                        <div class="dynamic-set" id="set-bvn">
+                            <div class="field">
+                                <label for="inputBvn">Bank Verification Number (BVN) *</label>
+                                <input type="text" id="inputBvn" inputmode="numeric" maxlength="11" placeholder="Enter full 11-digit BVN (e.g. 22233344455)">
+                                <div class="field-hint"><i class="fa-solid fa-shield"></i> Instant financial verification match directly from central NIBSS records.</div>
+                            </div>
+                        </div>
+
+                        <!-- Type 3: Phone Lookup / Retrieval -->
+                        <div class="dynamic-set" id="set-phone">
+                            <div class="field-row">
+                                <div class="field">
+                                    <label for="inputPhoneLookup">Registered Phone Number *</label>
+                                    <input type="tel" id="inputPhoneLookup" inputmode="tel" maxlength="14" placeholder="e.g. 08012345678">
+                                    <div class="field-hint">The phone number registered during your enrolment.</div>
+                                </div>
+                                <div class="field">
+                                    <label for="inputNetwork">Network Provider</label>
+                                    <select id="inputNetwork">
+                                        <option value="MTN">MTN Nigeria</option>
+                                        <option value="Airtel">Airtel Nigeria</option>
+                                        <option value="Glo">Globacom (Glo)</option>
+                                        <option value="9mobile">9mobile</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Type 4: IPE Clearance (Tracking ID) -->
+                        <div class="dynamic-set" id="set-tracking_id">
+                            <div class="field">
+                                <label for="inputTrackingId">Enrolment Tracking ID (15 Characters) *</label>
+                                <input type="text" id="inputTrackingId" maxlength="20" placeholder="e.g. 100000012345678 or 20240901ABCD123">
+                                <div class="field-hint">Found on the small slip given at the NIMC enrolment center when your NIN got stuck in processing.</div>
+                            </div>
+                            <div class="field-row">
+                                <div class="field">
+                                    <label for="inputCenter">Enrolment Center / State *</label>
+                                    <input type="text" id="inputCenter" placeholder="e.g. Kano Central NIMC / Nassarawa LGA">
+                                </div>
+                                <div class="field">
+                                    <label for="inputEnrolYear">Approx. Date / Year</label>
+                                    <input type="text" id="inputEnrolYear" placeholder="e.g. August 2024">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Type 5: Demographics Search -->
+                        <div class="dynamic-set" id="set-demographics">
+                            <div class="field">
+                                <label for="inputDemoName">Full Legal Name (Surname First) *</label>
+                                <input type="text" id="inputDemoName" placeholder="e.g. MAHMOUD ABUBAKAR BELLO">
+                            </div>
+                            <div class="field-row">
+                                <div class="field">
+                                    <label for="inputDemoDob">Date of Birth *</label>
+                                    <input type="date" id="inputDemoDob">
+                                </div>
+                                <div class="field">
+                                    <label for="inputDemoGender">Gender</label>
+                                    <select id="inputDemoGender">
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="field-row">
+                                <div class="field">
+                                    <label for="inputDemoState">State of Origin *</label>
+                                    <input type="text" id="inputDemoState" placeholder="e.g. Kano State">
+                                </div>
+                                <div class="field">
+                                    <label for="inputDemoLga">Local Government Area *</label>
+                                    <input type="text" id="inputDemoLga" placeholder="e.g. Nassarawa LGA">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Type 6: CAC Corporate Services -->
+                        <div class="dynamic-set" id="set-cac">
+                            <div class="field">
+                                <label for="inputCacName1">Proposed Business / Company Name (Option 1) *</label>
+                                <input type="text" id="inputCacName1" placeholder="e.g. MAI GORO VENTURES">
+                            </div>
+                            <div class="field">
+                                <label for="inputCacName2">Alternative Name (Option 2) *</label>
+                                <input type="text" id="inputCacName2" placeholder="e.g. MAI GORO DIGITAL INTEGRATED">
+                            </div>
+                        </div>
+
+                        <!-- Type 7: JAMB Exam Profile Code & PIN -->
+                        <div class="dynamic-set" id="set-jamb">
+                            <div class="field-row">
+                                <div class="field">
+                                    <label for="inputJambProfile">10-Digit JAMB Profile Code *</label>
+                                    <input type="text" id="inputJambProfile" maxlength="12" placeholder="e.g. 1234567890">
+                                </div>
+                                <div class="field">
+                                    <label for="inputJambEmail">Candidate Email Address *</label>
+                                    <input type="email" id="inputJambEmail" placeholder="candidate@gmail.com">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Customer Contact Details -->
+                        <div class="field-row" style="margin-top:14px;">
+                            <div class="field">
+                                <label for="custName">Your Full Name *</label>
+                                <input type="text" id="custName" required maxlength="120" placeholder="e.g. Ibrahim Aliyu">
+                            </div>
+                            <div class="field">
+                                <label for="custPhone">WhatsApp / Phone Number *</label>
+                                <input type="tel" id="custPhone" required maxlength="20" placeholder="e.g. 08144372466">
+                            </div>
+                        </div>
+
+                        <!-- Live Price Display -->
+                        <div class="total-box">
+                            <div>
+                                <span class="total-title">Service Fee (from wallet)</span>
+                                <div style="font-size:12px;color:var(--text-muted);" id="selectedServiceName">NIN Standard Slip</div>
+                            </div>
+                            <div class="total-val" id="priceDisplay">₦400</div>
+                        </div>
+
+                        <!-- Wallet Balance Notice -->
+                        <div class="wallet-notice" id="walletNotice" style="display:none;background:rgba(227,167,47,0.1);border:1px solid rgba(227,167,47,0.3);border-radius:12px;padding:12px 16px;margin:16px 0;font-size:13px;color:#8a620d;">
+                            <i class="fa-solid fa-triangle-exclamation"></i> <span id="walletNoticeText"></span>
+                        </div>
+
+                        <button type="submit" class="submit-btn" id="submitBtn">
+                            <i class="fa-solid fa-shield-check"></i> Verify Now (Instant)
+                        </button>
+                        <div class="notice error" id="orderNotice" role="alert" aria-live="polite"></div>
+                    </form>
+                </section>
+            </div>
+
+            <!-- Right Column: Wallet Balance & Success Confirmation -->
+            <aside>
+                <!-- Wallet Balance Card -->
+                <section class="verifier-card" id="walletBalanceCard">
+                    <h2><span>Wallet Balance</span><i class="fa-solid fa-wallet" style="color:var(--teal);font-size:17px;"></i></h2>
+                    <div style="text-align:center;padding:20px 0;">
+                        <div style="font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;color:var(--text);" id="walletBalanceDisplay">₦0.00</div>
+                        <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Available Balance</div>
+                        <a href="fund-wallet.html" class="submit-btn" style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;justify-content:center;">
+                            <i class="fa-solid fa-plus"></i> Add Funds
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Success Confirmation -->
+                <section class="verifier-card" id="successView" style="display:none">
+                    <h2>Verification Complete!</h2>
+                    <div class="success-code" id="successRef">VR-XXXXXX</div>
+                    <p><span class="status-chip"><i class="fa-solid fa-check-circle"></i> Completed</span></p>
+                    <p class="hint" id="successSummary"></p>
+                    <div class="success-actions">
+                        <a class="btn-wa" id="waConfirm" target="_blank" rel="noreferrer"><i class="fa-brands fa-whatsapp"></i> Share Result</a>
+                        <a class="btn-portal" href="portal.html#orders"><i class="fa-solid fa-list-check"></i> View History</a>
+                    </div>
+                </section>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-brand"><img src="img/logo.webp" alt="Mai Goro logo" class="footer-logo"><p>Helping students, businesses and individuals with digital skills, professional design and reliable support.</p></div>
+            <div class="footer-column"><h3>Quick Links</h3><a href="index.html">Home</a><a href="about.html">About Us</a><a href="services.html">Our Services</a><a href="contact.html">Contact Us</a><a href="login.html">Customer Login</a></div>
+            <div class="footer-column"><h3>Contact</h3><a href="tel:+2348144372466">08144372466</a><a href="tel:+2348065493687">08065493687</a><a href="mailto:maigoroedigitalsolution@gmail.com">maigoroedigitalsolution@gmail.com</a><span>Opp. Babba Milk, Nassarawa, Kano</span></div>
+            <div class="footer-column"><h3>Hours</h3><span>Mon - Sat</span><span>10:00 AM - 10:00 PM</span><a href="https://wa.me/2349067997551" target="_blank" rel="noreferrer">WhatsApp Support</a><a href="mai-goro-admin-panel/admin/login.html">Admin Login</a></div>
+        </div>
+        <div class="footer-bottom">&copy; 2026 MAI GORO e-DIGITAL SOLUTIONS. All rights reserved.</div>
+    </footer>
+
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/slider-config.js"></script>
+<script>
+/* ── Require a customer session before showing verification services ── */
+(async function requireCustomerSession() {
+    try {
+        const { data, error } = await sb.auth.getSession();
+        if (!error && data?.session) {
+            document.documentElement.classList.remove('verify-auth-pending');
+            return;
+        }
+    } catch (error) {
+        // Treat an unavailable auth check as signed out.
+    }
+
+    const category = new URLSearchParams(window.location.search).get('cat')?.toLowerCase();
+    const allowedCategories = new Set(['nin', 'bvn', 'ipe', 'cac', 'exam']);
+    const returnPage = allowedCategories.has(category) ? `verify.html?cat=${category}` : 'verify.html';
+    const loginUrl = new URL('login.html', window.location.href);
+    loginUrl.searchParams.set('next', returnPage);
+    window.location.replace(loginUrl.toString());
+})();
+
+/* ── Service Catalog & Pricing ── */
+const SERVICE_CATALOG = {
+    nin:       { name: 'NIN Verification',       price: 300,  api: '/v1/nin/verify',       fields: ['inputNin'],               category: 'nin' },
+    'nin-slip':{ name: 'NIN Standard Slip',      price: 400,  api: '/v1/nin/slip',         fields: ['inputNin'],               category: 'nin' },
+    'nin-premium':{name: 'NIN Premium Slip',     price: 800,  api: '/v1/nin/premium-slip', fields: ['inputNin'],               category: 'nin' },
+    'nin-mod': { name: 'NIN Modification',       price: 5000, api: '/v1/nin/modify',       fields: ['inputNin'],               category: 'nin' },
+    'nin-val': { name: 'NIN Validation',         price: 200,  api: '/v1/nin/validate',     fields: ['inputNin'],               category: 'nin' },
+    'nin-demo':{ name: 'Demographic Search',     price: 300,  api: '/v1/nin/demographic',  fields: ['inputDemoName','inputDemoDob','inputDemoGender','inputDemoState','inputDemoLga'], category: 'nin' },
+    bvn:       { name: 'BVN Verification',       price: 300,  api: '/v1/bvn/verify',       fields: ['inputBvn'],               category: 'bvn' },
+    'bvn-slip':{ name: 'BVN Premium Slip',       price: 500,  api: '/v1/bvn/premium-slip', fields: ['inputBvn'],               category: 'bvn' },
+    'bvn-retr':{ name: 'BVN Retrieval',          price: 1000, api: '/v1/bvn/retrieve',     fields: ['inputPhoneLookup','inputNetwork'], category: 'bvn' },
+    'bvn-mod': { name: 'BVN Modification',       price: 8000, api: '/v1/bvn/modify',       fields: ['inputBvn'],               category: 'bvn' },
+    ipe:       { name: 'IPE Clearance',          price: 1000, api: '/v1/ipe/clear',        fields: ['inputTrackingId','inputCenter','inputEnrolYear'], category: 'ipe' },
+    'ipe-mod': { name: 'MOD IPE Clearance',      price: 1500, api: '/v1/ipe/mod',          fields: ['inputTrackingId','inputCenter','inputEnrolYear'], category: 'ipe' },
+    cac:       { name: 'CAC Business Name Reg',  price: 15000,api: '/v1/cac/register',     fields: ['inputCacName1','inputCacName2'], category: 'cac' },
+    'cac-rebrand':{name: 'CAC Rebranding',       price: 20000,api: '/v1/cac/rebrand',      fields: ['inputCacName1','inputCacName2'], category: 'cac' },
+    'cac-scuml':{name: 'SCUML Application',      price: 30000,api: '/v1/cac/scuml',        fields: ['inputCacName1','inputCacName2'], category: 'cac' },
+    jamb:      { name: 'JAMB Profile & PIN',      price: 1000, api: '/v1/jamb/profile',     fields: ['inputJambProfile','inputJambEmail'], category: 'exam' },
+    'pin-neco':{ name: 'NECO Token',             price: 3500, api: '/v1/pin/neco',         fields: ['inputJambProfile'], category: 'exam' },
+    'pin-waec':{ name: 'WAEC Result Checker',    price: 5500, api: '/v1/pin/waec',         fields: ['inputJambProfile'], category: 'exam' },
+    'pin-nabteb':{name: 'NABTEB Token',          price: 2500, api: '/v1/pin/nabteb',       fields: ['inputJambProfile'], category: 'exam' },
+    'pin-nbais':{name: 'NBAIS Token',            price: 2500, api: '/v1/pin/nbais',        fields: ['inputJambProfile'], category: 'exam' }
+};
+
+/* ── Inject Service Cards ── */
+(function injectServiceCards() {
+    const grid = document.getElementById('servicesGrid');
+    if (!grid) return;
+    grid.innerHTML = Object.entries(SERVICE_CATALOG).map(([key, catalog]) => `
+        <button type="button" class="service-card" data-service="${key}" aria-pressed="false">
+            <span class="v-badge ${catalog.category}">${catalog.category.toUpperCase()}</span>
+            <span class="s-name">${catalog.name}</span>
+            <span class="s-price">₦${catalog.price.toLocaleString('en-NG')}</span>
+        </button>
+    `).join('');
+})();
+
+/* ── Service Card Selection ── */
+document.querySelectorAll('.service-card').forEach(card => {
+    card.addEventListener('click', () => {
+        document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        const svc = card.dataset.service;
+        document.querySelectorAll('.dynamic-set').forEach(s => s.classList.remove('active'));
+        if(svc === 'nin') document.getElementById('set-nin').classList.add('active');
+        if(svc === 'bvn') document.getElementById('set-bvn').classList.add('active');
+        if(svc === 'nin-mod') document.getElementById('set-nin').classList.add('active');
+        if(svc === 'nin-val') document.getElementById('set-nin').classList.add('active');
+        if(svc === 'nin-slip') document.getElementById('set-nin').classList.add('active');
+        if(svc === 'nin-premium') document.getElementById('set-nin').classList.add('active');
+        if(svc === 'nin-demo') document.getElementById('set-demographics').classList.add('active');
+        if(svc === 'bvn-retr') document.getElementById('set-phone').classList.add('active');
+        if(svc === 'bvn-mod') document.getElementById('set-bvn').classList.add('active');
+        if(svc === 'bvn-slip') document.getElementById('set-bvn').classList.add('active');
+        if(svc === 'ipe') document.getElementById('set-tracking_id').classList.add('active');
+        if(svc === 'ipe-mod') document.getElementById('set-tracking_id').classList.add('active');
+        if(svc === 'jamb') document.getElementById('set-jamb').classList.add('active');
+        if(svc === 'cac') document.getElementById('set-cac').classList.add('active');
+        if(svc === 'cac-rebrand') document.getElementById('set-cac').classList.add('active');
+        if(svc === 'cac-scuml') document.getElementById('set-cac').classList.add('active');
+        if(svc === 'pin-neco') document.getElementById('set-jamb').classList.add('active');
+        if(svc === 'pin-waec') document.getElementById('set-jamb').classList.add('active');
+        if(svc === 'pin-nabteb') document.getElementById('set-jamb').classList.add('active');
+        if(svc === 'pin-nbais') document.getElementById('set-jamb').classList.add('active');
+
+        // Update price display
+        const catalog = SERVICE_CATALOG[svc];
+        if (catalog) {
+            document.getElementById('selectedServiceName').textContent = catalog.name;
+            document.getElementById('priceDisplay').textContent = '₦' + catalog.price.toLocaleString('en-NG');
+            const payAmountInline = document.getElementById('payAmountInline');
+            if (payAmountInline) payAmountInline.textContent = '₦' + catalog.price.toLocaleString('en-NG');
+        }
+    });
+});
+
+// Initialize with NIN selected
+document.querySelector('.service-card[data-service="nin"]').click();
+
+/* ── Wallet Balance ── */
+async function loadWalletBalance() {
+    const { data, error } = await sb.auth.getSession();
+    if (error || !data.session) return;
+    const { data: wallet } = await sb.from('wallets').select('balance').eq('user_id', data.session.user.id).single();
+    if (wallet) {
+        document.getElementById('walletBalanceDisplay').textContent = '₦' + Number(wallet.balance).toLocaleString('en-NG', {maximumFractionDigits: 2});
+    }
+}
+loadWalletBalance();
+
+/* ── Form Submission ── */
+document.getElementById('verifierForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const notice = document.getElementById('orderNotice');
+    const walletNotice = document.getElementById('walletNotice');
+    notice.style.display = 'none';
+    walletNotice.style.display = 'none';
+
+    if (!document.querySelector('.service-card.selected')) { notice.style.display='block'; notice.className='notice error'; notice.textContent='Select a service first.'; return; }
+
+    const svc = document.querySelector('.service-card.selected').dataset.service;
+    const catalog = SERVICE_CATALOG[svc];
+    if (!catalog) { notice.style.display='block'; notice.className='notice error'; notice.textContent='Invalid service.'; return; }
+
+    // Collect input params based on service
+    const inputParams = {};
+    catalog.fields.forEach(f => {
+        const el = document.getElementById(f);
+        if (el) inputParams[f] = el.value.trim();
+    });
+
+    // Validation
+    const requiredFields = catalog.fields.filter(f => document.getElementById(f)?.hasAttribute('required') || f === 'inputNin' || f === 'inputBvn' || f === 'inputPhoneLookup' || f === 'inputTrackingId' || f === 'inputDemoName' || f === 'inputCacName1' || f === 'inputJambProfile');
+    for (const f of requiredFields) {
+        const el = document.getElementById(f);
+        if (el && !el.value.trim()) {
+            notice.style.display = 'block';
+            notice.className = 'notice error';
+            notice.textContent = 'Please fill in all required fields.';
+            return;
+        }
+    }
+
+    // Specific validations
+    if (catalog.fields.includes('inputNin') && inputParams.inputNin && !/^\d{11}$/.test(inputParams.inputNin)) {
+        notice.style.display = 'block'; notice.className = 'notice error'; notice.textContent = 'NIN must be exactly 11 digits.'; return;
+    }
+    if (catalog.fields.includes('inputBvn') && inputParams.inputBvn && !/^\d{11}$/.test(inputParams.inputBvn)) {
+        notice.style.display = 'block'; notice.className = 'notice error'; notice.textContent = 'BVN must be exactly 11 digits.'; return;
+    }
+    if (catalog.fields.includes('inputPhoneLookup') && inputParams.inputPhoneLookup && !/^(\+?234|0)[789][01]\d{8}$/.test(inputParams.inputPhoneLookup.replace(/\s/g, ''))) {
+        notice.style.display = 'block'; notice.className = 'notice error'; notice.textContent = 'Enter a valid Nigerian phone number.'; return;
+    }
+
+    const custName = document.getElementById('custName').value.trim();
+    const custPhone = document.getElementById('custPhone').value.trim().replace(/\s|-/g, '');
+    if (!custName || !custPhone) { notice.style.display='block'; notice.className='notice error'; notice.textContent='Please enter your name and phone number.'; return; }
+
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = '.65';
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying…';
+
+    try {
+        // Call the charge_wallet function which handles: check balance, deduct, call API, record request
+        const { data, error } = await sb.rpc('charge_wallet', {
+            p_user_id: (await sb.auth.getSession()).data.session.user.id,
+            p_amount: catalog.price,
+            p_service_code: svc,
+            p_service_name: catalog.name,
+            p_input_params: inputParams,
+            p_api_response: {},  // will be filled by the function
+            p_result_summary: ''
         });
 
-        const servicesGrid  = document.getElementById('servicesGrid');
-        const categoryNav   = document.getElementById('categoryNav');
-        const form          = document.getElementById('verifierForm');
-        const submitBtn     = document.getElementById('submitBtn');
-        const noticeBox     = document.getElementById('orderNotice');
-        const slipPreviewBox= document.getElementById('slipPreviewBox');
-
-        let allServices = [...DEFAULT_SERVICES];
-        let currentCategory = 'all';
-        let selectedService = null;
-        let session = null;
-
-        const naira = (n) => '₦' + Number(n).toLocaleString('en-NG');
-
-        function showNotice(text) {
-            noticeBox.textContent = text;
-            noticeBox.style.display = 'block';
-            noticeBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        if (error) {
+            throw new Error(error.message || 'Transaction failed');
         }
 
-        /* Category Counts */
-        function updateCategoryCounts() {
-            document.getElementById('countAll').textContent = allServices.length;
-            document.getElementById('countNin').textContent = allServices.filter(s => s.category === 'nin').length;
-            document.getElementById('countBvn').textContent = allServices.filter(s => s.category === 'bvn').length;
-            document.getElementById('countIpe').textContent = allServices.filter(s => s.category === 'ipe').length;
-            document.getElementById('countCac').textContent = allServices.filter(s => s.category === 'cac').length;
-            document.getElementById('countExam').textContent = allServices.filter(s => s.category === 'exam').length;
-        }
+        // Get the result from the service_requests table
+        const { data: reqData } = await sb.from('service_requests').select('*').eq('id', data).single();
 
-        /* Render Service Cards */
-        function renderServices() {
-            const list = currentCategory === 'all'
-                ? allServices
-                : allServices.filter(s => s.category === currentCategory);
+        // Show success
+        document.getElementById('verifierForm').style.display = 'none';
+        document.getElementById('successView').style.display = 'block';
+        document.getElementById('successRef').textContent = reqData?.request_code || 'VR-' + Date.now().toString(36).toUpperCase().slice(-6);
+        document.getElementById('successSummary').innerHTML =
+            `<b>${catalog.name}</b> completed successfully.<br>` +
+            `Amount charged: <b>₦${catalog.price.toLocaleString('en-NG')}</b>` +
+            (reqData?.result_summary ? `<br>Result: ${reqData.result_summary}` : '');
 
-            if (!list.length) {
-                servicesGrid.innerHTML = '<p class="hint">No services found in this category.</p>';
-                return;
-            }
+        // Update wallet balance display
+        loadWalletBalance();
 
-            servicesGrid.innerHTML = list.map(s => {
-                const isSelected = selectedService && selectedService.id === s.id;
-                return `
-                    <div class="service-card ${isSelected ? 'selected' : ''}" data-id="${s.id}">
-                        <div class="service-top">
-                            <span class="cat-badge ${s.category}">${s.badge || s.category.toUpperCase()}</span>
-                            <span class="tick"><i class="fa-solid fa-check"></i></span>
-                        </div>
-                        <div class="s-name">${s.name}</div>
-                        <div class="s-desc">${s.description}</div>
-                        <div class="service-bottom">
-                            <div class="s-price">${naira(s.price)}</div>
-                            <div class="s-turn">${s.turnaround || '⚡ Fast'}</div>
-                        </div>
-                    </div>`;
-            }).join('');
+        const waText = encodeURIComponent(
+            `Hello! I just completed a ${catalog.name} (ref ${document.getElementById('successRef').textContent}) via Mai Goro. Amount: ₦${catalog.price.toLocaleString('en-NG')}.`
+        );
+        document.getElementById('waConfirm').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${waText}`;
 
-            // Add click listeners to cards
-            servicesGrid.querySelectorAll('.service-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    const sid = card.dataset.id;
-                    selectService(sid);
+        document.getElementById('successView').scrollIntoView({ behavior: 'smooth' });
+
+    } catch (err) {
+        let msg = err.message || 'Verification failed. Please try again.';
+        if (msg.includes('Insufficient wallet balance')) {
+            walletNotice.style.display = 'block';
+            document.getElementById('walletNoticeText').textContent = 'Insufficient wallet balance. Please fund your wallet first.';
+        } else if (msg.includes('function') || msg.includes('charge_wallet') || msg.includes('does not exist')) {
+            // Fallback to direct verify_requests table submission
+            try {
+                const session = (await sb.auth.getSession()).data.session;
+                const reqCode = 'VR-' + Date.now().toString(36).toUpperCase().slice(-6);
+                const lookup = inputParams.inputNin || inputParams.inputBvn || inputParams.inputPhoneLookup || inputParams.inputTrackingId || Object.values(inputParams)[0] || '';
+                await sb.from('verify_requests').insert({
+                    request_code: reqCode,
+                    user_id: session.user.id,
+                    user_email: session.user.email,
+                    service_name: catalog.name,
+                    category: catalog.category || 'nin',
+                    lookup_value: lookup,
+                    extra_details: JSON.stringify(inputParams),
+                    price: catalog.price,
+                    amount: catalog.price,
+                    customer_name: custName,
+                    customer_phone: custPhone,
+                    status: 'pending'
                 });
-            });
-        }
-
-        /* Select a Service and update dynamic inputs */
-        function selectService(id) {
-            selectedService = allServices.find(s => s.id === id) || allServices[0];
-
-            servicesGrid.querySelectorAll('.service-card').forEach(c => {
-                const match = c.dataset.id === selectedService.id;
-                c.classList.toggle('selected', match);
-            });
-
-            // Update Price Displays
-            document.getElementById('priceDisplay').textContent = naira(selectedService.price);
-            document.getElementById('amountLine').textContent = naira(selectedService.price);
-            document.getElementById('payAmountInline').textContent = naira(selectedService.price);
-            document.getElementById('selectedServiceName').textContent = selectedService.name;
-
-            // Activate corresponding dynamic field set
-            document.querySelectorAll('.dynamic-set').forEach(set => set.classList.remove('active'));
-            const targetSet = document.getElementById('set-' + selectedService.field_kind) || document.getElementById('set-nin');
-            if (targetSet) targetSet.classList.add('active');
-
-            // Interactive Slip Preview Logic
-            if (selectedService.code === 'nin_premium_slip') {
-                slipPreviewBox.style.display = 'block';
-                document.getElementById('slipPreviewBadge').textContent = 'High-Res Holographic PVC Card Format';
-                document.getElementById('slipMock').className = 'slip-card-mock premium';
-            } else if (selectedService.code === 'nin_standard_slip' || selectedService.code === 'nin_regular_slip') {
-                slipPreviewBox.style.display = 'block';
-                document.getElementById('slipPreviewBadge').textContent = 'Official NIMC Standard Identity Slip (PDF)';
-                document.getElementById('slipMock').className = 'slip-card-mock';
-            } else {
-                slipPreviewBox.style.display = 'none';
+                document.getElementById('verifierForm').style.display = 'none';
+                document.getElementById('successView').style.display = 'block';
+                document.getElementById('successRef').textContent = reqCode;
+                document.getElementById('successSummary').innerHTML =
+                    `<b>${catalog.name}</b> received successfully.<br>` +
+                    `Amount: <b>₦${catalog.price.toLocaleString('en-NG')}</b><br>Our verification desk is processing your record.`;
+                document.getElementById('successView').scrollIntoView({ behavior: 'smooth' });
+                return;
+            } catch(fallbackErr) {
+                notice.style.display = 'block';
+                notice.className = 'notice error';
+                notice.textContent = fallbackErr.message || msg;
             }
-        }
-
-        /* Filter Tab Clicks */
-        categoryNav.addEventListener('click', (e) => {
-            const btn = e.target.closest('.cat-tab');
-            if (!btn) return;
-            categoryNav.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            currentCategory = btn.dataset.category;
-            const titles = {
-                all: 'Showing all services',
-                nin: 'NIN Identity & Slip Suite',
-                bvn: 'BVN Verification & Retrieval',
-                ipe: 'IPE Clearance & NIMC Validation',
-                cac: 'CAC Corporate & Business Registrations',
-                exam: 'Exam Profile Codes & SIM Recovery'
-            };
-            document.getElementById('activeCategoryTitle').textContent = titles[currentCategory] || 'Showing services';
-            renderServices();
-        });
-
-        /* Copy Amount */
-        document.getElementById('copyAmount').addEventListener('click', async () => {
-            if (!selectedService) return;
-            try {
-                await navigator.clipboard.writeText(String(selectedService.price));
-                const original = document.getElementById('copyAmount').innerHTML;
-                document.getElementById('copyAmount').innerHTML = '✓ Copied';
-                setTimeout(() => { document.getElementById('copyAmount').innerHTML = original; }, 1400);
-            } catch (e) {}
-        });
-
-        /* Session State Check */
-        if (typeof sb !== 'undefined') {
-            sb.auth.getSession().then(({ data }) => {
-                session = data.session;
-                if (!session) {
-                    document.getElementById('loginBanner').style.display = 'flex';
-                } else {
-                    const meta = session.user.user_metadata || {};
-                    const fullName = meta.full_name || (session.user.email || '').split('@')[0];
-                    if (fullName) document.getElementById('custName').value = fullName;
-                    if (meta.phone) document.getElementById('custPhone').value = meta.phone;
-
-                    // Update Auth link in navbar
-                    const navAuth = document.getElementById('navAuthLink');
-                    if (navAuth) {
-                        navAuth.href = 'portal.html';
-                        navAuth.innerHTML = `<i class="fa-solid fa-gauge-high"></i> Portal (${fullName.slice(0, 10)})`;
-                    }
-                }
-            });
-
-            // Merge services from Supabase if table is populated
-            (async () => {
-                try {
-                    const { data, error } = await sb.from('verify_services')
-                        .select('*')
-                        .eq('active', true)
-                        .order('price', { ascending: true });
-
-                    if (!error && data && data.length) {
-                        // Merge database items while keeping friendly badges and turnarounds
-                        const dbMap = new Map(data.map(item => [item.code, item]));
-                        allServices = allServices.map(def => {
-                            if (dbMap.has(def.code)) {
-                                const dbItem = dbMap.get(def.code);
-                                return { ...def, id: dbItem.id, price: Number(dbItem.price) || def.price };
-                            }
-                            return def;
-                        });
-                        // Add any additional db items not in defaults
-                        data.forEach(dbItem => {
-                            if (!allServices.some(s => s.code === dbItem.code)) {
-                                allServices.push({
-                                    id: dbItem.id,
-                                    code: dbItem.code,
-                                    category: dbItem.category || 'nin',
-                                    name: dbItem.name,
-                                    description: dbItem.description,
-                                    badge: dbItem.badge || 'VERIFIED',
-                                    field_kind: dbItem.field_kind || 'nin',
-                                    price: Number(dbItem.price) || 500,
-                                    turnaround: '⚡ Standard'
-                                });
-                            }
-                        });
-                    }
-                } catch (e) {
-                    // Graceful fallback to default catalog
-                }
-                updateCategoryCounts();
-                renderServices();
-                // Check URL parameter e.g. verify.html?cat=ipe
-                const params = new URLSearchParams(window.location.search);
-                const urlCat = params.get('cat');
-                if (urlCat && ['nin', 'bvn', 'ipe', 'cac', 'exam'].includes(urlCat)) {
-                    const tab = categoryNav.querySelector(`[data-category="${urlCat}"]`);
-                    if (tab) tab.click();
-                }
-                // Pre-select first service
-                if (allServices.length) selectService(allServices[0].id);
-            })();
         } else {
-            updateCategoryCounts();
-            renderServices();
-            if (allServices.length) selectService(allServices[0].id);
+            notice.style.display = 'block';
+            notice.className = 'notice error';
+            notice.textContent = msg;
         }
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        submitBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> Verify Now (Instant)';
+    }
+});
 
-        /* ═══════════════════════════════════════════════════════════
-           FORM SUBMISSION HANDLER
-           ═══════════════════════════════════════════════════════════ */
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            noticeBox.style.display = 'none';
-
-            if (!selectedService) {
-                showNotice('Please click on a verification service above first.');
-                return;
-            }
-
-            if (!session) {
-                showNotice('Please log in or register your free account to submit your request.');
-                document.getElementById('loginBanner').scrollIntoView({ behavior: 'smooth' });
-                return;
-            }
-
-            let lookupValue = '';
-            let extraDetails = {};
-
-            const kind = selectedService.field_kind;
-
-            if (kind === 'nin') {
-                lookupValue = document.getElementById('inputNin').value.trim();
-                if (!/^\d{11}$/.test(lookupValue)) {
-                    showNotice('Please enter the full 11-digit NIN (no letters or symbols).');
-                    return;
-                }
-            } else if (kind === 'bvn') {
-                lookupValue = document.getElementById('inputBvn').value.trim();
-                if (!/^\d{11}$/.test(lookupValue)) {
-                    showNotice('Please enter the full 11-digit BVN.');
-                    return;
-                }
-            } else if (kind === 'phone') {
-                lookupValue = document.getElementById('inputPhoneLookup').value.trim();
-                const cleanPhone = lookupValue.replace(/[\s-]/g, '');
-                if (!/^(\+?234|0)[789][01]\d{8}$/.test(cleanPhone)) {
-                    showNotice('Please enter a valid 11-digit Nigerian phone number.');
-                    return;
-                }
-                extraDetails.network = document.getElementById('inputNetwork').value;
-            } else if (kind === 'tracking_id') {
-                lookupValue = document.getElementById('inputTrackingId').value.trim();
-                if (lookupValue.length < 8) {
-                    showNotice('Please enter the complete Enrolment Tracking ID.');
-                    return;
-                }
-                extraDetails.center = document.getElementById('inputCenter').value.trim();
-                extraDetails.year   = document.getElementById('inputEnrolYear').value.trim();
-            } else if (kind === 'demographics') {
-                lookupValue = document.getElementById('inputDemoName').value.trim();
-                if (!lookupValue) {
-                    showNotice('Please enter the Full Legal Name.');
-                    return;
-                }
-                extraDetails.dob    = document.getElementById('inputDemoDob').value;
-                extraDetails.gender = document.getElementById('inputDemoGender').value;
-                extraDetails.state  = document.getElementById('inputDemoState').value.trim();
-                extraDetails.lga    = document.getElementById('inputDemoLga').value.trim();
-            } else if (kind === 'cac') {
-                lookupValue = document.getElementById('inputCacName1').value.trim();
-                if (!lookupValue) {
-                    showNotice('Please enter your Proposed Business Name (Option 1).');
-                    return;
-                }
-                extraDetails.alternative_name = document.getElementById('inputCacName2').value.trim();
-                extraDetails.business_nature  = document.getElementById('inputCacNature').value.trim();
-            } else if (kind === 'jamb') {
-                lookupValue = document.getElementById('inputJambProfile').value.trim();
-                if (!lookupValue) {
-                    showNotice('Please enter the 10-digit JAMB Profile Code.');
-                    return;
-                }
-                extraDetails.email = document.getElementById('inputJambEmail').value.trim();
-            }
-
-            const custName  = document.getElementById('custName').value.trim();
-            const custPhone = document.getElementById('custPhone').value.trim().replace(/\s|-/g, '');
-            const ref       = document.getElementById('transferRef').value.trim();
-            const note      = document.getElementById('custNote').value.trim();
-
-            if (!custName) { showNotice('Please enter your full name.'); return; }
-            if (!custPhone) { showNotice('Please enter your phone number.'); return; }
-            if (ref.length < 3) { showNotice('Please enter the bank transfer reference from your receipt.'); return; }
-
-            // Submit Button Spinner
-            submitBtn.disabled = true;
-            submitBtn.classList.add('is-loading');
-            submitBtn.innerHTML = 'Submitting Request…';
-
-            const requestCode = 'VR-' + Date.now().toString(36).toUpperCase().slice(-5) +
-                                Math.random().toString(36).toUpperCase().slice(2, 4);
-
-            const extraDetailsString = Object.keys(extraDetails).length
-                ? JSON.stringify(extraDetails, null, 2)
-                : null;
-
-            let insertPayload = {
-                request_code: requestCode,
-                user_id: session.user.id,
-                user_email: session.user.email,
-                service_id: selectedService.id.length === 36 ? selectedService.id : null,
-                service_name: selectedService.name,
-                category: selectedService.category || 'nin',
-                lookup_value: lookupValue,
-                extra_details: extraDetailsString,
-                price: selectedService.price,
-                amount: selectedService.price,
-                transfer_reference: ref,
-                customer_name: custName,
-                customer_phone: custPhone,
-                customer_note: note || null,
-                status: 'pending'
-            };
-
-            let inserted = null;
-            let submitError = null;
-
-            try {
-                const { data, error } = await sb.from('verify_requests')
-                    .insert(insertPayload)
-                    .select('id, request_code')
-                    .single();
-
-                if (error) {
-                    // In case older database table doesn't have extra_details or category columns yet
-                    if (/extra_details|category|schema cache/i.test(error.message || '')) {
-                        delete insertPayload.extra_details;
-                        delete insertPayload.category;
-                        const retry = await sb.from('verify_requests').insert(insertPayload).select('id, request_code').single();
-                        if (retry.error) submitError = retry.error;
-                        else inserted = retry.data;
-                    } else {
-                        submitError = error;
-                    }
-                } else {
-                    inserted = data;
-                }
-            } catch (err) {
-                submitError = err;
-            }
-
-            submitBtn.disabled = false;
-            submitBtn.classList.remove('is-loading');
-            submitBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> Submit Verification Request';
-
-            if (submitError) {
-                showNotice('Could not submit request: ' + (submitError.message || 'Please check your connection and try again.'));
-                return;
-            }
-
-            // Hide form and show Success Confirmation
-            document.getElementById('formCard').style.display = 'none';
-            document.getElementById('paymentDetailsCard').style.display = 'none';
-            const sv = document.getElementById('successView');
-            sv.style.display = 'block';
-
-            const finalRef = (inserted && inserted.request_code) ? inserted.request_code : requestCode;
-            document.getElementById('successRef').textContent = finalRef;
-            document.getElementById('successSummary').innerHTML =
-                `<b>${selectedService.name}</b> — <b>${naira(selectedService.price)}</b>.<br>Bank Reference: <b>${ref}</b>.<br>Your result will be verified and delivered to your portal shortly.`;
-
-            // WhatsApp Expedite Button
-            const waMessage = encodeURIComponent(
-                `Hello Mai Goro Desk! I just submitted a verification request.\n\n` +
-                `• Service: ${selectedService.name}\n` +
-                `• Reference: ${finalRef}\n` +
-                `• Lookup: ${lookupValue}\n` +
-                `• Bank Ref: ${ref}\n` +
-                `• Amount: ₦${selectedService.price}\n\n` +
-                `Here is my payment receipt screenshot:`
-            );
-            document.getElementById('waConfirm').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${waMessage}`;
-
-            sv.scrollIntoView({ behavior: 'smooth' });
-        });
-    </script>
+// Load wallet balance on page load
+loadWalletBalance();
+</script>
 </body>
 </html>

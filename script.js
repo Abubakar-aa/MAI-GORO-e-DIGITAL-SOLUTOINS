@@ -191,6 +191,12 @@
 
     initHeroVideoSlider();
 
+    const servicesHeroVideo = document.querySelector('.services-page-video');
+    if (servicesHeroVideo && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        servicesHeroVideo.pause();
+        servicesHeroVideo.removeAttribute('autoplay');
+    }
+
     /* ---- Scroll-reveal animations ---- */
     const revealEls = document.querySelectorAll('.reveal');
     if (revealEls.length) {

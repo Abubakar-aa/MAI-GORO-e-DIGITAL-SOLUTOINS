@@ -224,7 +224,9 @@
     // Already logged in? Go to the portal (or the page that sent them here).
     function nextTarget() {
       const next = new URLSearchParams(location.search).get('next');
-      if (next && /^[a-z0-9-]+\.html$/i.test(next)) {
+      const safePage = next && /^[a-z0-9-]+\.html$/i.test(next);
+      const safeVerificationCategory = next && /^verify\.html\?cat=(nin|bvn|ipe|cac|exam)$/i.test(next);
+      if (safePage || safeVerificationCategory) {
         return next;
       }
       return 'portal.html';

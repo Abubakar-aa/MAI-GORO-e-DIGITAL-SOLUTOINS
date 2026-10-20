@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>My Wallet | Mai Goro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/webp" href="img/logo.webp">
+    <style>
+        .wallet-main { max-width: 900px; margin: 0 auto; padding: 140px 24px 70px; }
+        .wallet-hero { background: linear-gradient(120deg, #0f2a5e 0%, var(--brand) 70%, #4a7bc9 100%); border-radius: 24px; padding: 38px 40px 36px; color: #fff; box-shadow: 0 20px 50px rgba(15, 42, 94, 0.25); margin-bottom: 30px; }
+        .wallet-hero .eyebrow { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--teal); font-weight: 700; margin-bottom: 10px; }
+        .wallet-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(24px, 4vw, 36px); font-weight: 700; line-height: 1.15; }
+        .wallet-hero .balance-row { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-top: 16px; }
+        .wallet-hero .balance-amount { font-family: 'Space Grotesk', sans-serif; font-size: clamp(28px, 5vw, 48px); font-weight: 700; color: #fff; }
+        .wallet-hero .balance-currency { font-size: 16px; font-weight: 500; color: var(--teal); }
+        .wallet-hero .fund-btn { background: var(--teal); color: #fff; border: none; padding: 10px 20px; border-radius: 999px; font-weight: 700; cursor: pointer; transition: transform .15s; }
+        .wallet-hero .fund-btn:hover { transform: translateY(-2px); }
+
+        .wallet-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 24px 28px; margin-bottom: 22px; }
+        body.dark-mode .wallet-card { background: var(--dark-surface); border-color: var(--dark-border); }
+        .wallet-card h2 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+        .wallet-card .hint { font-size: 12.5px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+        body.dark-mode .wallet-card .hint { color: var(--dark-muted); }
+
+        .tx-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+        .tx-table th { text-align: left; padding: 12px 10px; color: var(--text-muted); font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+        body.dark-mode .tx-table th { border-bottom-color: var(--dark-border); }
+        .tx-table td { padding: 14px 10px; border-bottom: 1px solid rgba(148, 163, 184, 0.12); vertical-align: middle; }
+        body.dark-mode .tx-table td { border-bottom-color: rgba(148, 163, 184, 0.12); }
+        .tx-table tr:last-child td { border-bottom: none; }
+        .tx-date { color: var(--text-muted); font-size: 12.5px; white-space: nowrap; }
+        body.dark-mode .tx-date { color: var(--dark-muted); }
+        .tx-type { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .tx-type.funding { background: rgba(16, 185, 129, 0.12); color: #059669; border: 1px solid rgba(16, 185, 129, 0.25); }
+        .tx-type.service { background: rgba(59, 102, 178, 0.1); color: var(--brand); border: 1px solid rgba(59, 102, 178, 0.2); }
+        .tx-type.refund { background: rgba(217, 119, 6, 0.12); color: #d97706; border: 1px solid rgba(217, 119, 6, 0.25); }
+        .tx-type.bonus { background: rgba(124, 58, 237, 0.12); color: #7c3aed; border: 1px solid rgba(124, 58, 237, 0.25); }
+        .tx-desc { color: var(--text); font-weight: 500; }
+        body.dark-mode .tx-desc { color: var(--dark-text); }
+        .tx-desc small { display: block; font-size: 11px; color: var(--text-muted); font-weight: 400; margin-top: 2px; }
+        body.dark-mode .tx-desc small { color: var(--dark-muted); }
+        .tx-amount { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; text-align: right; }
+        .tx-amount.credit { color: #059669; }
+        .tx-amount.debit { color: var(--danger); }
+        .tx-status { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 999px; text-transform: uppercase; }
+        .tx-status.completed { background: rgba(16, 185, 129, 0.12); color: #059669; }
+        .tx-status.pending { background: rgba(227, 167, 47, 0.14); color: #a1720c; }
+        .tx-status.failed { background: rgba(220, 38, 38, 0.12); color: #b91c1c; }
+
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+        .empty-state i { font-size: 40px; margin-bottom: 12px; opacity: 0.5; }
+        .empty-state a { color: var(--brand); font-weight: 700; }
+        body.dark-mode .empty-state a { color: var(--teal); }
+
+        .fund-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: var(--brand); color: #fff; border: none; border-radius: 999px; font-weight: 700; font-family: inherit; cursor: pointer; transition: transform .15s; }
+        .fund-btn:hover { transform: translateY(-2px); }
+        body.dark-mode .fund-btn { background: var(--teal); color: var(--night); }
+
+        @media (max-width: 640px) {
+            .wallet-main { padding: 118px 16px 50px; }
+            .wallet-hero { padding: 28px 24px; border-radius: 20px; }
+            .wallet-card { padding: 20px 18px; }
+            .tx-table { font-size: 12.5px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-container">
+    <div class="nav-wrap" id="navWrap">
+        <header class="navbar">
+            <a class="brand" href="index.html" aria-label="Mai Goro home"><img src="img/logo.webp" alt="Mai Goro logo" class="brand-mark"><span></span></a>
+            <nav class="nav-links" id="navLinks" aria-label="Primary navigation">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About Us</a>
+                <a href="services.html" class="nav-link">Our Services</a>
+                <a href="contact.html" class="nav-link">Contact Us</a>
+            </nav>
+            <a href="contact.html" class="nav-cta">Get started</a>
+            <a href="login.html" class="nav-auth" aria-label="Login or register"><i class="fa-solid fa-user"></i> Login / Register</a>
+            <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><i class="fa-solid fa-moon"></i></button>
+            <button class="burger" id="burger" type="button" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+        </header>
+    </div>
+    <div class="mobile-panel" id="mobilePanel" aria-label="Mobile navigation">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About Us</a>
+        <a href="services.html" class="nav-link">Our Services</a>
+        <a href="contact.html" class="nav-link">Contact Us</a>
+        <a href="contact.html" class="nav-cta">Get started</a>
+        <a href="login.html" class="nav-auth" aria-label="Login or register"><i class="fa-solid fa-user"></i> Login / Register</a>
+    </div>
+
+    <main class="wallet-main">
+        <section class="wallet-hero">
+            <div class="eyebrow"><i class="fa-solid fa-wallet"></i> Wallet</div>
+            <h1>My Wallet</h1>
+            <div class="balance-row">
+                <span class="balance-amount" id="balanceDisplay">₦0.00</span>
+                <span class="balance-currency">NGN</span>
+                <a href="fund-wallet.html" class="fund-btn"><i class="fa-solid fa-plus"></i> Add Funds</a>
+            </div>
+        </section>
+
+        <section class="wallet-card">
+            <h2><i class="fa-solid fa-list-check"></i> Transaction History</h2>
+            <p class="hint">All wallet activity — fundings, service charges, and refunds.</p>
+            <div id="txState">Loading transactions…</div>
+            <table class="tx-table" id="txTable" style="display:none">
+                <thead>
+                    <tr>
+                        <th style="width:15%">Date</th>
+                        <th style="width:18%">Type</th>
+                        <th style="width:40%">Description</th>
+                        <th style="width:17%">Amount</th>
+                        <th style="width:10%">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="txBody"></tbody>
+            </table>
+            <div class="empty-state" id="txEmpty" style="display:none">
+                <i class="fa-solid fa-receipt"></i>
+                <p>No transactions yet</p>
+                <a href="fund-wallet.html">Add funds to get started</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-brand"><img src="img/logo.webp" alt="Mai Goro logo" class="footer-logo"><p>Helping students, businesses and individuals with digital skills, professional design and reliable support.</p></div>
+            <div class="footer-column"><h3>Quick Links</h3><a href="index.html">Home</a><a href="about.html">About Us</a><a href="services.html">Our Services</a><a href="contact.html">Contact Us</a><a href="login.html">Customer Login</a></div>
+            <div class="footer-column"><h3>Contact</h3><a href="tel:+2348144372466">08144372466</a><a href="tel:+2348065493687">08065493687</a><a href="mailto:maigoroedigitalsolution@gmail.com">maigoroedigitalsolution@gmail.com</a><span>Opp. Babba Milk, Nassarawa, Kano</span></div>
+            <div class="footer-column"><h3>Hours</h3><span>Mon - Sat</span><span>10:00 AM - 10:00 PM</span><a href="https://wa.me/2349067997551" target="_blank" rel="noreferrer">WhatsApp Support</a><a href="mai-goro-admin-panel/admin/login.html">Admin Login</a></div>
+        </div>
+        <div class="footer-bottom">&copy; 2026 MAI GORO e-DIGITAL SOLUTIONS. All rights reserved.</div>
+    </footer>
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/slider-config.js"></script>
+<script>
+    const naira = (n) => '₦' + Number(n).toLocaleString('en-NG', { maximumFractionDigits: 2 });
+
+    /* ── Session guard ── */
+    (async function() {
+        const { data, error } = await sb.auth.getSession();
+        if (error || !data.session) { window.location.replace('login.html?next=wallet.html'); return; }
+        const user = data.session.user;
+        await loadWallet(user.id);
+    })();
+
+    async function loadWallet(userId) {
+        const [{ data: wallet }, { data: txs }] = await Promise.all([
+            sb.from('wallets').select('balance').eq('user_id', userId).single(),
+            sb.from('wallet_transactions').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(50)
+        ]);
+
+        if (wallet) document.getElementById('balanceDisplay').textContent = naira(wallet.balance);
+
+        const state = document.getElementById('txState');
+        const table = document.getElementById('txTable');
+        const body = document.getElementById('txBody');
+        const empty = document.getElementById('txEmpty');
+
+        if (!txs || !txs.length) {
+            state.style.display = 'none';
+            table.style.display = 'none';
+            empty.style.display = 'block';
+            return;
+        }
+
+        state.style.display = 'none';
+        table.style.display = 'table';
+        body.innerHTML = txs.map(t => {
+            const date = new Date(t.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            const isCredit = t.type === 'funding' || t.type === 'refund' || t.type === 'bonus';
+            return `<tr>
+                <td class="tx-date">${date}</td>
+                <td><span class="tx-type ${t.type}">${t.type}</span></td>
+                <td class="tx-desc">
+                    ${t.description || '—'}
+                    ${t.reference ? `<small>Ref: ${t.reference}</small>` : ''}
+                    ${t.service_code ? `<small>Service: ${t.service_code}</small>` : ''}
+                </td>
+                <td class="tx-amount ${isCredit ? 'credit' : 'debit'}">${isCredit ? '+' : '-'}${naira(t.amount)}</td>
+                <td><span class="tx-status ${t.status}">${t.status}</span></td>
+            </tr>`;
+        }).join('');
+    }
+</script>
+</body>
+</html>
