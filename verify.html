@@ -218,7 +218,7 @@
                 </section>
 
                 <!-- Step 2: Dynamic Detail Form -->
-                <section class="verifier-card" id="formCard">
+                <section class="verifier-card" id="formCard" hidden>
                     <h2>2. Provide Details & Verify Instantly</h2>
                     <p class="hint" id="formInstruction">Fill in the required details accurately. The amount will be deducted from your wallet instantly.</p>
 
@@ -335,18 +335,6 @@
                                     <label for="inputJambEmail">Candidate Email Address *</label>
                                     <input type="email" id="inputJambEmail" placeholder="candidate@gmail.com">
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Customer Contact Details -->
-                        <div class="field-row" style="margin-top:14px;">
-                            <div class="field">
-                                <label for="custName">Your Full Name *</label>
-                                <input type="text" id="custName" required maxlength="120" placeholder="e.g. Ibrahim Aliyu">
-                            </div>
-                            <div class="field">
-                                <label for="custPhone">WhatsApp / Phone Number *</label>
-                                <input type="tel" id="custPhone" required maxlength="20" placeholder="e.g. 08144372466">
                             </div>
                         </div>
 
@@ -478,6 +466,11 @@ const SERVICE_CATALOG = {
 /* ── Service Card Selection ── */
 document.querySelectorAll('.service-card').forEach(card => {
     card.addEventListener('click', () => {
+        const formCard = document.getElementById('formCard');
+        const revealForm = formCard.hidden;
+        formCard.hidden = false;
+        if (revealForm) formCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
         document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
         card.classList.add('selected');
         const svc = card.dataset.service;
@@ -513,9 +506,6 @@ document.querySelectorAll('.service-card').forEach(card => {
         }
     });
 });
-
-// Initialize with NIN selected
-document.querySelector('.service-card[data-service="nin"]').click();
 
 /* ── Wallet Balance ── */
 async function loadWalletBalance() {
@@ -572,9 +562,22 @@ document.getElementById('verifierForm').addEventListener('submit', async (e) => 
         notice.style.display = 'block'; notice.className = 'notice error'; notice.textContent = 'Enter a valid Nigerian phone number.'; return;
     }
 
-    const custName = document.getElementById('custName').value.trim();
-    const custPhone = document.getElementById('custPhone').value.trim().replace(/\s|-/g, '');
-    if (!custName || !custPhone) { notice.style.display='block'; notice.className='notice error'; notice.textContent='Please enter your name and phone number.'; return; }
+    const { data: sessionData, error: sessionError } = await sb.auth.getSession();
+    const customer = sessionData?.session?.user;
+    if (sessionError || !customer) {
+        window.location.replace('login.html?next=verify.html');
+        return;
+    }
+
+    const customerProfile = customer.user_metadata || {};
+    const custName = String(customerProfile.full_name || customerProfile.name || '').trim();
+    const custPhone = String(customerProfile.phone || customerProfile.phone_number || '').trim().replace(/\s|-/g, '');
+    if (!custName || !custPhone) {
+        notice.style.display = 'block';
+        notice.className = 'notice error';
+        notice.textContent = 'Please complete your name and phone number in your account profile before submitting.';
+        return;
+    }
 
     const submitBtn = document.getElementById('submitBtn');
     submitBtn.disabled = true;
@@ -584,7 +587,7 @@ document.getElementById('verifierForm').addEventListener('submit', async (e) => 
     try {
         // Call the charge_wallet function which handles: check balance, deduct, call API, record request
         const { data, error } = await sb.rpc('charge_wallet', {
-            p_user_id: (await sb.auth.getSession()).data.session.user.id,
+            p_user_id: customer.id,
             p_amount: catalog.price,
             p_service_code: svc,
             p_service_name: catalog.name,

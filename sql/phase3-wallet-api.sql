@@ -142,11 +142,24 @@ declare
   v_request_code text;
   v_request_id uuid;
 begin
+  if auth.uid() is distinct from p_user_id and not public.is_admin() then
+    raise exception 'Not authorized to charge this wallet';
+  end if;
+
+  -- Older accounts may predate the wallet-creation trigger.
+  insert into public.wallets (user_id, balance)
+  values (p_user_id, 0)
+  on conflict (user_id) do nothing;
+
   -- Get current balance (lock row)
   select balance into v_balance_before
   from public.wallets
   where user_id = p_user_id
   for update;
+
+  if v_balance_before is null then
+    raise exception 'Wallet balance could not be loaded';
+  end if;
 
   if v_balance_before < p_amount then
     raise exception 'Insufficient wallet balance';
