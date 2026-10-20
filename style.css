@@ -1,6 +1,12 @@
 /* ═══════════════════════════════════════════════
-   Design tokens — single source of truth for the palette
+   Shared utilities — scroll lock & safe tables
    ═══════════════════════════════════════════════ */
+body.menu-open { overflow: hidden; }
+
+.table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.table-scroll table { min-width: 640px; }
+
+/* ═══════════════════════════════════════════════
 :root {
     color-scheme: light;
 
@@ -16,6 +22,8 @@
     --surface: #ffffff;
     --border: #dce5ef;
     --muted: #536579;
+    --danger: #dc2626;         /* debits, errors — was referenced but never defined */
+    --ok: #059669;             /* credits, success */
 
     /* Dark theme */
     --night: #0b1120;      /* deep navy — dark page bg, ink text on teal */
@@ -1484,8 +1492,9 @@ html { scroll-behavior: smooth; }
             .services { width: min(92%, 520px); grid-template-columns: 1fr; margin-top: 100px; gap: 18px; }
             .card img { aspect-ratio: 16 / 9; }
             .card-content { padding: 22px; }
-            .training-feature { width: min(92%, 520px); grid-template-columns: 1fr; margin-bottom: 40px; }
-            .training-feature-image { min-height: 250px; aspect-ratio: 4 / 3; }
+            .training-feature { width: 100%; grid-template-columns: 1fr; margin-bottom: 40px; }
+            .training-feature > * { min-width: 0; }
+            .training-feature-image { height: 250px; min-height: 0; aspect-ratio: auto; width: 100%; }
             .training-feature-content { padding: 30px 24px 34px; }
             .services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
             .section-padding.gray-bg .service-card { justify-content: center; }

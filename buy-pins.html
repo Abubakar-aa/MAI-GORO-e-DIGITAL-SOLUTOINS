@@ -333,11 +333,27 @@
     <script src="js/slider-config.js"></script>
     <script>
         /* ═══ Bank details come from js/shop-config.js — ★ edit them THERE ═══ */
-        document.getElementById('bankName').textContent = BANK_DETAILS.bank;
-        document.getElementById('bankNumber').textContent = BANK_DETAILS.accountNumber;
-        document.getElementById('bankHolder').textContent = BANK_DETAILS.accountName;
+        (function renderBankDetails() {
+            const isUnconfigured = !BANK_DETAILS.accountNumber || /YOUR|^0+$/.test(BANK_DETAILS.accountNumber) || /YOUR/i.test(BANK_DETAILS.bank || '');
+            if (isUnconfigured) {
+                document.getElementById('bankName').textContent = 'Manual transfers are being upgraded to instant virtual accounts.';
+                document.getElementById('bankNumber').textContent = '—';
+                document.getElementById('bankHolder').textContent = 'Mai Goro Support';
+                document.getElementById('copyAcct').style.display = 'none';
+                const setupNoteEl = document.getElementById('setupNote');
+                if (setupNoteEl) {
+                    setupNoteEl.innerHTML = '<i class="fa-solid fa-circle-info"></i> Exam tokens remain available — pay via WhatsApp <a href="https://wa.me/2349067997551" target="_blank" rel="noreferrer">0906 799 7551</a> while online funding launches.';
+                    setupNoteEl.style.display = 'block';
+                }
+                return;
+            }
+            document.getElementById('bankName').textContent = BANK_DETAILS.bank;
+            document.getElementById('bankNumber').textContent = BANK_DETAILS.accountNumber;
+            document.getElementById('bankHolder').textContent = BANK_DETAILS.accountName;
+        })();
 
         document.getElementById('copyAcct').addEventListener('click', async () => {
+            if (!BANK_DETAILS.accountNumber || /^0+$/.test(BANK_DETAILS.accountNumber)) return;
             try { await navigator.clipboard.writeText(BANK_DETAILS.accountNumber); } catch (e) {}
         });
 

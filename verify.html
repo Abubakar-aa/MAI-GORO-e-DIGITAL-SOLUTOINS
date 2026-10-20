@@ -6,6 +6,8 @@
     <meta name="robots" content="noindex, nofollow">
     <title>Verification Portal | NIN, BVN, IPE & CAC Services | Mai Goro</title>
     <script>document.documentElement.classList.add('verify-auth-pending');</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/webp" href="img/logo.webp">
     <style>
@@ -124,7 +126,10 @@
         .verifier-grid { display: grid; grid-template-columns: 1.35fr 0.85fr; gap: 24px; align-items: start; }
         @media (max-width: 960px) { .verifier-grid { grid-template-columns: 1fr; } }
         
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; min-width: 0; }
+        @media (max-width: 700px) {
+            .services-grid { grid-template-columns: 1fr; }
+        }
         .service-card { position: relative; border: 1.5px solid var(--border); border-radius: 16px; padding: 18px 18px 16px; background: transparent; cursor: pointer; text-align: left; transition: all 0.22s ease; display: flex; flex-direction: column; justify-content: space-between; }
         .service-card:hover { transform: translateY(-2px); border-color: rgba(59, 102, 178, 0.45); box-shadow: 0 10px 24px -10px rgba(59, 102, 178, 0.15); }
         .service-card.selected { border-color: var(--brand); background: rgba(59, 102, 178, 0.03); box-shadow: 0 12px 28px -8px rgba(59, 102, 178, 0.35); }
@@ -405,6 +410,7 @@
 <script src="script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/slider-config.js"></script>
+<script src="js/shop-config.js"></script>
 <script>
 /* ── Require a customer session before showing verification services ── */
 (async function requireCustomerSession() {
@@ -461,6 +467,17 @@ const SERVICE_CATALOG = {
             <span class="s-price">₦${catalog.price.toLocaleString('en-NG')}</span>
         </button>
     `).join('');
+
+    // Recompute category tab counts from the live catalog (was hardcoded & stale)
+    const counts = { all: 0 };
+    Object.values(SERVICE_CATALOG).forEach(s => {
+        counts.all++;
+        counts[s.category] = (counts[s.category] || 0) + 1;
+    });
+    document.querySelectorAll('.cat-tab .count').forEach(el => {
+        const cat = el.closest('.cat-tab')?.dataset.category;
+        if (cat && counts[cat] != null) el.textContent = counts[cat];
+    });
 })();
 
 /* ── Service Card Selection ── */
@@ -471,8 +488,12 @@ document.querySelectorAll('.service-card').forEach(card => {
         formCard.hidden = false;
         if (revealForm) formCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-        document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+        document.querySelectorAll('.service-card').forEach(c => {
+            c.classList.remove('selected');
+            c.setAttribute('aria-pressed', 'false');
+        });
         card.classList.add('selected');
+        card.setAttribute('aria-pressed', 'true');
         const svc = card.dataset.service;
         document.querySelectorAll('.dynamic-set').forEach(s => s.classList.remove('active'));
         if(svc === 'nin') document.getElementById('set-nin').classList.add('active');

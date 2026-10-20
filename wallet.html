@@ -110,18 +110,20 @@
             <h2><i class="fa-solid fa-list-check"></i> Transaction History</h2>
             <p class="hint">All wallet activity — fundings, service charges, and refunds.</p>
             <div id="txState">Loading transactions…</div>
+            <div class="table-scroll">
             <table class="tx-table" id="txTable" style="display:none">
                 <thead>
                     <tr>
-                        <th style="width:15%">Date</th>
-                        <th style="width:18%">Type</th>
-                        <th style="width:40%">Description</th>
-                        <th style="width:17%">Amount</th>
-                        <th style="width:10%">Status</th>
+                        <th scope="col" style="width:15%">Date</th>
+                        <th scope="col" style="width:18%">Type</th>
+                        <th scope="col" style="width:40%">Description</th>
+                        <th scope="col" style="width:17%">Amount</th>
+                        <th scope="col" style="width:10%">Status</th>
                     </tr>
                 </thead>
                 <tbody id="txBody"></tbody>
             </table>
+            </div>
             <div class="empty-state" id="txEmpty" style="display:none">
                 <i class="fa-solid fa-receipt"></i>
                 <p>No transactions yet</p>
@@ -156,18 +158,35 @@
     })();
 
     async function loadWallet(userId) {
-        const [{ data: wallet }, { data: txs }] = await Promise.all([
-            sb.from('wallets').select('balance').eq('user_id', userId).single(),
-            sb.from('wallet_transactions').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(50)
-        ]);
-
-        if (wallet) document.getElementById('balanceDisplay').textContent = naira(wallet.balance);
-
         const state = document.getElementById('txState');
         const table = document.getElementById('txTable');
         const body = document.getElementById('txBody');
         const empty = document.getElementById('txEmpty');
 
+        // Guard: silently-stuck ₦0.00 on query failure is misleading — surface the error instead
+        const [wRes, tRes] = await Promise.all([
+            sb.from('wallets').select('balance').eq('user_id', userId).single(),
+            sb.from('wallet_transactions').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(50)
+        ]);
+        const wallet = wRes.data;
+        const walletErr = wRes.error;
+        const txs = tRes.data;
+        const txErr = tRes.error;
+
+        if (wallet) {
+            document.getElementById('balanceDisplay').textContent = naira(wallet.balance);
+        } else if (walletErr) {
+            document.getElementById('balanceDisplay').textContent = naira(0);
+            console.error('Wallet load failed:', walletErr.message);
+        }
+
+        if (txErr) {
+            state.style.display = 'block';
+            state.innerHTML = '<span style="color:var(--danger)">Could not load transactions — please refresh.</span>';
+            table.style.display = 'none';
+            empty.style.display = 'none';
+            return;
+        }
         if (!txs || !txs.length) {
             state.style.display = 'none';
             table.style.display = 'none';

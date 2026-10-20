@@ -204,10 +204,29 @@
 <script src="js/shop-config.js"></script>
 <script>
     /* ── Bank details from shop-config.js ── */
-    document.getElementById('bankName').textContent = BANK_DETAILS.bank;
-    document.getElementById('bankNumber').textContent = BANK_DETAILS.accountNumber;
-    document.getElementById('bankHolder').textContent = BANK_DETAILS.accountName;
+    // Detect unconfigured placeholders and alert the customer honestly instead of
+    // showing "YOUR BANK NAME / 0000000000" as if it were a real account.
+    (function renderBankDetails() {
+        const isUnconfigured = !BANK_DETAILS.accountNumber || /YOUR|^0+$/.test(BANK_DETAILS.accountNumber) || /YOUR/i.test(BANK_DETAILS.bank || '');
+        const el = (id) => document.getElementById(id);
+        if (isUnconfigured) {
+            el('bankName').textContent = 'Manual transfers are being upgraded to instant virtual accounts.';
+            el('bankNumber').textContent = '—';
+            el('bankHolder').textContent = 'Mai Goro Support';
+            el('copyAcct').style.display = 'none';
+            const note = el('setupNote') || el('bankBox');
+            if (el('setupNote')) {
+                el('setupNote').innerHTML = '<i class="fa-solid fa-circle-info"></i> Online wallet funding launches shortly. To fund now, WhatsApp <a href="https://wa.me/2349067997551" target="_blank" rel="noreferrer">0906 799 7551</a>.';
+                el('setupNote').style.display = 'block';
+            }
+            return;
+        }
+        document.getElementById('bankName').textContent = BANK_DETAILS.bank;
+        document.getElementById('bankNumber').textContent = BANK_DETAILS.accountNumber;
+        document.getElementById('bankHolder').textContent = BANK_DETAILS.accountName;
+    })();
     document.getElementById('copyAcct').addEventListener('click', async () => {
+        if (!BANK_DETAILS.accountNumber || /^0+$/.test(BANK_DETAILS.accountNumber)) return;
         try { await navigator.clipboard.writeText(BANK_DETAILS.accountNumber); } catch (e) {}
     });
 

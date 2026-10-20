@@ -24,6 +24,7 @@
         mobilePanel?.classList.remove('open');
         burger?.classList.remove('open');
         burger?.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('menu-open');   // restore page scroll
     }
 
     window.addEventListener('scroll', () => navWrap?.classList.toggle('scrolled', window.scrollY > 20), { passive: true });
@@ -31,6 +32,7 @@
         const isOpen = mobilePanel.classList.toggle('open');
         burger.classList.toggle('open', isOpen);
         burger.setAttribute('aria-expanded', String(isOpen));
+        document.body.classList.toggle('menu-open', isOpen);   // stop background scrolling while the menu is open
     });
     mobilePanel?.querySelectorAll('.nav-link, .nav-cta').forEach((link) => link.addEventListener('click', closeMobileMenu));
     document.addEventListener('click', (event) => {
