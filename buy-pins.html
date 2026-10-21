@@ -23,7 +23,7 @@
         .buy-hero h1 span { color: #ffd977; }
         .buy-hero p { margin-top: 10px; font-size: 14.5px; color: rgba(255,255,255,.78); max-width: 620px; line-height: 1.6; }
 
-        .buy-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; align-items: start; }
+        .buy-grid { display: grid; grid-template-columns: minmax(0, 800px); justify-content: center; gap: 24px; align-items: start; }
         @media (max-width: 900px) { .buy-grid { grid-template-columns: 1fr; } }
 
         .buy-card {
@@ -40,14 +40,12 @@
         /* Product cards */
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
         .product-card {
-            position: relative; text-align: left; padding: 18px 16px; cursor: pointer;
+            position: relative; text-align: left; padding: 18px 16px; cursor: default;
             background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px;
             font-family: 'DM Sans', sans-serif; transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
         }
         body.dark-mode .product-card { background: var(--night); border-color: var(--dark-border); }
-        .product-card:hover { border-color: var(--brand); transform: translateY(-2px); }
-        .product-card:focus-visible { outline: 3px solid rgba(59,102,178,.55); outline-offset: 2px; }
-        .product-card.selected { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(59,102,178,.2); }
+        .product-card:hover { border-color: var(--border); transform: none; }
         .product-card .exam {
             display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .8px;
             text-transform: uppercase; color: var(--brand); background: rgba(59,102,178,.1);
@@ -58,11 +56,6 @@
         body.dark-mode .product-card .p-name { color: var(--dark-text); }
         .product-card .p-price { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; color: var(--brand); }
         body.dark-mode .product-card .p-price { color: var(--teal); }
-        .product-card .tick {
-            position: absolute; top: 12px; right: 12px; width: 22px; height: 22px; border-radius: 50%;
-            display: none; place-items: center; background: var(--brand); color: #fff; font-size: 11px;
-        }
-        .product-card.selected .tick { display: grid; }
 
         /* Bank details */
         .bank-row { display: flex; justify-content: space-between; align-items: center; gap: 10px;
@@ -197,99 +190,19 @@
         <main class="buy-main">
             <section class="buy-hero">
                 <div class="eyebrow">Official Exam Pins</div>
-                <h1>Buy your exam <span>pins</span> in minutes</h1>
-                <p>NECO, WAEC, NABTEB and NBAIS tokens with delivery to your Mai Goro portal. Pay by bank transfer, send us the transaction reference, and receive your pins after confirmation.</p>
+                <h1>Exam PIN <span>prices</span></h1>
+                <p>Browse available NECO, WAEC, NABTEB and NBAIS PIN products and prices. PIN checkout will be available after virtual-account payments are configured.</p>
             </section>
-
-            <div class="login-banner" id="loginBanner">
-                <i class="fa-solid fa-circle-info"></i>
-                You can browse prices without an account — but to place an order you need one.
-                <a href="login.html">Log in</a> or <a href="register.html">create a free account</a> first.
-            </div>
 
             <div class="buy-grid">
                 <div>
                     <section class="buy-card">
-                        <h2>Choose your pin</h2>
-                        <p class="hint">Tap a product to select it.</p>
-                        <div class="setup-note" id="setupNote">⚠️ Our pin shop is being set up. Please check back shortly — or <a href="contact.html" style="color:inherit;">contact us</a> to buy directly.</div>
+                        <h2>Exam PIN prices</h2>
+                        <p class="hint">Prices shown below are for browsing. To purchase while online checkout is being configured, <a href="https://wa.me/2349067997551" target="_blank" rel="noreferrer">contact support on WhatsApp</a>.</p>
+                        <div class="setup-note" id="setupNote" style="display:block"><i class="fa-solid fa-circle-info"></i> Manual transfer-reference checkout has been removed. Virtual-account checkout is not active yet.</div>
                         <div class="product-grid" id="productGrid"><p class="hint">Loading products…</p></div>
                     </section>
-
-                    <section class="buy-card" id="orderCard" style="display:none;">
-                        <h2>Pay &amp; confirm</h2>
-                        <p class="hint">Transfer the total to the account on the right, then submit the reference below. Your pin arrives in your portal after we confirm the transfer.</p>
-
-                        <form id="orderForm">
-                            <div class="field-row">
-                                <div class="field">
-                                    <label for="custName">Full name *</label>
-                                    <input type="text" id="custName" required maxlength="120" autocomplete="name" placeholder="Your name">
-                                </div>
-                                <div class="field">
-                                    <label for="custPhone">Phone number *</label>
-                                    <input type="tel" id="custPhone" required maxlength="20" inputmode="tel" autocomplete="tel" placeholder="08012345678">
-                                </div>
-                            </div>
-
-                            <div class="field">
-                                <label for="qty">Quantity (max 100 per order)</label>
-                                <div class="qty-row">
-                                    <input type="number" id="qty" min="1" max="100" value="1">
-                                    <div class="total-box"><small>Total to pay</small><span id="totalDisplay">₦0</span></div>
-                                </div>
-                            </div>
-
-                            <div class="field">
-                                <label for="transferRef">Transfer reference *</label>
-                                <input type="text" id="transferRef" required minlength="3" maxlength="120"
-                                       placeholder="e.g. UBA12345678 or your name as sent">
-                            </div>
-
-                            <div class="field">
-                                <label for="custNote">Note (optional)</label>
-                                <textarea id="custNote" maxlength="500" placeholder="Anything we should know — your phone number, exam year, etc."></textarea>
-                            </div>
-
-                            <button type="submit" class="btn-buy" id="submitBtn">Submit Order</button>
-                            <div class="notice" id="orderNotice" role="alert" aria-live="polite"></div>
-                        </form>
-                    </section>
-
-                    <section class="buy-card success-panel" id="successPanel">
-                        <div class="big"><i class="fa-solid fa-check"></i></div>
-                        <h2>Order received!</h2>
-                        <p>Your order <span class="ref" id="successRef"></span> is now waiting for payment confirmation.</p>
-                        <p>As soon as we confirm your transfer, your pin appears in <b>My Pin Orders</b> inside your portal.</p>
-                        <div class="success-actions">
-                            <a href="portal.html" class="primary">Open my portal</a>
-                            <a href="buy-pins.html" class="ghost">Buy another</a>
-                        </div>
-                    </section>
                 </div>
-
-                <aside>
-                    <section class="buy-card">
-                        <h2>Bank details</h2>
-                        <p class="hint">Send the exact total here.</p>
-                        <div class="bank-row">
-                            <div><div class="k">Bank</div><div class="v" id="bankName">—</div></div>
-                            <button type="button" class="copy-btn" id="copyAcct" aria-label="Copy account number"><i class="fa-regular fa-copy"></i></button>
-                        </div>
-                        <div class="bank-row">
-                            <div><div class="k">Account number</div><div class="v" id="bankNumber">—</div></div>
-                        </div>
-                        <div class="bank-row">
-                            <div><div class="k">Account name</div><div class="v" id="bankHolder">—</div></div>
-                        </div>
-                        <ol class="bank-steps">
-                            <li>Transfer the <b>total amount</b> to the account above.</li>
-                            <li>Copy the <b>transaction reference</b> from your bank app.</li>
-                            <li>Paste it in the form and submit.</li>
-                            <li>Your pin lands in your portal once confirmed.</li>
-                        </ol>
-                    </section>
-                </aside>
             </div>
         </main>
 
@@ -329,186 +242,19 @@
 
     <script src="script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/shop-config.js"></script>
     <script src="js/slider-config.js"></script>
     <script>
-        /* ═══ Bank details come from js/shop-config.js — ★ edit them THERE ═══ */
-        (function renderBankDetails() {
-            const isUnconfigured = !BANK_DETAILS.accountNumber || /YOUR|^0+$/.test(BANK_DETAILS.accountNumber) || /YOUR/i.test(BANK_DETAILS.bank || '');
-            if (isUnconfigured) {
-                document.getElementById('bankName').textContent = 'Manual transfers are being upgraded to instant virtual accounts.';
-                document.getElementById('bankNumber').textContent = '—';
-                document.getElementById('bankHolder').textContent = 'Mai Goro Support';
-                document.getElementById('copyAcct').style.display = 'none';
-                const setupNoteEl = document.getElementById('setupNote');
-                if (setupNoteEl) {
-                    const waNum = (typeof WHATSAPP_NUMBER === 'string' && /^\d+$/.test(WHATSAPP_NUMBER)) ? WHATSAPP_NUMBER : '2349067997551';
-                    setupNoteEl.innerHTML = '<i class="fa-solid fa-circle-info"></i> Exam tokens remain available — pay via WhatsApp <a href="https://wa.me/' + waNum + '" target="_blank" rel="noreferrer">' + waNum.replace(/(\d{3})(\d{3})(\d{3})(\d+)/, '$1 $2 $3 $4') + '</a> while online funding launches.';
-                    setupNoteEl.style.display = 'block';
-                }
-                return;
-            }
-            document.getElementById('bankName').textContent = BANK_DETAILS.bank;
-            document.getElementById('bankNumber').textContent = BANK_DETAILS.accountNumber;
-            document.getElementById('bankHolder').textContent = BANK_DETAILS.accountName;
-        })();
-
-        document.getElementById('copyAcct').addEventListener('click', async () => {
-            if (!BANK_DETAILS.accountNumber || /^0+$/.test(BANK_DETAILS.accountNumber)) return;
-            try { await navigator.clipboard.writeText(BANK_DETAILS.accountNumber); } catch (e) {}
-        });
-
         const productGrid = document.getElementById('productGrid');
-        const orderCard   = document.getElementById('orderCard');
-        const setupNote   = document.getElementById('setupNote');
-        const qtyInput    = document.getElementById('qty');
-        const totalDisplay= document.getElementById('totalDisplay');
-        const form        = document.getElementById('orderForm');
-        const submitBtn   = document.getElementById('submitBtn');
-        const noticeBox   = document.getElementById('orderNotice');
+        const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+        const naira = value => '₦' + Number(value || 0).toLocaleString('en-NG');
 
-        let products = [];
-        let selected = null;
-        let session  = null;
-
-        const naira = (n) => '\u20A6' + Number(n).toLocaleString('en-NG');
-
-        function showNotice(text, type) {
-            noticeBox.textContent = text;
-            noticeBox.className = 'notice ' + type;
-            noticeBox.style.display = 'block';
+        async function loadProducts() {
+            const { data, error } = await sb.from('pin_products').select('id,exam,name,price').eq('active', true).order('price');
+            if (error) { productGrid.innerHTML = '<p class="hint">Could not load PIN prices. Please refresh to try again.</p>'; return; }
+            if (!data?.length) { productGrid.innerHTML = '<p class="hint">No exam PIN products are available right now.</p>'; return; }
+            productGrid.innerHTML = data.map(product => '<article class="product-card"><span class="exam">' + escapeHTML(product.exam) + '</span><span class="p-name">' + escapeHTML(product.name) + '</span><span class="p-price">' + naira(product.price) + '</span></article>').join('');
         }
-
-        function updateTotal() {
-            if (!selected) { totalDisplay.textContent = naira(0); return; }
-            const q = Math.min(100, Math.max(1, parseInt(qtyInput.value, 10) || 1));
-            totalDisplay.textContent = naira(selected.price * q);
-        }
-
-        function renderProducts() {
-            if (!products.length) {
-                productGrid.innerHTML = '<p class="hint">No products available right now — check back soon.</p>';
-                return;
-            }
-            productGrid.innerHTML = products.map(p => `
-                <button type="button" class="product-card" data-id="${p.id}" aria-pressed="false">
-                    <span class="tick"><i class="fa-solid fa-check"></i></span>
-                    <span class="exam">${p.exam.replace(/</g, '')}</span>
-                    <span class="p-name">${p.name.replace(/</g, '')}</span>
-                    <span class="p-price">${naira(p.price)}</span>
-                </button>`).join('');
-            productGrid.querySelectorAll('.product-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    productGrid.querySelectorAll('.product-card').forEach(c => {
-                        c.classList.remove('selected');
-                        c.setAttribute('aria-pressed', 'false');
-                    });
-                    card.classList.add('selected');
-                    card.setAttribute('aria-pressed', 'true');
-                    selected = products.find(p => p.id === card.dataset.id) || null;
-                    updateTotal();
-                });
-            });
-        }
-
-        /* Session state: logged out → show login banner, hide order form */
-        sb.auth.getSession().then(({ data }) => {
-            session = data.session;
-            if (!session) {
-                document.getElementById('loginBanner').style.display = 'block';
-            } else {
-                const meta = session.user.user_metadata || {};
-                document.getElementById('custName').value = meta.full_name || '';
-                document.getElementById('custPhone').value = meta.phone || '';
-            }
-        });
-
-        /* Load products (public — active products are readable by anyone) */
-        (async () => {
-            const { data, error } = await sb.from('pin_products')
-                .select('*').eq('active', true).order('price');
-            if (error) {
-                productGrid.innerHTML = '';
-                setupNote.style.display = 'block';
-                return;
-            }
-            products = data || [];
-            renderProducts();
-            if (products.length) orderCard.style.display = 'block';
-            const requestedProduct = new URLSearchParams(window.location.search).get('product');
-            if (requestedProduct) {
-                const productCard = [...productGrid.querySelectorAll('.product-card')].find(card => card.dataset.id === requestedProduct);
-                if (productCard) productCard.click();
-            }
-        })();
-
-        qtyInput.addEventListener('input', updateTotal);
-        qtyInput.addEventListener('change', () => {   /* snap typed values like 250 down to the allowed range */
-            const q = Math.min(100, Math.max(1, parseInt(qtyInput.value, 10) || 1));
-            qtyInput.value = q;
-            updateTotal();
-        });
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            noticeBox.style.display = 'none';
-
-            if (!selected) { showNotice('Please choose a pin product first.', 'error'); return; }
-            if (!session) {
-                showNotice('Please log in (or create an account) to place an order.', 'error');
-                document.getElementById('loginBanner').style.display = 'block';
-                return;
-            }
-
-            const qty = Math.min(100, Math.max(1, parseInt(qtyInput.value, 10) || 1));
-            const ref = document.getElementById('transferRef').value.trim();
-            const note = document.getElementById('custNote').value.trim();
-            const custName  = document.getElementById('custName').value.trim();
-            const custPhone = document.getElementById('custPhone').value.trim().replace(/\s|-/g, '');
-
-            if (!custName)  { showNotice('Enter the full name on your account.', 'error'); return; }
-            if (!/(\+?234|0)[789][01]\d{8}$/.test(custPhone)) { showNotice('Enter a valid Nigerian phone number (e.g. 08012345678).', 'error'); return; }
-            if (ref.length < 3) { showNotice('Enter the transfer reference from your bank app (at least 3 characters).', 'error'); return; }
-
-            submitBtn.disabled = true;
-            submitBtn.classList.add('is-loading');
-            submitBtn.textContent = 'Submitting…';
-
-            /* Trackable order reference, e.g. MG-4KX2A9 */
-            const orderCode = 'MG-' + Date.now().toString(36).toUpperCase().slice(-5) +
-                              Math.random().toString(36).toUpperCase().slice(2, 4);
-
-            const { data: inserted, error } = await sb.from('pin_orders').insert({
-                user_id: session.user.id,
-                user_email: session.user.email,
-                product_id: selected.id,
-                quantity: qty,
-                transfer_reference: ref,
-                customer_note: note || null,
-                order_code: orderCode,
-                customer_name: custName,
-                customer_phone: custPhone
-            }).select('id, order_code').single();
-
-            submitBtn.disabled = false;
-            submitBtn.classList.remove('is-loading');
-            submitBtn.textContent = 'Submit Order';
-
-            if (error) {
-                const missing = (error.code === '42P01' || /pin_orders|schema cache/i.test(error.message || ''));
-                showNotice(missing
-                    ? 'Our pin shop is being set up — please try again shortly, or contact us to buy directly.'
-                    : ('Could not submit the order: ' + (error.message || 'please try again.')), 'error');
-                return;
-            }
-
-            document.getElementById('successRef').textContent =
-                (inserted && inserted.order_code) ? inserted.order_code : orderCode;
-            orderCard.style.display = 'none';
-            document.querySelector('.buy-grid > div > .buy-card').style.display = 'none';
-            document.getElementById('successPanel').style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+        loadProducts().catch(() => { productGrid.innerHTML = '<p class="hint">Could not load PIN prices. Please refresh to try again.</p>'; });
     </script>
 </body>
 </html>

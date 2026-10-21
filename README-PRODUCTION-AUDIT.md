@@ -5,7 +5,7 @@
 - Public pages are static HTML/CSS/JavaScript. Customer pages load Supabase JS directly; `js/shop-config.js` and `js/slider-config.js` hold the public Supabase client configuration.
 - A separate Express 5 API in `server/index.js` uses SQLite (`server/maigoro.db`), bcrypt, and JWT. It also stores private-vault uploads on disk.
 - Supabase SQL files define the customer wallet, funding transactions, service catalogs, verification requests, and admin review policies. The Node SQLite users are a separate identity store from Supabase Auth users.
-- `verify.html` originally called a browser-accessible `charge_wallet` RPC. `fund-wallet.html` submits manual transfer references for admin review. The admin panel reviews `verify_requests` and wallet funding records.
+- The retired standalone `verify.html` originally called a browser-accessible `charge_wallet` RPC. `fund-wallet.html` submits manual transfer references for admin review. The admin panel reviews `verify_requests` and wallet funding records.
 
 ## Confirmed issues addressed in this upgrade
 
@@ -21,7 +21,7 @@
 
 - `server/index.js` — JWT configuration, customer registration, admin-only routes, provider failure handling, and disabled fabricated account generation.
 - `server/db.js` — safe customer role defaults for new SQLite records.
-- `verify.html` — catalog-backed availability/prices, clear quote/confirmation and pending status, safer result rendering, and reduced visual noise.
+- `portal-services.html` and `js/portal-pages.js` — portal-based catalog, service request forms, and pending status.
 - `portal.html` — removed browser-generated bank details and unsupported security/verification claims.
 - `fund-wallet.html` — corrected funding instructions and unconfigured-state handling.
 - `server/.env.example` — documents required secret/admin configuration without a provider key placeholder.

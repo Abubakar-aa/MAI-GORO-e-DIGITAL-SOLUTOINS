@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Wallet & Funding | Mai Goro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="portal-layout.css">
+    <link rel="icon" type="image/webp" href="img/logo.webp">
+</head>
+<body data-portal-page="wallet">
+    <div class="page-container">
+        <div class="nav-wrap" id="navWrap"><header class="navbar">
+            <a class="brand" href="index.html" aria-label="Mai Goro home"><img src="img/logo.webp" alt="Mai Goro logo" class="brand-mark"><span></span></a>
+            <nav class="nav-links" id="navLinks" aria-label="Primary navigation"><a href="index.html" class="nav-link">Home</a><a href="services.html" class="nav-link">Our Services</a><a href="portal-services.html" class="nav-link">Verification</a><a href="contact.html" class="nav-link">Contact Us</a></nav>
+            <a href="portal-services.html" class="nav-cta">Verify Record</a>
+            <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><i class="fa-solid fa-moon"></i></button>
+            <button class="burger" id="burger" type="button" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+        </header></div>
+        <div class="mobile-panel" id="mobilePanel" aria-label="Mobile navigation"><a href="index.html" class="nav-link">Home</a><a href="services.html" class="nav-link">Our Services</a><a href="portal-services.html" class="nav-link">Verification</a><a href="contact.html" class="nav-link">Contact Us</a><a href="#" id="mobileLogout" class="nav-cta">Sign Out</a></div>
+        <div class="portal-loading" id="portalLoading" role="status">Loading your account…</div>
+        <main class="portal-main" id="portalMain">
+            <div id="portalSidebarMount"></div>
+            <div class="portal-page-content">
+                <header class="portal-page-heading"><div><p>Customer account</p><h1>Wallet & Funding</h1></div><button type="button" class="hdr-btn hdr-btn-outline" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button></header>
+                <div id="portalContent"></div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/shop-config.js"></script>
+    <script src="js/slider-config.js"></script>
+    <script src="js/portal-pages.js"></script>
+</body>
+</html>

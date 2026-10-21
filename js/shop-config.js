@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════
 //  MAI GORO SHOP CONFIG — shared by all shop pages
-//  (buy-pins.html, verify.html)
+//  (buy-pins.html, portal-services.html)
 //  ★ EDIT your payment details HERE — every page picks it up.
 // ═══════════════════════════════════════════════════════════
 
