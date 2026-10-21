@@ -216,24 +216,8 @@
 
         /* Verifier dashboard layout inspired by the supplied reference */
         .verify-main { width: 100%; max-width: none; padding: 104px 28px 64px 286px; }
-        .nav-wrap { padding: 0; }
-        .nav-wrap .navbar, .nav-wrap.scrolled .navbar {
-            width: 100%; max-width: none; min-height: 72px; padding: 10px 20px;
-            border-radius: 0; border: 0; border-bottom: 1px solid rgba(255,255,255,.18);
-            background: #176f8c; box-shadow: 0 4px 18px rgba(12,48,65,.18);
-        }
-        body.dark-mode .nav-wrap .navbar, body.dark-mode .nav-wrap.scrolled .navbar { background: #123d55; border-color: rgba(255,255,255,.12); }
-        .nav-wrap .brand, body.dark-mode .nav-wrap .brand { color: #fff; }
-        .nav-wrap .nav-link, body.dark-mode .nav-wrap .nav-link { color: rgba(255,255,255,.88); }
-        .nav-wrap .nav-link:hover, .nav-wrap .nav-link:focus-visible, body.dark-mode .nav-wrap .nav-link:hover { color: #fff; }
-        .nav-wrap .nav-cta { background: #18b887; color: #062c27; }
-        .nav-wrap .nav-auth { border-color: rgba(255,255,255,.55); color: #fff; }
-        .nav-wrap .nav-auth:hover { background: #fff; color: #155773; }
-        .nav-wrap .theme-toggle { border-color: rgba(255,255,255,.36); background: rgba(255,255,255,.12); color: #fff; }
-        .nav-wrap .burger { border-color: rgba(255,255,255,.45); }
-        .nav-wrap .burger span, .nav-wrap .burger span::before, .nav-wrap .burger span::after { background: #fff; }
         .service-shortcuts {
-            position: fixed; z-index: 950; top: 72px; bottom: 0; left: 0; width: 262px;
+            position: fixed; z-index: 950; top: 96px; bottom: 0; left: 0; width: 262px;
             max-height: none; padding: 18px 13px 28px; overflow-y: auto;
             border: 0; border-right: 1px solid #b9e2e0; border-radius: 0;
             background: #d9f4f1; box-shadow: 4px 0 18px rgba(27,74,83,.08);
@@ -266,7 +250,6 @@
             .verify-main { padding: 92px 14px 40px; }
             .service-shortcuts { position: static; width: auto; max-height: 260px; margin: 0 0 16px; border: 1px solid var(--border); border-radius: 12px; box-shadow: none; }
             body.dark-mode .service-shortcuts { border-color: var(--dark-border); }
-            .nav-wrap .navbar { min-height: 64px; padding: 8px 12px; }
             .nav-wrap .navbar .brand { padding-left: 4px; }
             .verifier-hero { padding: 20px; }
             .group-grid, .services-grid { grid-template-columns: 1fr; }
@@ -286,7 +269,7 @@
             body.dark-mode .rail-toggle { background: #112b38; border-color: #294a59; color: var(--teal); }
             /* rail: fixed drawer, hidden off-canvas (overrides inline static strip) */
             .service-shortcuts {
-                position: fixed; top: 64px; bottom: 0; left: 0; width: min(282px, 84vw);
+                position: fixed; top: 76px; bottom: 0; left: 0; width: min(282px, 84vw);
                 max-height: none; height: auto; margin: 0; overflow-y: auto;
                 transform: translateX(-105%); transition: transform .22s ease;
                 z-index: 1080; box-shadow: none;
@@ -294,7 +277,7 @@
             body.service-rail-open .service-shortcuts { transform: none; box-shadow: 6px 0 24px rgba(12, 48, 65, .3); }
             body.service-rail-open { overflow: hidden; }
             .rail-backdrop {
-                display: block; position: fixed; inset: 64px 0 0 0; width: 100%;
+                display: block; position: fixed; inset: 76px 0 0 0; width: 100%;
                 background: rgba(12, 48, 65, .45); border: 0; padding: 0; z-index: 1070; cursor: pointer;
             }
             .rail-backdrop[hidden] { display: none; }
