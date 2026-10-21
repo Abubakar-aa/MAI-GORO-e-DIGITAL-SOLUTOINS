@@ -139,7 +139,7 @@
 
         <div class="notice info" id="setupNote" role="status" aria-live="polite" style="display:none"></div>
 
-        <form id="fundForm">
+        <form id="fundForm" style="display:none">
             <section class="fund-card">
                 <h2>Add Funds</h2>
                 <p class="hint">Temporary manual funding requests require a real transfer to the bank details shown below and an administrator review. Submitting a reference does not itself confirm payment or credit your balance.</p>
@@ -181,7 +181,7 @@
             </div>
         </section>
 
-        <div class="pay-box" id="bankBox" style="margin-top: 20px;">
+        <div class="pay-box" id="bankBox" style="display:none; margin-top: 20px;">
             <div class="pay-line"><span class="k">Bank Name</span><span class="v" id="bankName">—</span></div>
             <div class="pay-line"><span class="k">Account Number</span><span class="v" id="bankNumber">—</span><button type="button" class="copy-btn" id="copyAcct"><i class="fa-regular fa-copy"></i> Copy</button></div>
             <div class="pay-line"><span class="k">Account Name</span><span class="v" id="bankHolder">—</span></div>
@@ -204,33 +204,90 @@
 <script src="js/slider-config.js"></script>
 <script src="js/shop-config.js"></script>
 <script>
-    /* ── Bank details from shop-config.js ── */
-    // Detect unconfigured placeholders and alert the customer honestly instead of
-    // showing "YOUR BANK NAME / 0000000000" as if it were a real account.
-    (function renderBankDetails() {
-        const isUnconfigured = !BANK_DETAILS.accountNumber || /YOUR|^0+$/.test(BANK_DETAILS.accountNumber) || /YOUR/i.test(BANK_DETAILS.bank || '');
-        const el = (id) => document.getElementById(id);
-        if (isUnconfigured) {
-            el('bankName').textContent = 'Manual transfers are being upgraded to instant virtual accounts.';
-            el('bankNumber').textContent = '—';
-            el('bankHolder').textContent = 'Mai Goro Support';
-            el('copyAcct').style.display = 'none';
-            if (el('setupNote')) {
-                el('setupNote').textContent = 'No verified funding account is configured. Funding requests are disabled. Contact support for current payment instructions.';
-                el('setupNote').style.display = 'block';
+    /* ── Transfer details ──
+       Three possible sources, in order of preference:
+       1. A dedicated virtual account assigned to this customer by the payment
+          provider (payment_accounts) — written server-side only.
+       2. The shared account configured in js/shop-config.js.
+       3. Nothing real available — say so plainly and offer support.
+       Placeholder values are never shown as if they were real. */
+    const el = (id) => document.getElementById(id);
+    const WA_NUMBER = (typeof WHATSAPP_NUMBER !== 'undefined') ? WHATSAPP_NUMBER : '2349067997551';
+    const WA_FUNDING_MSG = encodeURIComponent('Hello, I would like to fund my Mai Goro wallet. Please send me the current transfer instructions for my account.');
+
+    function showNoAccountConfigured(reason) {
+        el('bankBox').style.display = 'none';
+        el('fundForm').style.display = 'none';
+        el('copyAcct').style.display = 'none';
+        const note = el('setupNote');
+        note.className = 'notice info';
+        note.style.display = 'block';
+        note.innerHTML = '<strong>No funding account is assigned to your profile yet.</strong> ' +
+            (reason || 'Automated funding is being switched on.') +
+            ' Transfer details stay hidden until a real account exists. ' +
+            '<a href="https://wa.me/' + WA_NUMBER + '?text=' + WA_FUNDING_MSG + '" target="_blank" rel="noreferrer">Message our team on WhatsApp</a> for current payment instructions.';
+    }
+
+    function showAccount(details) {
+        el('bankName').textContent = details.bank || '—';
+        el('bankNumber').textContent = details.accountNumber || '—';
+        el('bankHolder').textContent = details.accountName || '—';
+        el('bankBox').style.display = 'block';
+        el('copyAcct').style.display = '';
+        el('fundForm').style.display = 'block';
+        const note = el('setupNote');
+        note.className = 'notice info';
+        note.style.display = 'block';
+        note.innerHTML = details.dedicated
+            ? '<strong>Your dedicated account is ready.</strong> Send the amount to this account and quote your name. Your wallet is credited automatically once the transfer is confirmed.'
+            : '<strong>Shared funding account.</strong> Send the amount to this account and quote your name, then submit the transfer reference below so we can credit your wallet.';
+    }
+
+    async function resolveFundingDetails(userId) {
+        // 1. Dedicated provider account for this customer (real rows only).
+        try {
+            const { data, error } = await sb.from('payment_accounts')
+                .select('provider, bank_name, account_number, account_name, status')
+                .eq('user_id', userId)
+                .limit(1);
+            const account = !error && Array.isArray(data) ? data[0] : null;
+            if (account && account.account_number) {
+                showAccount({
+                    bank: account.bank_name,
+                    accountNumber: account.account_number,
+                    accountName: account.account_name,
+                    dedicated: true
+                });
+                return;
             }
-            el('fundForm').style.display = 'none';
-            el('bankBox').style.display = 'none';
+        } catch (err) { /* table may not exist yet — fall through */ }
+
+        // 2. Shared account from shop-config.js, only if it is really configured.
+        const configured = BANK_DETAILS && BANK_DETAILS.accountNumber &&
+            !/YOUR|^0+$/.test(BANK_DETAILS.accountNumber) &&
+            !/YOUR/i.test(BANK_DETAILS.bank || '');
+        if (configured) {
+            showAccount({
+                bank: BANK_DETAILS.bank,
+                accountNumber: BANK_DETAILS.accountNumber,
+                accountName: BANK_DETAILS.accountName,
+                dedicated: false
+            });
             return;
         }
-        document.getElementById('bankName').textContent = BANK_DETAILS.bank;
-        document.getElementById('bankNumber').textContent = BANK_DETAILS.accountNumber;
-        document.getElementById('bankHolder').textContent = BANK_DETAILS.accountName;
-        document.getElementById('bankBox').style.display = 'block';
-    })();
-    document.getElementById('copyAcct').addEventListener('click', async () => {
-        if (!BANK_DETAILS.accountNumber || /^0+$/.test(BANK_DETAILS.accountNumber)) return;
-        try { await navigator.clipboard.writeText(BANK_DETAILS.accountNumber); } catch (e) {}
+
+        // 3. Nothing real available — be explicit instead of inventing details.
+        showNoAccountConfigured();
+    }
+
+    el('copyAcct').addEventListener('click', async () => {
+        const value = el('bankNumber').textContent.trim();
+        if (!value || value === '—' || /^0+$/.test(value)) return;
+        try { await navigator.clipboard.writeText(value); } catch (e) {}
+        const btn = el('copyAcct');
+        const original = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
+        setTimeout(() => { btn.innerHTML = original; }, 1500);
     });
 
     const naira = (n) => '₦' + Number(n).toLocaleString('en-NG', { maximumFractionDigits: 2 });
@@ -243,14 +300,17 @@
         const meta = user.user_metadata || {};
         document.getElementById('fundName').value = meta.full_name || '';
         document.getElementById('fundPhone').value = meta.phone || '';
-        await loadBalance(user.id);
+        await Promise.all([loadBalance(user.id), resolveFundingDetails(user.id)]);
     })();
 
     async function loadBalance(userId) {
-        const { data, error } = await sb.from('wallets').select('balance').eq('user_id', userId).single();
-        if (!error && data) {
-            document.getElementById('balanceDisplay').textContent = naira(data.balance) + ' NGN';
+        const { data, error } = await sb.from('wallets').select('balance').eq('user_id', userId).maybeSingle();
+        const display = document.getElementById('balanceDisplay');
+        if (error) {
+            display.innerHTML = '—<small> NGN</small>';
+            return;
         }
+        display.innerHTML = naira(Number(data?.balance ?? 0)) + '<small> NGN</small>';
     }
 
     /* ── Submit funding ── */
