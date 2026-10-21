@@ -118,6 +118,8 @@
         .shortcut-group + .shortcut-group { margin-top: 12px; }
         .shortcut-group-title { display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 7px; border: 0; border-radius: 8px; background: transparent; color: var(--brand); font: 700 11px/1.3 'DM Sans', sans-serif; letter-spacing: .06em; text-align: left; text-transform: uppercase; cursor: pointer; }
         .shortcut-group-title:hover, .shortcut-group-title:focus-visible { background: rgba(36, 93, 168, .08); outline: none; }
+        .shortcut-group.is-active > .shortcut-group-title { background: rgba(36, 93, 168, .1); color: var(--brand); }
+        body.dark-mode .shortcut-group.is-active > .shortcut-group-title { background: rgba(94, 234, 212, .1); color: var(--teal); }
         .shortcut-items { display: grid; gap: 2px; }
         /* Sub-heads: titled families inside a category accordion */
         .shortcut-subhead + .shortcut-subhead { margin-top: 7px; }
@@ -236,45 +238,47 @@
             .submit-btn.is-loading::before { animation: none; }
         }
 
-        /* Verifier dashboard layout inspired by the supplied reference */
-        .verify-main { width: 100%; max-width: none; padding: 104px 28px 64px 286px; }
+        /* Verifier dashboard structure: fixed account rail + grouped service panels */
+        .verify-main { width: 100%; max-width: none; padding: 128px 28px 64px 286px; }
         .service-shortcuts {
             position: fixed; z-index: 950; top: 96px; bottom: 0; left: 0; width: 262px;
-            max-height: none; padding: 18px 13px 28px; overflow-y: auto;
-            border: 0; border-right: 1px solid #b9e2e0; border-radius: 0;
-            background: #d9f4f1; box-shadow: 4px 0 18px rgba(27,74,83,.08);
+            max-height: none; padding: 16px 12px 24px; overflow-y: auto;
+            border-radius: 0; border-left: 0; border-top: 0; border-bottom: 0;
         }
-        body.dark-mode .service-shortcuts { background: #112b38; border-color: #294a59; }
         .service-picker-layout { display: block; }
-        .verifier-grid { grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; }
-        .verifier-hero { background: #fff; color: var(--text); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 10px 28px rgba(23,37,54,.07); padding: 24px 28px; }
-        body.dark-mode .verifier-hero { background: var(--dark-surface); color: var(--dark-text); border-color: var(--dark-border); }
-        .verifier-hero .eyebrow { color: #126b83; background: #e8f7f5; border-color: #c4e8e4; letter-spacing: .08em; }
-        body.dark-mode .verifier-hero .eyebrow { color: var(--teal); background: rgba(94,234,212,.08); border-color: rgba(94,234,212,.2); }
-        .verifier-hero h1 span.gold { color: #137892; }
-        .verifier-hero h1 span.teal { color: #099b7e; }
-        .verifier-hero p { color: var(--text-muted); }
-        body.dark-mode .verifier-hero p { color: var(--dark-muted); }
-        .verifier-card { border-radius: 12px; box-shadow: 0 10px 28px rgba(23,37,54,.06); }
-        .group-grid, .services-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
-        .group-card, .service-card { border-radius: 12px; box-shadow: 0 8px 22px rgba(23,37,54,.07); }
-        .check-btn { border-radius: 5px; background: #24a845; padding: 9px 14px; }
-        .wallet-panel { background: #075b7b !important; border-color: #075b7b !important; color: #fff; }
-        .wallet-panel h2, .wallet-panel #walletBalanceDisplay, .wallet-panel .wallet-caption { color: #fff !important; }
-        .wallet-panel .wallet-caption { opacity: .82; }
-        .wallet-panel .submit-btn { width: auto; padding: 11px 17px; border-radius: 6px; background: #ff4050; color: #fff; box-shadow: none; }
-        .wallet-panel .submit-btn:hover { background: #e92e40; }
-        @media (max-width: 960px) {
-            .verify-main { padding-left: 282px; }
-            .verifier-grid { grid-template-columns: 1fr; }
-        }
+        .verifier-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+        .verifier-grid > aside { grid-row: 1; display: grid; grid-template-columns: minmax(240px, 330px) minmax(0, 1fr); gap: 16px; }
+        .verifier-grid > div { grid-row: 2; }
+        .category-panels { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        .category-panel { min-width: 0; padding: 22px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); box-shadow: 0 10px 28px rgba(23,37,54,.06); }
+        .category-panel[hidden] { display: none; }
+        body.dark-mode .category-panel { border-color: var(--dark-border); background: var(--dark-surface); box-shadow: 0 10px 28px rgba(0,0,0,.18); }
+        .category-panel-heading { display: flex; align-items: center; gap: 12px; margin: 0 0 18px; padding: 0 0 14px; border-bottom: 1px solid var(--border); font: 700 18px/1.3 'Space Grotesk',sans-serif; color: var(--text); }
+        .category-panel-heading i { width: 42px; height: 42px; display: grid; place-items: center; flex: none; border-radius: 11px; background: rgba(59,102,178,.1); color: var(--brand); }
+        .category-panel-heading .category-count { margin-left: auto; color: var(--text-muted); font: 500 12px/1.4 'DM Sans',sans-serif; white-space: nowrap; }
+        body.dark-mode .category-panel-heading { border-color: var(--dark-border); color: var(--dark-text); }
+        body.dark-mode .category-panel-heading i { background: rgba(94,234,212,.09); color: var(--teal); }
+        body.dark-mode .category-panel-heading .category-count { color: var(--dark-muted); }
+        .category-panel .subhead-block + .subhead-block { margin-top: 0; }
+        .category-panel .subhead-label { margin: 0 0 12px; font-size: 13px; letter-spacing: .02em; text-transform: none; color: var(--text); }
+        body.dark-mode .category-panel .subhead-label { color: var(--dark-text); }
+        .category-panel .subhead-label::after { display: none; }
+        .category-panel .subhead-section + .subhead-section { margin-top: 22px; }
+        .category-panel .services-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+        .category-panel .service-card { min-width: 0; min-height: 218px; border-radius: 13px; box-shadow: 0 8px 22px -14px rgba(23,37,54,.2); }
+        .category-panel .service-card .check-btn { align-self: stretch; justify-content: space-between; margin-top: auto; }
+        .category-panel { scroll-margin-top: 104px; }
+        #categoryCardsView.group-grid { display: grid; grid-template-columns: minmax(0, 1fr); }
+        .category-panel-content { min-width: 0; }
+        #categoryServicesView { display: none !important; }
+        .rail-toggle { display: none; }
+        @media (max-width: 1100px) { .category-panel .services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
         @media (max-width: 700px) {
-            .verify-main { padding: 92px 14px 40px; }
-            .service-shortcuts { position: static; width: auto; max-height: 260px; margin: 0 0 16px; border: 1px solid var(--border); border-radius: 12px; box-shadow: none; }
-            body.dark-mode .service-shortcuts { border-color: var(--dark-border); }
-            .nav-wrap .navbar .brand { padding-left: 4px; }
-            .verifier-hero { padding: 20px; }
-            .group-grid, .services-grid { grid-template-columns: 1fr; }
+            .verify-main { padding: 112px 14px 40px; }
+            .verifier-grid > aside { grid-template-columns: 1fr; }
+            .category-panel { padding: 17px; }
+            .category-panel .services-grid { grid-template-columns: 1fr; }
+            .category-panel-heading { font-size: 16px; }
         }
 
         /* ── Mobile: service rail becomes a slide-in drawer (keeps colors/format) ── */
@@ -354,7 +358,7 @@
                 <!-- Step 1: Select Verification Service -->
                 <section class="verifier-card">
                     <h2><span>SERVICES</span><small style="font-size:12.5px;font-weight:500;color:var(--text-muted);" id="activeCategoryTitle">Showing all categories</small></h2>
-                    <p class="hint">Pick a category, then choose the exact lookup, slip type, or clearance task you need completed.</p>
+                    <p class="hint">Services are grouped by category and subheading. Use the service menu to jump to a category or request.</p>
                     <button type="button" class="rail-toggle" id="serviceRailToggle" aria-expanded="false" aria-controls="serviceShortcuts"><i class="fa-solid fa-bars" aria-hidden="true"></i> Service Menu</button>
                     <button type="button" class="rail-backdrop" id="railBackdrop" hidden aria-label="Close service menu" tabindex="-1"></button>
                     <div class="service-picker-layout">
@@ -508,6 +512,11 @@
                             </div>
                         </div>
 
+                        <div class="field" id="slipTypeField" hidden>
+                            <label for="inputSlipType">Slip type *</label>
+                            <select id="inputSlipType"><option value="">Select a slip type</option></select>
+                        </div>
+
                         <!-- Live Price Display -->
                         <div class="total-box">
                             <div>
@@ -542,6 +551,12 @@
                             <i class="fa-solid fa-plus"></i> Add Funds
                         </a>
                     </div>
+                </section>
+
+                <section class="verifier-card wallet-welcome-card">
+                    <h2>Welcome to Mai Goro</h2>
+                    <p class="hint">Choose a verification service from the categories below. Your request details and quote will appear after you select a service.</p>
+                    <a href="fund-wallet.html" class="btn-portal"><i class="fa-solid fa-wallet"></i> Fund Your Wallet</a>
                 </section>
 
                 <!-- Success Confirmation -->
@@ -583,12 +598,16 @@
         const { data, error } = await sb.auth.getSession();
         if (!error && data?.session) {
             await loadAuthoritativeCatalog();
-            // deep-link: portal "Access Service" links pass ?cat=nin (etc.) — open that category
-            const deeplink = new URLSearchParams(window.location.search).get('cat')?.toLowerCase();
+            // Portal shortcuts can open a category or select one specific service.
+            const params = new URLSearchParams(window.location.search);
+            const deeplink = params.get('cat')?.toLowerCase();
             if (['nin', 'bvn', 'ipe', 'cac', 'exam'].includes(deeplink)) {
                 openCategory(deeplink);
                 document.getElementById('railDashboard')?.classList.remove('is-active');
             }
+            const serviceKey = params.get('service');
+            const serviceCard = serviceKey && Object.hasOwn(SERVICE_CATALOG, serviceKey) ? document.getElementById(`service-${serviceKey}`) : null;
+            if (serviceCard && serviceCard.dataset.catalogInactive !== 'true') serviceCard.click();
             document.documentElement.classList.remove('verify-auth-pending');
             return;
         }
@@ -596,9 +615,11 @@
         // Treat an unavailable auth check as signed out.
     }
 
-    const category = new URLSearchParams(window.location.search).get('cat')?.toLowerCase();
+    const params = new URLSearchParams(window.location.search);
+    const category = params.get('cat')?.toLowerCase();
+    const service = params.get('service');
     const allowedCategories = new Set(['nin', 'bvn', 'ipe', 'cac', 'exam']);
-    const returnPage = allowedCategories.has(category) ? `verify.html?cat=${category}` : 'verify.html';
+    const returnPage = allowedCategories.has(category) ? `verify.html?cat=${category}${service ? `&service=${encodeURIComponent(service)}` : ''}` : 'verify.html';
     const loginUrl = new URL('login.html', window.location.href);
     loginUrl.searchParams.set('next', returnPage);
     window.location.replace(loginUrl.toString());
@@ -606,17 +627,21 @@
 
 /* ── Service Catalog & Pricing ── */
 const SERVICE_CATALOG = {
-    nin:       { name: 'NIN Verification',       shortcutName: 'NIN', price: 300, icon: 'fa-id-card',            desc: 'Confirm a National Identity Number — full NIN record by the 11-digit NIN.', fields: ['inputNin'], category: 'nin', requestCode: 'nin_search' },
-    'nin-by-phone': { name: 'NIN by Phone Number', price: 450, icon: 'fa-mobile-screen-button', desc: 'Search a NIN record using the registered phone number.', fields: ['inputPhoneLookup','inputNetwork'], category: 'nin', requestCode: 'nin_by_phone' },
+    nin:       { name: 'NIN Search', shortcutName: 'NIN Search', price: 300, icon: 'fa-id-card', desc: 'Returns the full name, date of birth, and other details for a supplied valid NIN.', fields: ['inputNin'], category: 'nin', requestCode: 'nin_search' },
+    'nin-search-v3': { name: 'NIN Verification V3', price: 300, icon: 'fa-id-card', desc: 'NIN record lookup. Available for Improved Slip and Premium Slip only.', fields: ['inputNin','inputSlipType'], category: 'nin', requestCode: 'nin_search_v3', slipOptions: ['Improved Slip','Premium Slip'] },
+    'nin-search-v4': { name: 'NIN Search V4', price: 300, icon: 'fa-id-card', desc: 'NIN record lookup. Available for Regular, Improved, Premium and vNIN Verification slips.', fields: ['inputNin','inputSlipType'], category: 'nin', requestCode: 'nin_search_v4', slipOptions: ['Regular Slip','Improved Slip','Premium Slip','vNIN Verification Slip'] },
+    'nin-search-v5': { name: 'NIN Verification V5', price: 300, icon: 'fa-id-card', desc: 'NIN record lookup. Available for Regular, Improved, Premium and vNIN slips.', fields: ['inputNin','inputSlipType'], category: 'nin', requestCode: 'nin_search_v5', slipOptions: ['Regular Slip','Improved Slip','Premium Slip','vNIN Slip'] },
+    'nin-by-phone': { name: 'Phone Number Search', shortcutName: 'Phone Number Search', price: 450, icon: 'fa-mobile-screen-button', desc: 'Returns the full name, date of birth, and other details for the NIN matching the supplied phone number.', fields: ['inputPhoneLookup','inputNetwork'], category: 'nin', requestCode: 'nin_by_phone' },
+    'nin-phone-v3': { name: 'Phone Number Search V3', price: 450, icon: 'fa-mobile-screen-button', desc: 'NIN lookup using the registered phone number. Available for Improved Slip and Premium Slip only.', fields: ['inputPhoneLookup','inputNetwork','inputSlipType'], category: 'nin', requestCode: 'nin_by_phone_v3', slipOptions: ['Improved Slip','Premium Slip'] },
     'nin-slip':{ name: 'NIN Standard Slip',      price: 400, icon: 'fa-file-lines',        desc: 'Print a standard NIN slip.', fields: ['inputNin'], category: 'nin', requestCode: 'nin_standard_slip' },
     'nin-premium':{name: 'NIN Premium Slip',     price: 600, icon: 'fa-file-invoice',      desc: 'Print the premium NIN slip.', fields: ['inputNin'], category: 'nin', requestCode: 'nin_premium_slip' },
     'nin-mod': { name: 'NIN Modification',       price: 5000, api: '/v1/nin/modify', icon: 'fa-pen-to-square', desc: 'Request correction on NIN records.',  fields: ['inputNin'],               category: 'nin' },
     'nin-val': { name: 'NIN Validation',         price: 800, icon: 'fa-address-card',      desc: 'Validate a NIN record and its status.', fields: ['inputNin'], category: 'nin', requestCode: 'nin_validation' },
     'nin-demo':{ name: 'Demographic Search',     price: 1200, icon: 'fa-magnifying-glass', desc: 'Search NIN records by name, date of birth and state.',  fields: ['inputDemoName','inputDemoDob','inputDemoGender','inputDemoState','inputDemoLga'], category: 'nin', requestCode: 'nin_demographics' },
-    bvn:       { name: 'BVN Verification',       shortcutName: 'BVN Verify', price: 350, icon: 'fa-shield-halved', desc: 'Confirm who owns a Bank Verification Number — full BVN record by the 11-digit BVN.', fields: ['inputBvn'], category: 'bvn', requestCode: 'bvn_search' },
+    bvn:       { name: 'BVN Verification',       shortcutName: 'BVN Verify', price: 350, icon: 'fa-shield-halved', desc: 'Confirm who owns a Bank Verification Number — full BVN record by the 11-digit BVN.', fields: ['inputBvn'], category: 'bvn', requestCode: 'bvn_verification' },
     'bvn-pro': { name: 'BVN Verification PRO',   shortcutName: 'BVN PRO', price: 200, icon: 'fa-shield', desc: 'Extended BVN search with more identity details than the basic search.', fields: ['inputBvn'], category: 'bvn', requestCode: 'bvn_pro' },
     'bvn-slip':{ name: 'BVN Premium Slip',       price: 500,  api: '/v1/bvn/premium-slip', icon: 'fa-file-invoice', desc: 'Print the BVN premium slip.', fields: ['inputBvn'],               category: 'bvn' },
-    'bvn-retr':{ name: 'BVN Retrieval',          shortcutName: 'BVN by Phone Number', price: 1400, icon: 'fa-phone-flip', desc: 'Request a BVN search using your registered phone number.', fields: ['inputPhoneLookup','inputNetwork'], category: 'bvn', requestCode: 'bvn_by_phone' },
+    'bvn-retr':{ name: 'BVN Retrieval',          shortcutName: 'BVN by Phone Number', price: 1400, icon: 'fa-phone-flip', desc: 'Request a BVN search using your registered phone number.', fields: ['inputPhoneLookup','inputNetwork'], category: 'bvn', requestCode: 'bvn_retrieval' },
     'bvn-mod': { name: 'BVN Modification Support', shortcutName: 'BVN Modification', price: 2500, icon: 'fa-pen-to-square', desc: 'Request BVN record modification support.', fields: ['inputBvn'], category: 'bvn', requestCode: 'bvn_modification' },
     ipe:       { name: 'IPE Clearance',          price: 4500, icon: 'fa-rectangle-list', desc: 'Clear stuck NIN enrolment tracking IDs.', fields: ['inputTrackingId','inputCenter','inputEnrolYear'], category: 'ipe', requestCode: 'nin_ipe_clearance' },
     'ipe-mod': { name: 'MOD IPE Clearance',      price: 1500, api: '/v1/ipe/mod', icon: 'fa-rotate', desc: 'MOD category IPE clearance.',          fields: ['inputTrackingId','inputCenter','inputEnrolYear'], category: 'ipe' },
@@ -642,7 +667,7 @@ const SERVICE_GROUPS = {
    Clicking a sub-head reveals its services (collapsed/expanded independently). */
 const SERVICE_SUBHEADS = {
     nin: [
-        { label: 'NIN Verification',      items: ['nin-by-phone', 'nin'] },
+        { label: 'NIN Verification',      items: ['nin-by-phone', 'nin', 'nin-search-v3', 'nin-search-v4', 'nin-search-v5', 'nin-phone-v3'] },
         { label: 'NIN Standard & Premium Slip', items: ['nin-slip', 'nin-premium'] },
         { label: 'NIN Validation',        items: ['nin-val'] },
         { label: 'Demographic Search',    items: ['nin-demo'] },
@@ -676,13 +701,15 @@ function syncServiceShortcuts() {
     document.querySelectorAll('.shortcut-group').forEach(group => {
         group.hidden = !group.querySelector('.shortcut-subhead:not([hidden]), .service-shortcut:not([hidden])');
     });
-    // hide sub-head sections / blocks with no active services (and keep the open category filtered)
+    // Keep each category panel visible while hiding only inactive services.
     document.querySelectorAll('.subhead-section').forEach(sec => {
         sec.hidden = !sec.querySelector('.service-card:not([hidden])');
     });
     document.querySelectorAll('.subhead-block').forEach(block => {
-        const inCurrentCategory = !currentCategory || block.dataset.blockCategory === currentCategory;
-        block.hidden = !inCurrentCategory || !block.querySelector('.service-card:not([hidden])');
+        block.hidden = !block.querySelector('.service-card:not([hidden])');
+    });
+    document.querySelectorAll('.category-panel').forEach(panel => {
+        panel.hidden = !panel.querySelector('.service-card:not([hidden])');
     });
     // only the category area collapses when nothing is active (Dashboard + account links stay)
     document.getElementById('serviceShortcutGroups').hidden = ![...document.querySelectorAll('.service-shortcut')].some(link => !link.hidden);
@@ -696,54 +723,58 @@ function activeServiceCount(category) {
     return count;
 }
 
-/* Reference-style category cards */
+/* Category panels contain the available services under their sub-headings. */
 function renderCategoryCards() {
     const view = document.getElementById('categoryCardsView');
     if (!view) return;
+    const serviceBlocks = [...document.querySelectorAll('.subhead-block')];
     view.innerHTML = Object.entries(SERVICE_GROUPS).map(([key, category]) => {
         const active = activeServiceCount(key);
-        const availability = active
-            ? `${active} service${active > 1 ? 's' : ''} available`
-            : 'Not available yet';
-        return `<button type="button" class="group-card" data-category-card="${key}" ${active ? '' : 'data-unavailable="true"'}>
-            <span class="g-icon"><i class="fa-solid ${category.icon}" aria-hidden="true"></i></span>
-            <span class="g-name">${category.label}</span>
-            <span class="g-desc">${category.desc}</span>
-            <span class="g-count">${availability}</span>
-            <span class="check-btn"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Check Service</span>
-        </button>`;
+        const countText = `${active} service${active === 1 ? '' : 's'}`;
+        return `<section class="category-panel" id="category-panel-${key}" data-category-panel="${key}">
+            <h3 class="category-panel-heading"><i class="fa-solid ${category.icon}" aria-hidden="true"></i><span>${category.label}</span><small class="category-count">${countText}</small></h3>
+            <div class="category-panel-content" data-category-content="${key}"></div>
+        </section>`;
     }).join('');
-    view.querySelectorAll('.group-card').forEach(card => {
-        card.addEventListener('click', () => openCategory(card.dataset.categoryCard));
+    serviceBlocks.forEach(block => {
+        const target = view.querySelector(`[data-category-content="${block.dataset.blockCategory}"]`);
+        if (target) target.appendChild(block);
     });
+    const servicesView = document.getElementById('categoryServicesView');
+    if (servicesView) servicesView.hidden = true;
 }
 
-function openCategory(category) {
+function openCategory(category, subhead = null) {
     if (!SERVICE_GROUPS[category]) return;
     currentCategory = category;
-    const groupsView = document.getElementById('categoryCardsView');
-    const servicesView = document.getElementById('categoryServicesView');
-    if (!groupsView || !servicesView) return;
-    groupsView.hidden = true;
-    servicesView.hidden = false;
-    document.querySelectorAll('.subhead-block').forEach(block => {
-        block.hidden = block.dataset.blockCategory !== category;
-    });
-    document.getElementById('drilldownTitle').textContent = SERVICE_GROUPS[category].label;
+    const panel = document.getElementById(`category-panel-${category}`);
+    if (!panel) return;
     document.getElementById('activeCategoryTitle').textContent = SERVICE_GROUPS[category].label;
     document.getElementById('railDashboard')?.classList.remove('is-active');
-    syncServiceShortcuts();
+    document.querySelectorAll('.shortcut-group-title').forEach(button => {
+        const isActive = button.dataset.categoryShortcut === category;
+        button.closest('.shortcut-group')?.classList.toggle('is-active', isActive);
+    });
+    const destination = subhead
+        ? [...panel.querySelectorAll('.subhead-section')].find(section => section.dataset.serviceSubhead === subhead)
+        : panel;
+    (destination || panel).scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function backToCategories() {
     currentCategory = null;
-    const groupsView = document.getElementById('categoryCardsView');
-    const servicesView = document.getElementById('categoryServicesView');
-    if (!groupsView || !servicesView) return;
-    servicesView.hidden = true;
-    groupsView.hidden = false;
     document.getElementById('activeCategoryTitle').textContent = 'Showing all categories';
     document.getElementById('railDashboard')?.classList.add('is-active');
+    document.querySelectorAll('.shortcut-group').forEach(group => group.classList.remove('is-active'));
+    document.getElementById('categoryCardsView')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeServiceRailOnMobile() {
+    if (!window.matchMedia('(max-width: 700px)').matches) return;
+    document.body.classList.remove('service-rail-open');
+    document.getElementById('serviceRailToggle')?.setAttribute('aria-expanded', 'false');
+    const backdrop = document.getElementById('railBackdrop');
+    if (backdrop) backdrop.hidden = true;
 }
 
 async function loadAuthoritativeCatalog() {
@@ -848,16 +879,10 @@ async function loadAuthoritativeCatalog() {
             const isExpanded = button.getAttribute('aria-expanded') === 'true';
             button.setAttribute('aria-expanded', String(!isExpanded));
             document.getElementById(button.getAttribute('aria-controls')).hidden = isExpanded;
-            if (!isExpanded) {
-                const category = button.closest('.shortcut-group')?.dataset.shortcutCategory;
-                const subhead = button.closest('.shortcut-subhead')?.dataset.serviceSubhead;
-                if (category && subhead) {
-                    openCategory(category);
-                    document.querySelectorAll('.subhead-section').forEach(section => {
-                        section.hidden = section.dataset.serviceSubhead !== subhead;
-                    });
-                }
-            }
+            const category = button.closest('.shortcut-group')?.dataset.shortcutCategory;
+            const subhead = button.closest('.shortcut-subhead')?.dataset.serviceSubhead;
+            if (category && subhead) openCategory(category, subhead);
+            closeServiceRailOnMobile();
         });
     });
 
@@ -891,6 +916,9 @@ document.querySelectorAll('.shortcut-group-title').forEach(button => {
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
         button.setAttribute('aria-expanded', String(!isExpanded));
         document.getElementById(button.getAttribute('aria-controls')).hidden = isExpanded;
+        const category = button.dataset.categoryShortcut;
+        if (category) openCategory(category);
+        closeServiceRailOnMobile();
     });
 });
 
@@ -901,6 +929,7 @@ document.getElementById('railDashboard')?.addEventListener('click', event => {
     document.querySelectorAll('.rail-item').forEach(item => item.classList.remove('is-active'));
     document.getElementById('railDashboard').classList.add('is-active');
     document.querySelectorAll('.service-shortcut').forEach(link => link.classList.remove('active'));
+    closeServiceRailOnMobile();
 });
 
 document.querySelectorAll('.service-shortcut').forEach(link => {
@@ -950,7 +979,9 @@ document.querySelectorAll('.service-card').forEach(card => {
         });
         const svc = card.dataset.service;
         document.querySelectorAll('.dynamic-set').forEach(s => s.classList.remove('active'));
-        if (svc === 'nin' || svc === 'nin-by-phone') document.getElementById(svc === 'nin-by-phone' ? 'set-phone' : 'set-nin').classList.add('active');
+        const selectedCatalog = SERVICE_CATALOG[svc];
+        if (selectedCatalog?.fields.includes('inputNin')) document.getElementById('set-nin').classList.add('active');
+        if (selectedCatalog?.fields.includes('inputPhoneLookup')) document.getElementById('set-phone').classList.add('active');
         if(svc === 'bvn') document.getElementById('set-bvn').classList.add('active');
         if(svc === 'nin-mod') document.getElementById('set-nin').classList.add('active');
         if(svc === 'nin-val') document.getElementById('set-nin').classList.add('active');
@@ -969,8 +1000,16 @@ document.querySelectorAll('.service-card').forEach(card => {
         if(svc === 'pin-nabteb') document.getElementById('set-jamb').classList.add('active');
         if(svc === 'pin-nbais') document.getElementById('set-jamb').classList.add('active');
 
-        // Update price display
+        // Configure any provider-specific slip choices for this service.
         const catalog = SERVICE_CATALOG[svc];
+        const slipField = document.getElementById('slipTypeField');
+        const slipSelect = document.getElementById('inputSlipType');
+        const slipOptions = catalog?.slipOptions || [];
+        slipField.hidden = slipOptions.length === 0;
+        slipSelect.required = slipOptions.length > 0;
+        slipSelect.innerHTML = '<option value="">Select a slip type</option>' + slipOptions.map(option => `<option value="${option}">${option}</option>`).join('');
+
+        // Update price display
         if (catalog) {
             document.getElementById('selectedServiceName').textContent = catalog.name;
             document.getElementById('priceDisplay').textContent = '₦' + catalog.price.toLocaleString('en-NG');

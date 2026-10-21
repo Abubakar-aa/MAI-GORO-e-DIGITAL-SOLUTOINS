@@ -889,6 +889,7 @@ html { scroll-behavior: smooth; }
 
         .contact-card a,
         .contact-card span { display: block; color: #556475; line-height: 1.55; text-decoration: none; overflow-wrap: anywhere; }
+        .contact-card a.contact-email { overflow-wrap: normal; word-break: normal; }
         .contact-card a:hover { color: #2553c1; text-decoration: underline; text-underline-offset: 3px; }
 
         .contact-form .form-row {

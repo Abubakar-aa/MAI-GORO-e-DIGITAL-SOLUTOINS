@@ -434,6 +434,11 @@
             products = data || [];
             renderProducts();
             if (products.length) orderCard.style.display = 'block';
+            const requestedProduct = new URLSearchParams(window.location.search).get('product');
+            if (requestedProduct) {
+                const productCard = [...productGrid.querySelectorAll('.product-card')].find(card => card.dataset.id === requestedProduct);
+                if (productCard) productCard.click();
+            }
         })();
 
         qtyInput.addEventListener('input', updateTotal);

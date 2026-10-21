@@ -297,6 +297,31 @@
         .cat-icon-wrap.bvn  { background: rgba(37, 99, 235, 0.12); color: #2563eb; }
         .cat-icon-wrap.spec { background: rgba(217, 119, 6, 0.12); color: #d97706; }
 
+        /* Three top-level portal service groups with nested shortcuts. */
+        .portal-service-menu { display: grid; gap: 14px; margin: 28px 0 34px; }
+        .portal-service-group { overflow: hidden; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 4px 18px rgba(31,57,85,.04); }
+        body.dark-mode .portal-service-group { background: var(--dark-surface); border-color: var(--dark-border); }
+        .portal-service-toggle { width: 100%; display: flex; align-items: center; gap: 14px; padding: 18px 20px; border: 0; background: transparent; color: var(--text); text-align: left; font: 700 16px 'Space Grotesk', sans-serif; cursor: pointer; }
+        body.dark-mode .portal-service-toggle { color: var(--dark-text); }
+        .portal-service-toggle .cat-icon-wrap { flex: 0 0 44px; margin: 0; }
+        .portal-service-toggle .portal-chevron { margin-left: auto; transition: transform .2s ease; }
+        .portal-service-toggle[aria-expanded="true"] .portal-chevron { transform: rotate(180deg); }
+        .portal-service-panel { padding: 0 20px 20px; }
+        .portal-service-panel[hidden], .portal-service-links[hidden] { display: none !important; }
+        .portal-subgroup { margin-top: 8px; border-top: 1px solid var(--border); }
+        body.dark-mode .portal-subgroup { border-color: var(--dark-border); }
+        .portal-subgroup-toggle { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 4px; border: 0; background: transparent; color: var(--brand); text-align: left; font: 700 14px 'DM Sans', sans-serif; cursor: pointer; }
+        body.dark-mode .portal-subgroup-toggle { color: var(--teal); }
+        .portal-service-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; padding-bottom: 8px; }
+        .portal-service-link { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 15px; border: 1px solid var(--border); border-radius: 10px; color: var(--text); background: rgba(36,93,168,.035); text-decoration: none; font-size: 13px; font-weight: 650; transition: border-color .2s, background .2s, transform .2s; }
+        .portal-service-link:hover { border-color: var(--brand); background: rgba(36,93,168,.08); transform: translateY(-1px); }
+        body.dark-mode .portal-service-link { color: var(--dark-text); border-color: var(--dark-border); background: rgba(94,234,212,.035); }
+        body.dark-mode .portal-service-link:hover { border-color: var(--teal); background: rgba(94,234,212,.09); }
+        .portal-service-link i { color: var(--brand); }
+        body.dark-mode .portal-service-link i { color: var(--teal); }
+        .portal-service-empty { padding: 12px 4px; color: var(--text-muted); font-size: 13px; }
+        body.dark-mode .portal-service-empty { color: var(--dark-muted); }
+
         .cat-section-header h2 {
             font-family: 'Space Grotesk', sans-serif;
             font-size: 19px;
@@ -450,6 +475,9 @@
             .dashboard-header { padding: 24px 20px; border-radius: 18px; }
             .category-section { padding: 22px 18px; }
             .nv-services-grid { grid-template-columns: 1fr; }
+            .portal-service-toggle { padding: 16px; font-size: 15px; }
+            .portal-service-panel { padding: 0 16px 16px; }
+            .portal-service-links { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -500,8 +528,6 @@
                     </div>
                 </div>
                 <div class="header-actions">
-                    <a href="verify.html" class="hdr-btn hdr-btn-primary"><i class="fa-solid fa-shield"></i> Instant Verification</a>
-                    <a href="buy-pins.html" class="hdr-btn hdr-btn-outline"><i class="fa-solid fa-ticket"></i> Buy PINs</a>
                     <button type="button" class="hdr-btn hdr-btn-outline" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
                 </div>
             </section>
@@ -577,138 +603,52 @@
                 </article>
             </section>
 
-            <!-- 4. NAIJAVERIFY SERVICE CARDS FORMAT -->
-
-            <!-- Category 1: National Identity Number (NIN) Services -->
-            <section class="category-section">
-                <div class="cat-section-header">
-                    <div class="cat-icon-wrap nin"><i class="fa-solid fa-id-card"></i></div>
-                    <h2>National Identity Number (NIN) Services</h2>
-                </div>
-                <div class="nv-services-grid">
-                    <div class="nv-card">
-                        <div class="nv-card-icon"><i class="fa-solid fa-bolt"></i></div>
-                        <h4>NIN Instant Verification</h4>
-                        <p>Real-time official validation of National Identity Number with complete demographic data records.</p>
-                        <a href="verify.html?cat=nin" class="nv-card-btn">Access Service <i class="fa-solid fa-arrow-right"></i></a>
+            <!-- Three service groups; nested links open the corresponding service. -->
+            <section class="portal-service-menu" aria-label="Available services">
+                <article class="portal-service-group">
+                    <button type="button" class="portal-service-toggle" aria-expanded="false" aria-controls="portalVerificationPanel">
+                        <span class="cat-icon-wrap nin"><i class="fa-solid fa-shield-halved"></i></span><span>VERIFICATIONS</span><i class="fa-solid fa-chevron-down portal-chevron" aria-hidden="true"></i>
+                    </button>
+                    <div class="portal-service-panel" id="portalVerificationPanel" hidden>
+                        <div class="portal-subgroup">
+                            <button type="button" class="portal-subgroup-toggle" aria-expanded="false" aria-controls="portalNinServices">NIN <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
+                            <div class="portal-service-links" id="portalNinServices" hidden>
+                                <a class="portal-service-link" href="verify.html?cat=nin&amp;service=nin-by-phone">NIN By Phone <i class="fa-solid fa-arrow-right"></i></a>
+                                <a class="portal-service-link" href="verify.html?cat=nin&amp;service=nin">NIN Verification <i class="fa-solid fa-arrow-right"></i></a>
+                                <a class="portal-service-link" href="verify.html?cat=ipe&amp;service=ipe">IPE Clearance <i class="fa-solid fa-arrow-right"></i></a>
+                                <a class="portal-service-link" href="verify.html?cat=ipe&amp;service=ipe">Tracking ID Services <i class="fa-solid fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                        <div class="portal-subgroup">
+                            <button type="button" class="portal-subgroup-toggle" aria-expanded="false" aria-controls="portalBvnServices">BVN <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
+                            <div class="portal-service-links" id="portalBvnServices" hidden>
+                                <a class="portal-service-link" href="verify.html?cat=bvn&amp;service=bvn">BVN Verification <i class="fa-solid fa-arrow-right"></i></a>
+                                <a class="portal-service-link" href="verify.html?cat=bvn&amp;service=bvn-retr">BVN Retrieval by Phone <i class="fa-solid fa-arrow-right"></i></a>
+                                <a class="portal-service-link" href="verify.html?cat=bvn&amp;service=bvn-mod">BVN Modification <i class="fa-solid fa-arrow-right"></i></a>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="nv-card">
-                        <div class="nv-card-icon"><i class="fa-solid fa-file-pdf"></i></div>
-                        <h4>NIN Standard Slip (PDF)</h4>
-                        <p>Generate and download instant NIMC official standard identity slip with high-res security QR code.</p>
-                        <a href="verify.html?cat=nin" class="nv-card-btn">Access Service <i class="fa-solid fa-arrow-right"></i></a>
+                </article>
+                <article class="portal-service-group">
+                    <button type="button" class="portal-service-toggle" aria-expanded="false" aria-controls="portalExamPanel">
+                        <span class="cat-icon-wrap bvn"><i class="fa-solid fa-graduation-cap"></i></span><span>EXAM PINS</span><i class="fa-solid fa-chevron-down portal-chevron" aria-hidden="true"></i>
+                    </button>
+                    <div class="portal-service-panel" id="portalExamPanel" hidden>
+                        <div class="portal-service-links" id="portalExamProducts"><p class="portal-service-empty">Loading available exam pins…</p></div>
                     </div>
-
-                    <div class="nv-card">
-                        <div class="nv-card-icon"><i class="fa-solid fa-id-badge"></i></div>
-                        <h4>NIN Premium PVC Card</h4>
-                        <p>High-resolution full color card-format slip with holographic design, ready for PVC plastic printing.</p>
-                        <a href="verify.html?cat=nin" class="nv-card-btn">Access Service <i class="fa-solid fa-arrow-right"></i></a>
+                </article>
+                <article class="portal-service-group">
+                    <button type="button" class="portal-service-toggle" aria-expanded="false" aria-controls="portalCacPanel">
+                        <span class="cat-icon-wrap spec"><i class="fa-solid fa-briefcase"></i></span><span>C.A.C REGISTRATION</span><i class="fa-solid fa-chevron-down portal-chevron" aria-hidden="true"></i>
+                    </button>
+                    <div class="portal-service-panel" id="portalCacPanel" hidden>
+                        <div class="portal-service-links">
+                            <a class="portal-service-link" href="verify.html?cat=cac&amp;service=cac">CAC Business Name Registration <i class="fa-solid fa-arrow-right"></i></a>
+                            <a class="portal-service-link" href="verify.html?cat=cac&amp;service=cac-limited">CAC Limited Company Registration <i class="fa-solid fa-arrow-right"></i></a>
+                            <a class="portal-service-link" href="verify.html?cat=cac&amp;service=cac-organization">CAC Organization Registration <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
                     </div>
-
-                    <div class="nv-card">
-                        <div class="nv-card-icon"><i class="fa-solid fa-phone"></i></div>
-                        <h4>NIN Search by Phone</h4>
-                        <p>Retrieve registered NIN details and identity profile using your registered phone number.</p>
-                        <a href="verify.html?cat=nin" class="nv-card-btn">Access Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-
-                    <div class="nv-card">
-                        <div class="nv-card-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
-                        <h4>Demographic Search</h4>
-                        <p>Find and recover lost NIN records using Legal Full Name, Date of Birth, and State of Origin.</p>
-                        <a href="verify.html?cat=nin" class="nv-card-btn">Access Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-
-                    <div class="nv-card">
-                        <div class="nv-card-icon"><i class="fa-solid fa-check-double"></i></div>
-                        <h4>NIN Validation &amp; Bank Link</h4>
-                        <p>Re-validate NIN records with NIMC central database for banking transactions, NYSC, and SIM unbarring.</p>
-                        <a href="verify.html?cat=ipe" class="nv-card-btn">Access Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Category 2: Bank Verification Number (BVN) Services -->
-            <section class="category-section">
-                <div class="cat-section-header">
-                    <div class="cat-icon-wrap bvn"><i class="fa-solid fa-building-columns"></i></div>
-                    <h2>Bank Verification Number (BVN) Services</h2>
-                </div>
-                <div class="nv-services-grid">
-                    <div class="nv-card">
-                        <div class="nv-card-icon"><i class="fa-solid fa-shield-check"></i></div>
-                        <h4>BVN Verification &amp; Match</h4>
-                        <p>Instant financial verification confirming BVN owner name, linked phone number, and photo match.</p>
-                        <a href="verify.html?cat=bvn" class="nv-card-btn">Access Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-
-                    <div class="nv-card">
-                        <div class="nv-card-icon"><i class="fa-solid fa-database"></i></div>
-                        <h4>BVN Data Retrieval by Phone</h4>
-                        <p>Find and retrieve lost BVN details using registered phone number and bank account records.</p>
-                        <a href="verify.html?cat=bvn" class="nv-card-btn">Access Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-
-                    <div class="nv-card">
-                        <div class="nv-card-icon"><i class="fa-solid fa-user-pen"></i></div>
-                        <h4>BVN Data Modification Support</h4>
-                        <p>Guided assistance for correcting BVN Name spelling, Date of Birth, or Phone number records.</p>
-                        <a href="verify.html?cat=bvn" class="nv-card-btn">Access Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Category 3: Specialized & Regulatory Services -->
-            <section class="category-section">
-                <div class="cat-section-header">
-                    <div class="cat-icon-wrap spec"><i class="fa-solid fa-star"></i></div>
-                    <h2>Specialized &amp; Registration Services</h2>
-                </div>
-                <div class="nv-services-grid">
-                    <div class="nv-card">
-                        <div class="nv-card-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                        <h4>IPE Clearance (Stuck NIN)</h4>
-                        <p>Clear In-Processing Error (IPE) to force generate stuck NIN from enrolment tracking slips.</p>
-                        <a href="verify.html?cat=ipe" class="nv-card-btn">Access Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-
-                    <div class="nv-card">
-                        <div class="nv-card-icon"><i class="fa-solid fa-barcode"></i></div>
-                        <h4>Tracking ID Services</h4>
-                        <p>Personalized verification and lookup using your 15-character NIMC Enrolment Tracking ID.</p>
-                        <a href="verify.html?cat=ipe" class="nv-card-btn">Access Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-
-                    <div class="nv-card">
-                        <div class="nv-card-icon"><i class="fa-solid fa-briefcase"></i></div>
-                        <h4>CAC Business Name Registration</h4>
-                        <p>Full business name reservation, document processing, and official certificate with BN number.</p>
-                        <a href="verify.html?cat=cac" class="nv-card-btn">Access Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-
-                    <div class="nv-card">
-                        <div class="nv-card-icon"><i class="fa-solid fa-building"></i></div>
-                        <h4>CAC Limited Company Registration</h4>
-                        <p>Registration support for limited liability companies through the Corporate Affairs Commission.</p>
-                        <a href="verify.html?cat=cac" class="nv-card-btn">Access Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-
-                    <div class="nv-card">
-                        <div class="nv-card-icon"><i class="fa-solid fa-people-group"></i></div>
-                        <h4>CAC Organization Registration</h4>
-                        <p>Registration support for eligible organizations through the Corporate Affairs Commission.</p>
-                        <a href="verify.html?cat=cac" class="nv-card-btn">Access Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-
-                    <div class="nv-card">
-                        <div class="nv-card-icon"><i class="fa-solid fa-graduation-cap"></i></div>
-                        <h4>JAMB Profile Code &amp; Exam PINs</h4>
-                        <p>Instant generation of JAMB Profile Code and purchase of official UTME registration e-PIN.</p>
-                        <a href="buy-pins.html" class="nv-card-btn">Access Service <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </div>
+                </article>
             </section>
 
             <!-- 5. My Verifications & Order History Section -->
@@ -769,6 +709,26 @@
     <script>
         const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         const naira = (n) => '₦' + Number(n).toLocaleString('en-NG', { maximumFractionDigits: 0 });
+
+        document.querySelectorAll('.portal-service-toggle, .portal-subgroup-toggle').forEach(button => {
+            button.addEventListener('click', () => {
+                const panel = document.getElementById(button.getAttribute('aria-controls'));
+                const expanded = button.getAttribute('aria-expanded') === 'true';
+                button.setAttribute('aria-expanded', String(!expanded));
+                if (panel) panel.hidden = expanded;
+            });
+        });
+
+        (async function loadPortalExamProducts() {
+            const list = document.getElementById('portalExamProducts');
+            const { data, error } = await sb.from('pin_products').select('id,exam,name').eq('active', true).order('exam').order('name');
+            const jambShortcut = '<a class="portal-service-link" href="verify.html?cat=exam&amp;service=jamb">JAMB Profile Code &amp; Exam PIN <i class="fa-solid fa-arrow-right"></i></a>';
+            if (error || !data?.length) {
+                list.innerHTML = jambShortcut + '<p class="portal-service-empty">No other exam pins are available right now.</p>';
+                return;
+            }
+            list.innerHTML = jambShortcut + data.map(product => `<a class="portal-service-link" href="buy-pins.html?product=${encodeURIComponent(product.id)}#productGrid">${esc(product.exam)} — ${esc(product.name)} <i class="fa-solid fa-arrow-right"></i></a>`).join('');
+        })();
 
         let currentUser = null;
 
