@@ -37,12 +37,6 @@
         body.dark-mode .wallet-notice { background: rgba(227,167,47,0.15); color: #ffd977; }
         
         /* ── Service Badges ── */
-        .v-badge { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; border: 1px solid; margin-bottom: 8px; }
-        .v-badge.nin  { color: #059669; background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.3); }
-        .v-badge.bvn  { color: #2563eb; background: rgba(37, 99, 235, 0.12); border-color: rgba(37, 99, 235, 0.3); }
-        .v-badge.ipe  { color: #d97706; background: rgba(217, 119, 6, 0.12); border-color: rgba(217, 119, 6, 0.3); }
-        .v-badge.cac  { color: #7c3aed; background: rgba(124, 58, 237, 0.12); border-color: rgba(124, 58, 237, 0.3); }
-        .v-badge.exam { color: #0891b2; background: rgba(8, 145, 178, 0.12); border-color: rgba(8, 145, 178, 0.3); }
         
         /* ── Form Elements ── */
         .field { margin-bottom: 16px; text-align: left; }
@@ -114,15 +108,6 @@
         
         .cat-nav-wrap { margin-bottom: 22px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
         .cat-nav { display: flex; gap: 8px; min-width: max-content; }
-        .cat-tab { display: inline-flex; align-items: center; gap: 9px; background: var(--surface); border: 1.5px solid var(--border); border-radius: 999px; padding: 10px 18px; font-family: inherit; font-size: 13.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease; }
-        .cat-tab:hover { border-color: var(--brand); color: var(--brand); transform: translateY(-1px); }
-        .cat-tab.active { background: var(--brand); border-color: var(--brand); color: #fff; box-shadow: 0 6px 18px rgba(36, 93, 168, 0.25); }
-        .cat-tab .count { background: rgba(0, 0, 0, 0.08); color: inherit; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; }
-        .cat-tab.active .count { background: rgba(255, 255, 255, 0.25); color: #fff; }
-        body.dark-mode .cat-tab { background: var(--dark-surface); border-color: var(--dark-border); color: var(--dark-muted); }
-        body.dark-mode .cat-tab:hover { border-color: var(--teal); color: var(--teal); }
-        body.dark-mode .cat-tab.active { background: var(--teal); border-color: var(--teal); color: var(--night); box-shadow: 0 6px 18px rgba(94, 234, 212, 0.22); }
-        
         .verifier-grid { display: grid; grid-template-columns: 1.35fr 0.85fr; gap: 24px; align-items: start; }
         @media (max-width: 960px) { .verifier-grid { grid-template-columns: 1fr; } }
         .service-picker-layout { display: grid; grid-template-columns: minmax(180px, 0.72fr) minmax(0, 1.8fr); gap: 18px; align-items: start; }
@@ -156,25 +141,66 @@
         body.dark-mode .service-shortcut:hover, body.dark-mode .service-shortcut:focus-visible { background: rgba(94, 234, 212, .09); color: var(--teal); }
         body.dark-mode .service-shortcut { color: var(--dark-muted); }
         body.dark-mode .service-shortcut.active { border-left-color: var(--teal); background: rgba(94, 234, 212, .1); color: var(--teal); }
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; min-width: 0; }
+        .picker-content { min-width: 0; }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(225px, 1fr)); gap: 16px; min-width: 0; }
+        .group-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(235px, 1fr)); gap: 18px; min-width: 0; align-content: start; }
         @media (max-width: 960px) { .service-shortcuts { position: static; max-height: 320px; } }
-        @media (max-width: 640px) { .service-picker-layout { grid-template-columns: 1fr; } .service-shortcuts { max-height: 240px; } .services-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .service-picker-layout { grid-template-columns: 1fr; } .service-shortcuts { max-height: 240px; } .services-grid, .group-grid { grid-template-columns: 1fr; } }
         @media (max-width: 700px) {
-            .services-grid { grid-template-columns: 1fr; }
+            .services-grid, .group-grid { grid-template-columns: 1fr; }
         }
-        .service-card { position: relative; border: 1.5px solid var(--border); border-radius: 16px; padding: 18px 18px 16px; background: transparent; cursor: pointer; text-align: left; transition: all 0.22s ease; display: flex; flex-direction: column; justify-content: space-between; }
+
+        /* Drill-down header (category title + back) */
+        .drilldown-header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+        .back-link { display: inline-flex; align-items: center; gap: 7px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 12.5px/1 'DM Sans', sans-serif; padding: 9px 15px; border-radius: 999px; cursor: pointer; transition: all .18s ease; }
+        .back-link:hover, .back-link:focus-visible { border-color: var(--brand); color: var(--brand); outline: none; }
+        body.dark-mode .back-link { background: var(--dark-surface); border-color: var(--dark-border); color: var(--dark-text); }
+        body.dark-mode .back-link:hover, body.dark-mode .back-link:focus-visible { border-color: var(--teal); color: var(--teal); }
+
+        /* Sub-head sections inside an open category */
+        .subhead-block { min-width: 0; }
+        .subhead-block + .subhead-block { margin-top: 18px; }
+        .subhead-section[hidden] { display: none; }
+        .subhead-block[hidden] { display: none; }
+        .subhead-label { display: flex; align-items: center; gap: 10px; font: 700 12.5px/1.2 'DM Sans', sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 12px; }
+        .subhead-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        /* Category cards (reference style: icon, title, description, Check Service) */
+        .group-card { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; border: 1.5px solid var(--border); border-radius: 14px; background: #fff; padding: 20px 18px; box-shadow: 0 8px 22px -14px rgba(23, 37, 54, .2); cursor: pointer; text-align: left; font-family: inherit; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+        .group-card:hover { transform: translateY(-3px); border-color: rgba(59, 102, 178, .45); box-shadow: 0 14px 30px -14px rgba(23, 37, 54, .26); }
+        .group-card[hidden] { display: none; }
+        .group-card .g-icon { width: 52px; height: 52px; display: grid; place-items: center; font-size: 22px; border-radius: 12px; background: rgba(59, 102, 178, .1); color: var(--brand); }
+        .group-card .g-name { font-size: 15.5px; font-weight: 700; color: var(--text); line-height: 1.3; }
+        .group-card .g-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+        .group-card .g-count { font-size: 12px; font-weight: 700; color: var(--brand); }
+        body.dark-mode .group-card { background: var(--dark-surface); border-color: var(--dark-border); box-shadow: 0 8px 22px -14px rgba(0, 0, 0, .5); }
+        body.dark-mode .group-card .g-icon { background: rgba(94, 234, 212, .09); color: var(--teal); }
+        body.dark-mode .group-card .g-name { color: var(--dark-text); }
+        body.dark-mode .group-card .g-desc { color: var(--dark-muted); }
+        body.dark-mode .group-card .g-count { color: var(--teal); }
+
+        /* Shared Check Service button */
+        .check-btn { display: inline-flex; align-items: center; gap: 7px; background: #28a745; color: #fff; font: 700 13px/1 'DM Sans', sans-serif; padding: 10px 18px; border-radius: 8px; margin-top: 6px; transition: background .18s ease; }
+        .group-card:hover .check-btn, .service-card:hover .check-btn { background: #1f8b38; }
+        .check-btn i { font-size: 12px; }
+
+        /* Service cards (reference style: icon, title, description, unit-cost badge) */
+        .service-card { position: relative; border: 1.5px solid var(--border); border-radius: 14px; background: #fff; padding: 18px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; cursor: pointer; text-align: left; font-family: inherit; box-shadow: 0 8px 22px -14px rgba(23, 37, 54, .2); transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
         .service-card[hidden] { display: none; }
-        .service-card:hover { transform: translateY(-2px); border-color: rgba(59, 102, 178, 0.45); box-shadow: 0 10px 24px -10px rgba(59, 102, 178, 0.15); }
-        .service-card.selected { border-color: var(--brand); background: rgba(59, 102, 178, 0.03); box-shadow: 0 12px 28px -8px rgba(59, 102, 178, 0.35); }
-        body.dark-mode .service-card { border-color: var(--dark-border); }
+        .service-card:hover { transform: translateY(-4px); border-color: rgba(59, 102, 178, .45); box-shadow: 0 14px 30px -14px rgba(23, 37, 54, .26); }
+        .service-card.selected { border-color: var(--brand); background: rgba(59, 102, 178, .03); box-shadow: 0 14px 30px -10px rgba(59, 102, 178, .35); }
+        .service-card .s-icon { width: 46px; height: 46px; display: grid; place-items: center; font-size: 19px; border-radius: 10px; background: rgba(59, 102, 178, .1); color: var(--brand); }
+        .service-card .s-name { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.35; }
+        .service-card .s-desc { font-size: 12.8px; color: var(--text-muted); line-height: 1.5; }
+        .service-card .unit-cost { font-size: 13px; color: var(--text-muted); font-weight: 600; display: inline-flex; align-items: center; gap: 7px; margin-top: 2px; flex-wrap: wrap; }
+        .service-card .unit-cost .unit-badge { background: #c62828; color: #fff; font: 700 12px/1 'DM Sans', sans-serif; padding: 4px 9px; border-radius: 4px; letter-spacing: .02em; }
+        body.dark-mode .service-card { background: var(--dark-surface); border-color: var(--dark-border); }
         body.dark-mode .service-card:hover { border-color: rgba(94, 234, 212, 0.4); }
-        body.dark-mode .service-card.selected { border-color: var(--teal); background: rgba(94, 234, 212, 0.03); box-shadow: 0 12px 28px -8px rgba(94, 234, 212, 0.25); }
-        
-        .service-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
-        .service-card .s-name { font-size: 14.5px; font-weight: 700; color: var(--text); line-height: 1.35; margin-bottom: 6px; }
+        body.dark-mode .service-card.selected { border-color: var(--teal); background: rgba(94, 234, 212, 0.03); box-shadow: 0 14px 30px -10px rgba(94, 234, 212, 0.25); }
+        body.dark-mode .service-card .s-icon { background: rgba(94, 234, 212, .09); color: var(--teal); }
         body.dark-mode .service-card .s-name { color: var(--dark-text); }
-        .service-card .s-price { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; color: var(--brand); display: block; margin-top: 10px; }
-        body.dark-mode .service-card .s-price { color: var(--teal); }
+        body.dark-mode .service-card .s-desc { color: var(--dark-muted); }
+        body.dark-mode .service-card .unit-cost { color: var(--dark-muted); }
         
         @media (max-width: 640px) {
             .verify-main { padding: 118px 16px 50px; }
@@ -229,34 +255,31 @@
             <p>Fast, reliable, and compliant identity verification suite for individuals, agents, and organizations. Instant official slip generation, stuck tracking ID resolution, corporate searches, and examination tokens.</p>
         </section>
 
-        <!-- Category Filter Tabs -->
-        <div class="cat-nav-wrap">
-            <div class="cat-nav" id="categoryNav">
-                <button type="button" class="cat-tab active" data-category="all"><i class="fa-solid fa-grid-2"></i> All Services <span class="count" id="countAll">16</span></button>
-                <button type="button" class="cat-tab" data-category="nin"><i class="fa-solid fa-id-badge"></i> NIN Services <span class="count" id="countNin">6</span></button>
-                <button type="button" class="cat-tab" data-category="bvn"><i class="fa-solid fa-building-columns"></i> BVN Services <span class="count" id="countBvn">3</span></button>
-                <button type="button" class="cat-tab" data-category="ipe"><i class="fa-solid fa-triangle-exclamation"></i> IPE Clearance <span class="count" id="countIpe">2</span></button>
-                <button type="button" class="cat-tab" data-category="cac"><i class="fa-solid fa-briefcase"></i> CAC Corporate <span class="count" id="countCac">3</span></button>
-                <button type="button" class="cat-tab" data-category="exam"><i class="fa-solid fa-graduation-cap"></i> Exam & Utilities <span class="count" id="countExam">2</span></button>
-            </div>
-        </div>
-
-        <!-- Service Cards -->
+        <!-- Service Drill-down: category cards -> service cards -->
         <div class="verifier-grid">
 
             <!-- Left Column: Service Selector & Dynamic Form -->
             <div>
                 <!-- Step 1: Select Verification Service -->
                 <section class="verifier-card">
-                    <h2><span>1. Select Service</span><small style="font-size:12.5px;font-weight:500;color:var(--text-muted);" id="activeCategoryTitle">Showing all services</small></h2>
-                    <p class="hint">Choose the exact lookup, slip type, or clearance task you need completed.</p>
+                    <h2><span>1. Select Service</span><small style="font-size:12.5px;font-weight:500;color:var(--text-muted);" id="activeCategoryTitle">Showing all categories</small></h2>
+                    <p class="hint">Pick a category, then choose the exact lookup, slip type, or clearance task you need completed.</p>
                     <div class="service-picker-layout">
                         <nav class="service-shortcuts" id="serviceShortcuts" aria-label="Verification service shortcuts">
                             <button type="button" class="shortcut-root" id="shortcutRootToggle" aria-expanded="true" aria-controls="serviceShortcutGroups">Verification<i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
                             <div id="serviceShortcutGroups"></div>
                         </nav>
-                        <div class="services-grid" id="servicesGrid">
-                            <!-- Injected dynamically via script -->
+                        <div class="picker-content">
+                            <div class="group-grid" id="categoryCardsView" aria-label="Service categories"></div>
+                            <div id="categoryServicesView" hidden>
+                                <div class="drilldown-header">
+                                    <button type="button" class="back-link" id="backToCategories"><i class="fa-solid fa-chevron-left"></i> All Categories</button>
+                                    <h3 id="drilldownTitle" style="margin:0;font-size:16px;font-weight:800;color:var(--text);"></h3>
+                                </div>
+                                <div class="services-grid" id="servicesGrid">
+                                    <!-- Injected dynamically via script -->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -474,36 +497,36 @@
 
 /* ── Service Catalog & Pricing ── */
 const SERVICE_CATALOG = {
-    nin:       { name: 'NIN Verification',       shortcutName: 'NIN', price: 300, fields: ['inputNin'], category: 'nin', requestCode: 'nin_search' },
-    'nin-by-phone': { name: 'NIN by Phone Number', price: 450, fields: ['inputPhoneLookup','inputNetwork'], category: 'nin', requestCode: 'nin_by_phone' },
-    'nin-slip':{ name: 'NIN Standard Slip',      price: 400, fields: ['inputNin'], category: 'nin', requestCode: 'nin_standard_slip' },
-    'nin-premium':{name: 'NIN Premium Slip',     price: 600, fields: ['inputNin'], category: 'nin', requestCode: 'nin_premium_slip' },
-    'nin-mod': { name: 'NIN Modification',       price: 5000, api: '/v1/nin/modify',       fields: ['inputNin'],               category: 'nin' },
-    'nin-val': { name: 'NIN Validation',         price: 800, fields: ['inputNin'], category: 'nin', requestCode: 'nin_validation' },
-    'nin-demo':{ name: 'Demographic Search',     price: 1200, fields: ['inputDemoName','inputDemoDob','inputDemoGender','inputDemoState','inputDemoLga'], category: 'nin', requestCode: 'nin_demographics' },
-    bvn:       { name: 'BVN Verification',       shortcutName: 'BVN Verify', price: 350, fields: ['inputBvn'], category: 'bvn', requestCode: 'bvn_search' },
-    'bvn-pro': { name: 'BVN Verification PRO',   shortcutName: 'BVN PRO', price: 200, fields: ['inputBvn'], category: 'bvn', requestCode: 'bvn_pro' },
-    'bvn-slip':{ name: 'BVN Premium Slip',       price: 500,  api: '/v1/bvn/premium-slip', fields: ['inputBvn'],               category: 'bvn' },
-    'bvn-retr':{ name: 'BVN Retrieval',          shortcutName: 'BVN by Phone Number', price: 1400, fields: ['inputPhoneLookup','inputNetwork'], category: 'bvn', requestCode: 'bvn_by_phone' },
-    'bvn-mod': { name: 'BVN Modification Support', shortcutName: 'BVN Modification', price: 2500, fields: ['inputBvn'], category: 'bvn', requestCode: 'bvn_modification' },
-    ipe:       { name: 'IPE Clearance',          price: 4500, fields: ['inputTrackingId','inputCenter','inputEnrolYear'], category: 'ipe', requestCode: 'nin_ipe_clearance' },
-    'ipe-mod': { name: 'MOD IPE Clearance',      price: 1500, api: '/v1/ipe/mod',          fields: ['inputTrackingId','inputCenter','inputEnrolYear'], category: 'ipe' },
-    cac:       { name: 'CAC Business Name Registration', price: 18000, fields: ['inputCacName1','inputCacName2'], category: 'cac', requestCode: 'cac_business_name' },
-    'cac-limited': { name: 'CAC Limited Company Registration', price: 45000, fields: ['inputCacName1','inputCacName2'], category: 'cac', requestCode: 'cac_company_ltd' },
-    'cac-organization': { name: 'CAC Organization Registration', price: 0, fields: ['inputCacName1','inputCacName2'], category: 'cac', requestCode: 'cac_organization_registration' },
-    jamb:      { name: 'JAMB Profile & PIN',      price: 8500, fields: ['inputJambProfile','inputJambEmail'], category: 'exam', requestCode: 'jamb_pin_profile' },
-    'pin-neco':{ name: 'NECO Token',             price: 3500, api: '/v1/pin/neco',         fields: ['inputJambProfile'], category: 'exam' },
-    'pin-waec':{ name: 'WAEC Result Checker',    price: 5500, api: '/v1/pin/waec',         fields: ['inputJambProfile'], category: 'exam' },
-    'pin-nabteb':{name: 'NABTEB Token',          price: 2500, api: '/v1/pin/nabteb',       fields: ['inputJambProfile'], category: 'exam' },
-    'pin-nbais':{name: 'NBAIS Token',            price: 2500, api: '/v1/pin/nbais',        fields: ['inputJambProfile'], category: 'exam' }
+    nin:       { name: 'NIN Verification',       shortcutName: 'NIN', price: 300, icon: 'fa-id-card',            desc: 'Confirm a National Identity Number — full NIN record by the 11-digit NIN.', fields: ['inputNin'], category: 'nin', requestCode: 'nin_search' },
+    'nin-by-phone': { name: 'NIN by Phone Number', price: 450, icon: 'fa-mobile-screen-button', desc: 'Search a NIN record using the registered phone number.', fields: ['inputPhoneLookup','inputNetwork'], category: 'nin', requestCode: 'nin_by_phone' },
+    'nin-slip':{ name: 'NIN Standard Slip',      price: 400, icon: 'fa-file-lines',        desc: 'Print a standard NIN slip.', fields: ['inputNin'], category: 'nin', requestCode: 'nin_standard_slip' },
+    'nin-premium':{name: 'NIN Premium Slip',     price: 600, icon: 'fa-file-invoice',      desc: 'Print the premium NIN slip.', fields: ['inputNin'], category: 'nin', requestCode: 'nin_premium_slip' },
+    'nin-mod': { name: 'NIN Modification',       price: 5000, api: '/v1/nin/modify', icon: 'fa-pen-to-square', desc: 'Request correction on NIN records.',  fields: ['inputNin'],               category: 'nin' },
+    'nin-val': { name: 'NIN Validation',         price: 800, icon: 'fa-address-card',      desc: 'Validate a NIN record and its status.', fields: ['inputNin'], category: 'nin', requestCode: 'nin_validation' },
+    'nin-demo':{ name: 'Demographic Search',     price: 1200, icon: 'fa-magnifying-glass', desc: 'Search NIN records by name, date of birth and state.',  fields: ['inputDemoName','inputDemoDob','inputDemoGender','inputDemoState','inputDemoLga'], category: 'nin', requestCode: 'nin_demographics' },
+    bvn:       { name: 'BVN Verification',       shortcutName: 'BVN Verify', price: 350, icon: 'fa-shield-halved', desc: 'Confirm who owns a Bank Verification Number — full BVN record by the 11-digit BVN.', fields: ['inputBvn'], category: 'bvn', requestCode: 'bvn_search' },
+    'bvn-pro': { name: 'BVN Verification PRO',   shortcutName: 'BVN PRO', price: 200, icon: 'fa-shield', desc: 'Extended BVN search with more identity details than the basic search.', fields: ['inputBvn'], category: 'bvn', requestCode: 'bvn_pro' },
+    'bvn-slip':{ name: 'BVN Premium Slip',       price: 500,  api: '/v1/bvn/premium-slip', icon: 'fa-file-invoice', desc: 'Print the BVN premium slip.', fields: ['inputBvn'],               category: 'bvn' },
+    'bvn-retr':{ name: 'BVN Retrieval',          shortcutName: 'BVN by Phone Number', price: 1400, icon: 'fa-phone-flip', desc: 'Request a BVN search using your registered phone number.', fields: ['inputPhoneLookup','inputNetwork'], category: 'bvn', requestCode: 'bvn_by_phone' },
+    'bvn-mod': { name: 'BVN Modification Support', shortcutName: 'BVN Modification', price: 2500, icon: 'fa-pen-to-square', desc: 'Request BVN record modification support.', fields: ['inputBvn'], category: 'bvn', requestCode: 'bvn_modification' },
+    ipe:       { name: 'IPE Clearance',          price: 4500, icon: 'fa-rectangle-list', desc: 'Clear stuck NIN enrolment tracking IDs.', fields: ['inputTrackingId','inputCenter','inputEnrolYear'], category: 'ipe', requestCode: 'nin_ipe_clearance' },
+    'ipe-mod': { name: 'MOD IPE Clearance',      price: 1500, api: '/v1/ipe/mod', icon: 'fa-rotate', desc: 'MOD category IPE clearance.',          fields: ['inputTrackingId','inputCenter','inputEnrolYear'], category: 'ipe' },
+    cac:       { name: 'CAC Business Name Registration', price: 18000, icon: 'fa-briefcase', desc: 'Register a business name with the Corporate Affairs Commission.', fields: ['inputCacName1','inputCacName2'], category: 'cac', requestCode: 'cac_business_name' },
+    'cac-limited': { name: 'CAC Limited Company Registration', price: 45000, icon: 'fa-city', desc: 'Register a limited liability company with the CAC.', fields: ['inputCacName1','inputCacName2'], category: 'cac', requestCode: 'cac_company_ltd' },
+    'cac-organization': { name: 'CAC Organization Registration', price: 0, icon: 'fa-people-group', desc: 'Register an organization or trustee body with the CAC.', fields: ['inputCacName1','inputCacName2'], category: 'cac', requestCode: 'cac_organization_registration' },
+    jamb:      { name: 'JAMB Profile & PIN',      price: 8500, icon: 'fa-graduation-cap', desc: 'Generate a JAMB profile code and ePIN.', fields: ['inputJambProfile','inputJambEmail'], category: 'exam', requestCode: 'jamb_pin_profile' },
+    'pin-neco':{ name: 'NECO Token',             price: 3500, api: '/v1/pin/neco', icon: 'fa-receipt', desc: 'Get your NECO result checker token.', fields: ['inputJambProfile'], category: 'exam' },
+    'pin-waec':{ name: 'WAEC Result Checker',    price: 5500, api: '/v1/pin/waec', icon: 'fa-receipt', desc: 'Get your WAEC result checker token.',  fields: ['inputJambProfile'], category: 'exam' },
+    'pin-nabteb':{name: 'NABTEB Token',          price: 2500, api: '/v1/pin/nabteb', icon: 'fa-receipt', desc: 'Get your NABTEB result checker token.', fields: ['inputJambProfile'], category: 'exam' },
+    'pin-nbais':{name: 'NBAIS Token',            price: 2500, api: '/v1/pin/nbais', icon: 'fa-receipt', desc: 'Get your NBAIS result checker token.', fields: ['inputJambProfile'], category: 'exam' }
 };
 
 const SERVICE_GROUPS = {
-    nin: { label: 'NIN Verification', icon: 'fa-id-badge' },
-    bvn: { label: 'BVN Verification', icon: 'fa-building-columns' },
-    ipe: { label: 'IPE Clearance', icon: 'fa-triangle-exclamation' },
-    cac: { label: 'CAC Registration', icon: 'fa-briefcase' },
-    exam: { label: 'Exam & Utilities', icon: 'fa-graduation-cap' }
+    nin: { label: 'NIN Verification', icon: 'fa-id-card', desc: 'Verify or retrieve a NIN record instantly — by NIN or registered phone number.' },
+    bvn: { label: 'BVN Verification', icon: 'fa-building-columns', desc: 'BVN searches, premium slips and phone-number lookups straight from NIBSS records.' },
+    ipe: { label: 'IPE Clearance & NIN Validation', icon: 'fa-triangle-exclamation', desc: 'Clear stuck NIN enrolment tracking IDs and MOD IPE requests.' },
+    cac: { label: 'CAC Registration', icon: 'fa-briefcase', desc: 'Business name, limited company and organization registration with the CAC.' },
+    exam: { label: 'Jamb Services', icon: 'fa-graduation-cap', desc: 'JAMB profile codes, ePINs and result checker tokens.' }
 };
 
 /* Sub-heads: within each category, group related services into titled families.
@@ -532,6 +555,8 @@ const SERVICE_SUBHEADS = {
     ]
 };
 
+let currentCategory = null;
+
 function syncServiceShortcuts() {
     document.querySelectorAll('[data-service-shortcut]').forEach(link => {
         const card = document.querySelector(`.service-card[data-service="${link.dataset.serviceShortcut}"]`);
@@ -543,73 +568,144 @@ function syncServiceShortcuts() {
     document.querySelectorAll('.shortcut-group').forEach(group => {
         group.hidden = !group.querySelector('.shortcut-subhead:not([hidden]), .service-shortcut:not([hidden])');
     });
+    // hide sub-head sections / blocks with no active services (and keep the open category filtered)
+    document.querySelectorAll('.subhead-section').forEach(sec => {
+        sec.hidden = !sec.querySelector('.service-card:not([hidden])');
+    });
+    document.querySelectorAll('.subhead-block').forEach(block => {
+        const inCurrentCategory = !currentCategory || block.dataset.blockCategory === currentCategory;
+        block.hidden = !inCurrentCategory || !block.querySelector('.service-card:not([hidden])');
+    });
     document.getElementById('serviceShortcuts').hidden = ![...document.querySelectorAll('.service-shortcut')].some(link => !link.hidden);
 }
 
-function applyServiceCategory(category) {
-    const labels = { all: 'Showing all services', nin: 'Showing NIN services', bvn: 'Showing BVN services', ipe: 'Showing IPE clearance', cac: 'Showing CAC & corporate services', exam: 'Showing exam & utility services' };
-    document.querySelectorAll('.cat-tab').forEach(tab => tab.classList.toggle('active', tab.dataset.category === category));
-    document.querySelectorAll('.service-card').forEach(card => {
-        const unavailable = card.dataset.catalogInactive === 'true';
-        card.hidden = unavailable || (category !== 'all' && SERVICE_CATALOG[card.dataset.service]?.category !== category);
+function activeServiceCount(category) {
+    let count = 0;
+    document.querySelectorAll('.service-card:not([hidden])').forEach(card => {
+        if ((SERVICE_CATALOG[card.dataset.service] || {}).category === category) count++;
     });
-    document.getElementById('activeCategoryTitle').textContent = labels[category] || labels.all;
+    return count;
+}
+
+/* Reference-style category cards */
+function renderCategoryCards() {
+    const view = document.getElementById('categoryCardsView');
+    if (!view) return;
+    view.innerHTML = Object.entries(SERVICE_GROUPS).map(([key, category]) => {
+        const active = activeServiceCount(key);
+        const availability = active
+            ? `${active} service${active > 1 ? 's' : ''} available`
+            : 'Not available yet';
+        return `<button type="button" class="group-card" data-category-card="${key}" ${active ? '' : 'data-unavailable="true"'}>
+            <span class="g-icon"><i class="fa-solid ${category.icon}" aria-hidden="true"></i></span>
+            <span class="g-name">${category.label}</span>
+            <span class="g-desc">${category.desc}</span>
+            <span class="g-count">${availability}</span>
+            <span class="check-btn"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Check Service</span>
+        </button>`;
+    }).join('');
+    view.querySelectorAll('.group-card').forEach(card => {
+        card.addEventListener('click', () => openCategory(card.dataset.categoryCard));
+    });
+}
+
+function openCategory(category) {
+    if (!SERVICE_GROUPS[category]) return;
+    currentCategory = category;
+    const groupsView = document.getElementById('categoryCardsView');
+    const servicesView = document.getElementById('categoryServicesView');
+    if (!groupsView || !servicesView) return;
+    groupsView.hidden = true;
+    servicesView.hidden = false;
+    document.querySelectorAll('.subhead-block').forEach(block => {
+        block.hidden = block.dataset.blockCategory !== category;
+    });
+    document.getElementById('drilldownTitle').textContent = SERVICE_GROUPS[category].label;
+    document.getElementById('activeCategoryTitle').textContent = SERVICE_GROUPS[category].label;
+    syncServiceShortcuts();
+}
+
+function backToCategories() {
+    currentCategory = null;
+    const groupsView = document.getElementById('categoryCardsView');
+    const servicesView = document.getElementById('categoryServicesView');
+    if (!groupsView || !servicesView) return;
+    servicesView.hidden = true;
+    groupsView.hidden = false;
+    document.getElementById('activeCategoryTitle').textContent = 'Showing all categories';
 }
 
 async function loadAuthoritativeCatalog() {
-    const cards = [...document.querySelectorAll('.service-card')];
     const codes = [...new Set(Object.values(SERVICE_CATALOG).map(item => item.requestCode).filter(Boolean))];
-    const { data, error } = await sb.from('verify_services').select('code,name,price,active').in('code', codes).eq('active', true);
+    const { data, error } = await sb.from('verify_services').select('code,name,price,description').in('code', codes).eq('active', true);
     const services = new Map((data || []).map(item => [item.code, item]));
-    cards.forEach(card => {
+    document.querySelectorAll('.service-card').forEach(card => {
         const item = SERVICE_CATALOG[card.dataset.service];
         const service = item?.requestCode ? services.get(item.requestCode) : null;
         if (!service || error) {
             card.dataset.catalogInactive = 'true';
+            card.classList.remove('selected');
+            card.setAttribute('aria-pressed', 'false');
             card.hidden = true;
             return;
         }
         delete card.dataset.catalogInactive;
         item.price = Number(service.price);
         item.name = service.name;
+        if (service.description) item.desc = service.description;
         card.querySelector('.s-name').textContent = service.name;
-        card.querySelector('.s-price').textContent = '₦' + item.price.toLocaleString('en-NG');
+        card.querySelector('.s-desc').textContent = item.desc || '';
+        card.querySelector('.unit-badge').textContent = '₦' + item.price.toLocaleString('en-NG');
+        // also refresh the live submit-box if this service is currently selected
+        if (card.classList.contains('selected')) {
+            document.getElementById('selectedServiceName').textContent = item.name;
+            document.getElementById('priceDisplay').textContent = '₦' + item.price.toLocaleString('en-NG');
+        }
         const shortcut = document.querySelector(`[data-service-shortcut="${card.dataset.service}"]`);
         if (shortcut) shortcut.textContent = item.shortcutName || service.name;
     });
-    const counts = { all: 0 };
-    document.querySelectorAll('.service-card:not([hidden])').forEach(card => {
-        const category = SERVICE_CATALOG[card.dataset.service].category;
-        counts.all++;
-        counts[category] = (counts[category] || 0) + 1;
-    });
-    document.querySelectorAll('.cat-tab').forEach(tab => {
-        const category = tab.dataset.category;
-        if (category === 'all') tab.querySelector('.count').textContent = counts.all;
-        else {
-            tab.hidden = !counts[category];
-            if (counts[category]) tab.querySelector('.count').textContent = counts[category];
-        }
-    });
     syncServiceShortcuts();
-    if (error || !services.size) document.getElementById('servicesGrid').innerHTML = '<p role="status">Verification services are temporarily unavailable. Please try again later.</p>';
+    renderCategoryCards();
+    const groupsView = document.getElementById('categoryCardsView');
+    if (error || !services.size) {
+        groupsView.innerHTML = '<p role="status" style="grid-column:1/-1;padding:8px 4px;">Verification services are temporarily unavailable. Please refresh the page and try again.</p>';
+    }
 }
 
-/* ── Inject Service Cards ── */
+/* ── Inject Service Cards & Drill-down ── */
 (function injectServiceCards() {
     const grid = document.getElementById('servicesGrid');
     if (!grid) return;
-    grid.innerHTML = Object.entries(SERVICE_CATALOG).map(([key, catalog]) => `
-        <button type="button" class="service-card" id="service-${key}" data-service="${key}" aria-pressed="false">
-            <span class="v-badge ${catalog.category}">${catalog.category.toUpperCase()}</span>
-            <span class="s-name">${catalog.name}</span>
-            <span class="s-price">₦${catalog.price.toLocaleString('en-NG')}</span>
-        </button>
-    `).join('');
+
+    /* Reference-style leaf service cards, grouped under sub-head sections per category */
+    const serviceCardHtml = (key) => {
+        const c = SERVICE_CATALOG[key];
+        return `<button type="button" class="service-card" id="service-${key}" data-service="${key}" aria-pressed="false">
+            <span class="s-icon"><i class="fa-solid ${c.icon || 'fa-id-card'}" aria-hidden="true"></i></span>
+            <span class="s-name">${c.name}</span>
+            <span class="s-desc">${c.desc || ''}</span>
+            <span class="unit-cost">Unit cost: <span class="unit-badge">₦${c.price.toLocaleString('en-NG')}</span></span>
+            <span class="check-btn"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Check Service</span>
+        </button>`;
+    };
+    grid.innerHTML = Object.entries(SERVICE_GROUPS).map(([category]) => {
+        const subs = (SERVICE_SUBHEADS[category] || [])
+            .map(sub => ({ ...sub, items: (sub.items || []).filter(key => SERVICE_CATALOG[key]) }))
+            .filter(sub => sub.items.length);
+        if (!subs.length) return '';
+        const sections = subs.map(sub => `
+            <div class="subhead-section">
+                <h4 class="subhead-label" style="margin:0;">${sub.label}</h4>
+                <div class="services-grid subhead-cards">${sub.items.map(serviceCardHtml).join('')}</div>
+            </div>`).join('');
+        return `<div class="subhead-block" data-block-category="${category}">${sections}</div>`;
+    }).join('');
+
+    renderCategoryCards();
 
     const shortcutGroups = document.getElementById('serviceShortcutGroups');
 
-    /* Build the sub-head accordions for each category */
+    /* Build the sub-head accordions for each category (sidebar rail) */
     const subHeadHtml = (category) => {
         const subs = (SERVICE_SUBHEADS[category] || [])
             .map(sub => ({ ...sub, items: (sub.items || []).filter(key => SERVICE_CATALOG[key]) }))
@@ -644,27 +740,10 @@ async function loadAuthoritativeCatalog() {
         });
     });
 
-    // Recompute category tab counts from the live catalog (was hardcoded & stale)
-    const counts = { all: 0 };
-    [...document.querySelectorAll('.service-card:not([hidden])')].forEach(card => {
-        const s = SERVICE_CATALOG[card.dataset.service];
-        counts.all++;
-        counts[s.category] = (counts[s.category] || 0) + 1;
-    });
-    document.querySelectorAll('.cat-tab .count').forEach(el => {
-        const cat = el.closest('.cat-tab')?.dataset.category;
-        if (cat && counts[cat] != null) el.textContent = counts[cat];
-    });
-    document.querySelectorAll('.cat-tab').forEach(tab => {
-        const cat = tab.dataset.category;
-        if (cat && cat !== 'all' && !counts[cat]) tab.hidden = true;
-    });
     syncServiceShortcuts();
 })();
 
-document.querySelectorAll('.cat-tab').forEach(tab => {
-    tab.addEventListener('click', () => applyServiceCategory(tab.dataset.category));
-});
+document.getElementById('backToCategories')?.addEventListener('click', backToCategories);
 
 document.querySelectorAll('.shortcut-group-title').forEach(button => {
     button.addEventListener('click', () => {
@@ -688,7 +767,7 @@ document.querySelectorAll('.service-shortcut').forEach(link => {
         const service = SERVICE_CATALOG[serviceKey];
         const card = document.querySelector(`.service-card[data-service="${serviceKey}"]`);
         if (!service || !card || card.dataset.catalogInactive === 'true') return;
-        applyServiceCategory(service.category);
+        openCategory(service.category);
         card.click();
     });
 });
