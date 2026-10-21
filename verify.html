@@ -213,6 +213,92 @@
             .service-card:hover, .submit-btn:hover, .btn-wa:hover, .btn-portal:hover { transform: none; }
             .submit-btn.is-loading::before { animation: none; }
         }
+
+        /* Verifier dashboard layout inspired by the supplied reference */
+        .verify-main { width: 100%; max-width: none; padding: 104px 28px 64px 286px; }
+        .nav-wrap { padding: 0; }
+        .nav-wrap .navbar, .nav-wrap.scrolled .navbar {
+            width: 100%; max-width: none; min-height: 72px; padding: 10px 20px;
+            border-radius: 0; border: 0; border-bottom: 1px solid rgba(255,255,255,.18);
+            background: #176f8c; box-shadow: 0 4px 18px rgba(12,48,65,.18);
+        }
+        body.dark-mode .nav-wrap .navbar, body.dark-mode .nav-wrap.scrolled .navbar { background: #123d55; border-color: rgba(255,255,255,.12); }
+        .nav-wrap .brand, body.dark-mode .nav-wrap .brand { color: #fff; }
+        .nav-wrap .nav-link, body.dark-mode .nav-wrap .nav-link { color: rgba(255,255,255,.88); }
+        .nav-wrap .nav-link:hover, .nav-wrap .nav-link:focus-visible, body.dark-mode .nav-wrap .nav-link:hover { color: #fff; }
+        .nav-wrap .nav-cta { background: #18b887; color: #062c27; }
+        .nav-wrap .nav-auth { border-color: rgba(255,255,255,.55); color: #fff; }
+        .nav-wrap .nav-auth:hover { background: #fff; color: #155773; }
+        .nav-wrap .theme-toggle { border-color: rgba(255,255,255,.36); background: rgba(255,255,255,.12); color: #fff; }
+        .nav-wrap .burger { border-color: rgba(255,255,255,.45); }
+        .nav-wrap .burger span, .nav-wrap .burger span::before, .nav-wrap .burger span::after { background: #fff; }
+        .service-shortcuts {
+            position: fixed; z-index: 950; top: 72px; bottom: 0; left: 0; width: 262px;
+            max-height: none; padding: 18px 13px 28px; overflow-y: auto;
+            border: 0; border-right: 1px solid #b9e2e0; border-radius: 0;
+            background: #d9f4f1; box-shadow: 4px 0 18px rgba(27,74,83,.08);
+        }
+        body.dark-mode .service-shortcuts { background: #112b38; border-color: #294a59; }
+        .service-picker-layout { display: block; }
+        .verifier-grid { grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; }
+        .verifier-hero { background: #fff; color: var(--text); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 10px 28px rgba(23,37,54,.07); padding: 24px 28px; }
+        body.dark-mode .verifier-hero { background: var(--dark-surface); color: var(--dark-text); border-color: var(--dark-border); }
+        .verifier-hero .eyebrow { color: #126b83; background: #e8f7f5; border-color: #c4e8e4; letter-spacing: .08em; }
+        body.dark-mode .verifier-hero .eyebrow { color: var(--teal); background: rgba(94,234,212,.08); border-color: rgba(94,234,212,.2); }
+        .verifier-hero h1 span.gold { color: #137892; }
+        .verifier-hero h1 span.teal { color: #099b7e; }
+        .verifier-hero p { color: var(--text-muted); }
+        body.dark-mode .verifier-hero p { color: var(--dark-muted); }
+        .verifier-card { border-radius: 12px; box-shadow: 0 10px 28px rgba(23,37,54,.06); }
+        .group-grid, .services-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+        .group-card, .service-card { border-radius: 12px; box-shadow: 0 8px 22px rgba(23,37,54,.07); }
+        .check-btn { border-radius: 5px; background: #24a845; padding: 9px 14px; }
+        .wallet-panel { background: #075b7b !important; border-color: #075b7b !important; color: #fff; }
+        .wallet-panel h2, .wallet-panel #walletBalanceDisplay, .wallet-panel .wallet-caption { color: #fff !important; }
+        .wallet-panel .wallet-caption { opacity: .82; }
+        .wallet-panel .submit-btn { width: auto; padding: 11px 17px; border-radius: 6px; background: #ff4050; color: #fff; box-shadow: none; }
+        .wallet-panel .submit-btn:hover { background: #e92e40; }
+        @media (max-width: 960px) {
+            .verify-main { padding-left: 282px; }
+            .verifier-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 700px) {
+            .verify-main { padding: 92px 14px 40px; }
+            .service-shortcuts { position: static; width: auto; max-height: 260px; margin: 0 0 16px; border: 1px solid var(--border); border-radius: 12px; box-shadow: none; }
+            body.dark-mode .service-shortcuts { border-color: var(--dark-border); }
+            .nav-wrap .navbar { min-height: 64px; padding: 8px 12px; }
+            .nav-wrap .navbar .brand { padding-left: 4px; }
+            .verifier-hero { padding: 20px; }
+            .group-grid, .services-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ── Mobile: service rail becomes a slide-in drawer (keeps colors/format) ── */
+        .rail-toggle { display: none; }
+        .rail-backdrop { display: none; }
+        @media (max-width: 700px) {
+            .rail-toggle {
+                display: inline-flex; align-items: center; gap: 8px;
+                margin: 0 0 14px; padding: 10px 16px;
+                border: 1.5px solid #b9e2e0; border-radius: 999px;
+                background: #d9f4f1; color: #0d4b5e;
+                font: 700 13px/1 'DM Sans', sans-serif; cursor: pointer;
+            }
+            body.dark-mode .rail-toggle { background: #112b38; border-color: #294a59; color: var(--teal); }
+            /* rail: fixed drawer, hidden off-canvas (overrides inline static strip) */
+            .service-shortcuts {
+                position: fixed; top: 64px; bottom: 0; left: 0; width: min(282px, 84vw);
+                max-height: none; height: auto; margin: 0; overflow-y: auto;
+                transform: translateX(-105%); transition: transform .22s ease;
+                z-index: 1080; box-shadow: none;
+            }
+            body.service-rail-open .service-shortcuts { transform: none; box-shadow: 6px 0 24px rgba(12, 48, 65, .3); }
+            body.service-rail-open { overflow: hidden; }
+            .rail-backdrop {
+                display: block; position: fixed; inset: 64px 0 0 0; width: 100%;
+                background: rgba(12, 48, 65, .45); border: 0; padding: 0; z-index: 1070; cursor: pointer;
+            }
+            .rail-backdrop[hidden] { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -223,7 +309,7 @@
     <!-- Navigation -->
     <div class="nav-wrap" id="navWrap">
         <header class="navbar">
-            <a class="brand" href="index.html" aria-label="Mai Goro home"><img src="img/logo.webp" alt="Mai Goro logo" class="brand-mark"><span></span></a>
+            <a class="brand" href="index.html" aria-label="Mai Goro home"><img src="img/logo.webp" alt="Mai Goro logo" class="brand-mark"><span>MAI GORO</span></a>
             <nav class="nav-links" id="navLinks" aria-label="Primary navigation">
                 <a href="index.html" class="nav-link">Home</a>
                 <a href="about.html" class="nav-link">About Us</a>
@@ -264,6 +350,8 @@
                 <section class="verifier-card">
                     <h2><span>1. Select Service</span><small style="font-size:12.5px;font-weight:500;color:var(--text-muted);" id="activeCategoryTitle">Showing all categories</small></h2>
                     <p class="hint">Pick a category, then choose the exact lookup, slip type, or clearance task you need completed.</p>
+                    <button type="button" class="rail-toggle" id="serviceRailToggle" aria-expanded="false" aria-controls="serviceShortcuts"><i class="fa-solid fa-bars" aria-hidden="true"></i> Service Menu</button>
+                    <button type="button" class="rail-backdrop" id="railBackdrop" hidden aria-label="Close service menu" tabindex="-1"></button>
                     <div class="service-picker-layout">
                         <nav class="service-shortcuts" id="serviceShortcuts" aria-label="Verification service shortcuts">
                             <button type="button" class="shortcut-root" id="shortcutRootToggle" aria-expanded="true" aria-controls="serviceShortcutGroups">Verification<i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
@@ -430,11 +518,11 @@
             <!-- Right Column: Wallet Balance & Success Confirmation -->
             <aside>
                 <!-- Wallet Balance Card -->
-                <section class="verifier-card" id="walletBalanceCard">
+                <section class="verifier-card wallet-panel" id="walletBalanceCard">
                     <h2><span>Wallet Balance</span><i class="fa-solid fa-wallet" style="color:var(--teal);font-size:17px;"></i></h2>
                     <div style="text-align:center;padding:20px 0;">
                         <div style="font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;color:var(--text);" id="walletBalanceDisplay">Loading…</div>
-                        <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Available Balance</div>
+                        <div class="wallet-caption" style="font-size:13px;color:var(--text-muted);margin-top:4px;">Available Balance</div>
                         <a href="fund-wallet.html" class="submit-btn" style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;justify-content:center;">
                             <i class="fa-solid fa-plus"></i> Add Funds
                         </a>
@@ -533,15 +621,14 @@ const SERVICE_GROUPS = {
    Clicking a sub-head reveals its services (collapsed/expanded independently). */
 const SERVICE_SUBHEADS = {
     nin: [
-        { label: 'NIN Verification',      items: ['nin', 'nin-by-phone'] },
+        { label: 'NIN Verification',      items: ['nin-by-phone', 'nin'] },
         { label: 'NIN Standard & Premium Slip', items: ['nin-slip', 'nin-premium'] },
         { label: 'NIN Validation',        items: ['nin-val'] },
         { label: 'Demographic Search',    items: ['nin-demo'] },
         { label: 'NIN Modification',      items: ['nin-mod'] }
     ],
     bvn: [
-        { label: 'BVN Verification',      items: ['bvn', 'bvn-pro', 'bvn-slip', 'bvn-mod'] },
-        { label: 'BVN by Phone Number',   items: ['bvn-retr'] }
+        { label: 'BVN Verification',      items: ['bvn', 'bvn-mod', 'bvn-retr', 'bvn-slip', 'bvn-pro'] }
     ],
     ipe: [
         { label: 'Tracking ID Clearance', items: ['ipe', 'ipe-mod'] }
@@ -694,7 +781,7 @@ async function loadAuthoritativeCatalog() {
             .filter(sub => sub.items.length);
         if (!subs.length) return '';
         const sections = subs.map(sub => `
-            <div class="subhead-section">
+            <div class="subhead-section" data-service-subhead="${category}:${sub.label}">
                 <h4 class="subhead-label" style="margin:0;">${sub.label}</h4>
                 <div class="services-grid subhead-cards">${sub.items.map(serviceCardHtml).join('')}</div>
             </div>`).join('');
@@ -716,7 +803,7 @@ async function loadAuthoritativeCatalog() {
                 const item = SERVICE_CATALOG[key];
                 return `<a class="service-shortcut" href="#service-${key}" data-service-shortcut="${key}">${item.shortcutName || item.name}</a>`;
             }).join('');
-            return `<div class="shortcut-subhead" data-subhead-category="${category}">
+            return `<div class="shortcut-subhead" data-subhead-category="${category}" data-service-subhead="${category}:${sub.label}">
                 <button type="button" class="shortcut-subhead-title" aria-expanded="true" aria-controls="${panelId}">${sub.label}<i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
                 <div class="shortcut-subhead-items" id="${panelId}">${links}</div>
             </div>`;
@@ -737,6 +824,16 @@ async function loadAuthoritativeCatalog() {
             const isExpanded = button.getAttribute('aria-expanded') === 'true';
             button.setAttribute('aria-expanded', String(!isExpanded));
             document.getElementById(button.getAttribute('aria-controls')).hidden = isExpanded;
+            if (!isExpanded) {
+                const category = button.closest('.shortcut-group')?.dataset.shortcutCategory;
+                const subhead = button.closest('.shortcut-subhead')?.dataset.serviceSubhead;
+                if (category && subhead) {
+                    openCategory(category);
+                    document.querySelectorAll('.subhead-section').forEach(section => {
+                        section.hidden = section.dataset.serviceSubhead !== subhead;
+                    });
+                }
+            }
         });
     });
 
@@ -744,6 +841,26 @@ async function loadAuthoritativeCatalog() {
 })();
 
 document.getElementById('backToCategories')?.addEventListener('click', backToCategories);
+
+/* ── Mobile: service rail as slide-in drawer ── */
+(function serviceRailDrawer() {
+    const toggle = document.getElementById('serviceRailToggle');
+    const backdrop = document.getElementById('railBackdrop');
+    if (!toggle || !backdrop) return;
+    const setOpen = open => {
+        document.body.classList.toggle('service-rail-open', open);
+        toggle.setAttribute('aria-expanded', String(open));
+        backdrop.hidden = !open;
+    };
+    toggle.addEventListener('click', () => setOpen(!document.body.classList.contains('service-rail-open')));
+    backdrop.addEventListener('click', () => setOpen(false));
+    // on phones, close the drawer after a service is picked so the chosen card is visible
+    document.querySelectorAll('.service-shortcut').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.matchMedia('(max-width: 700px)').matches) setOpen(false);
+        });
+    });
+})();
 
 document.querySelectorAll('.shortcut-group-title').forEach(button => {
     button.addEventListener('click', () => {
