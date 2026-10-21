@@ -150,6 +150,28 @@
             .services-grid, .group-grid { grid-template-columns: 1fr; }
         }
 
+        /* Sidebar: 9jaTrust-format identity block + rail items (colors stay ours) */
+        .rail-user { text-align: center; padding: 4px 4px 14px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+        .rail-avatar { width: 76px; height: 76px; border-radius: 50%; display: block; margin: 0 auto 10px; object-fit: cover; border: 3px solid #fff; box-shadow: 0 6px 16px rgba(23, 37, 54, .14); background: #fff; }
+        body.dark-mode .rail-avatar { border-color: rgba(255,255,255,.14); background: var(--dark-surface); }
+        .rail-name { margin: 0 0 8px; font: 700 15.5px/1.3 'DM Sans', sans-serif; color: var(--text); }
+        body.dark-mode .rail-name { color: var(--dark-text); }
+        .rail-wallet { font: 600 13px 'DM Sans', sans-serif; color: var(--text-muted); }
+        body.dark-mode .rail-wallet { color: var(--dark-muted); }
+        .rail-badge { display: inline-block; background: var(--ok); color: #fff; font: 700 11.5px/1 'DM Sans', sans-serif; padding: 4px 10px; border-radius: 999px; margin-left: 4px; }
+        .rail-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 10px; color: var(--text); font: 600 13px/1 'DM Sans', sans-serif; text-decoration: none; transition: background .18s ease, transform .18s ease; }
+        .rail-item i { width: 30px; height: 30px; flex: none; display: grid; place-items: center; border-radius: 8px; background: rgba(59, 102, 178, .12); color: var(--brand); font-size: 13px; }
+        .rail-item:hover, .rail-item:focus-visible { background: rgba(59, 102, 178, .08); color: var(--brand); outline: none; }
+        .rail-item.is-active { background: #fff; box-shadow: 0 8px 18px -10px rgba(23, 37, 54, .3); color: var(--brand); font-weight: 700; }
+        .rail-item.is-active i { background: var(--brand); color: #fff; }
+        body.dark-mode .rail-item { color: var(--dark-muted); }
+        body.dark-mode .rail-item i { background: rgba(94, 234, 212, .09); color: var(--teal); }
+        body.dark-mode .rail-item:hover, body.dark-mode .rail-item:focus-visible { background: rgba(94, 234, 212, .08); color: var(--teal); }
+        body.dark-mode .rail-item.is-active { background: var(--dark-surface); box-shadow: 0 8px 18px -10px rgba(0, 0, 0, .5); color: var(--teal); }
+        body.dark-mode .rail-item.is-active i { background: var(--teal); color: #0b3a44; }
+        .rail-footer-links { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); display: grid; gap: 3px; }
+        body.dark-mode .rail-footer-links { border-top-color: var(--dark-border); }
+
         /* Drill-down header (category title + back) */
         .drilldown-header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
         .back-link { display: inline-flex; align-items: center; gap: 7px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 12.5px/1 'DM Sans', sans-serif; padding: 9px 15px; border-radius: 999px; cursor: pointer; transition: all .18s ease; }
@@ -331,14 +353,24 @@
             <div>
                 <!-- Step 1: Select Verification Service -->
                 <section class="verifier-card">
-                    <h2><span>1. Select Service</span><small style="font-size:12.5px;font-weight:500;color:var(--text-muted);" id="activeCategoryTitle">Showing all categories</small></h2>
+                    <h2><span>SERVICES</span><small style="font-size:12.5px;font-weight:500;color:var(--text-muted);" id="activeCategoryTitle">Showing all categories</small></h2>
                     <p class="hint">Pick a category, then choose the exact lookup, slip type, or clearance task you need completed.</p>
                     <button type="button" class="rail-toggle" id="serviceRailToggle" aria-expanded="false" aria-controls="serviceShortcuts"><i class="fa-solid fa-bars" aria-hidden="true"></i> Service Menu</button>
                     <button type="button" class="rail-backdrop" id="railBackdrop" hidden aria-label="Close service menu" tabindex="-1"></button>
                     <div class="service-picker-layout">
                         <nav class="service-shortcuts" id="serviceShortcuts" aria-label="Verification service shortcuts">
-                            <button type="button" class="shortcut-root" id="shortcutRootToggle" aria-expanded="true" aria-controls="serviceShortcutGroups">Verification<i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
+                            <div class="rail-user">
+                                <img src="img/logo.webp" class="rail-avatar" alt="Your account avatar">
+                                <h3 class="rail-name" id="railUserName">Customer</h3>
+                                <div class="rail-wallet">Wallet: <strong class="rail-badge" id="railWalletBalance">…</strong></div>
+                            </div>
+                            <a class="rail-item is-active" id="railDashboard" href="#"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> <span>Dashboard</span></a>
                             <div id="serviceShortcutGroups"></div>
+                            <div class="rail-footer-links">
+                                <a class="rail-item" href="fund-wallet.html"><i class="fa-solid fa-wallet" aria-hidden="true"></i> <span>Fund Wallet</span></a>
+                                <a class="rail-item" href="portal.html#orders"><i class="fa-solid fa-list-check" aria-hidden="true"></i> <span>History</span></a>
+                                <a class="rail-item" href="portal.html"><i class="fa-solid fa-user" aria-hidden="true"></i> <span>Profile</span></a>
+                            </div>
                         </nav>
                         <div class="picker-content">
                             <div class="group-grid" id="categoryCardsView" aria-label="Service categories"></div>
@@ -646,7 +678,8 @@ function syncServiceShortcuts() {
         const inCurrentCategory = !currentCategory || block.dataset.blockCategory === currentCategory;
         block.hidden = !inCurrentCategory || !block.querySelector('.service-card:not([hidden])');
     });
-    document.getElementById('serviceShortcuts').hidden = ![...document.querySelectorAll('.service-shortcut')].some(link => !link.hidden);
+    // only the category area collapses when nothing is active (Dashboard + account links stay)
+    document.getElementById('serviceShortcutGroups').hidden = ![...document.querySelectorAll('.service-shortcut')].some(link => !link.hidden);
 }
 
 function activeServiceCount(category) {
@@ -692,6 +725,7 @@ function openCategory(category) {
     });
     document.getElementById('drilldownTitle').textContent = SERVICE_GROUPS[category].label;
     document.getElementById('activeCategoryTitle').textContent = SERVICE_GROUPS[category].label;
+    document.getElementById('railDashboard')?.classList.remove('is-active');
     syncServiceShortcuts();
 }
 
@@ -703,6 +737,7 @@ function backToCategories() {
     servicesView.hidden = true;
     groupsView.hidden = false;
     document.getElementById('activeCategoryTitle').textContent = 'Showing all categories';
+    document.getElementById('railDashboard')?.classList.add('is-active');
 }
 
 async function loadAuthoritativeCatalog() {
@@ -853,11 +888,13 @@ document.querySelectorAll('.shortcut-group-title').forEach(button => {
     });
 });
 
-document.getElementById('shortcutRootToggle').addEventListener('click', event => {
-    const button = event.currentTarget;
-    const isExpanded = button.getAttribute('aria-expanded') === 'true';
-    button.setAttribute('aria-expanded', String(!isExpanded));
-    document.getElementById(button.getAttribute('aria-controls')).hidden = isExpanded;
+/* Dashboard rail item: back to the categories view (9jaTrust format) */
+document.getElementById('railDashboard')?.addEventListener('click', event => {
+    event.preventDefault();
+    backToCategories();
+    document.querySelectorAll('.rail-item').forEach(item => item.classList.remove('is-active'));
+    document.getElementById('railDashboard').classList.add('is-active');
+    document.querySelectorAll('.service-shortcut').forEach(link => link.classList.remove('active'));
 });
 
 document.querySelectorAll('.service-shortcut').forEach(link => {
@@ -901,9 +938,8 @@ document.querySelectorAll('.service-card').forEach(card => {
                 const subheadButton = link.closest('.shortcut-subhead')?.querySelector('.shortcut-subhead-title');
                 if (subheadPanel) subheadPanel.hidden = false;
                 subheadButton?.setAttribute('aria-expanded', 'true');
-                const rootToggle = document.getElementById('shortcutRootToggle');
-                rootToggle.setAttribute('aria-expanded', 'true');
-                document.getElementById(rootToggle.getAttribute('aria-controls')).hidden = false;
+                // Dashboard loses the active card while a service is selected
+                document.getElementById('railDashboard')?.classList.remove('is-active');
             } else link.removeAttribute('aria-current');
         });
         const svc = card.dataset.service;
@@ -945,10 +981,21 @@ async function loadWalletBalance() {
         document.getElementById('walletBalanceDisplay').textContent = 'Unavailable';
         return;
     }
+    // 9jaTrust-format sidebar identity: name + wallet badge
+    const railName = document.getElementById('railUserName');
+    const metaName = data.session.user.user_metadata?.full_name;
+    if (railName) railName.textContent = metaName || (data.session.user.email || 'Customer').split('@')[0];
+    const railBadge = document.getElementById('railWalletBalance');
+    if (railBadge) railBadge.textContent = '…';
     const { data: wallet, error: walletError } = await sb.from('wallets').select('balance').eq('user_id', data.session.user.id).single();
-    if (wallet) {
-        document.getElementById('walletBalanceDisplay').textContent = '₦' + Number(wallet.balance).toLocaleString('en-NG', {maximumFractionDigits: 2});
-    } else if (walletError) document.getElementById('walletBalanceDisplay').textContent = 'Unavailable';
+    const formatted = wallet ? '₦' + Number(wallet.balance).toLocaleString('en-NG', {maximumFractionDigits: 2}) : null;
+    if (formatted) {
+        document.getElementById('walletBalanceDisplay').textContent = formatted;
+        if (railBadge) railBadge.textContent = formatted;
+    } else if (walletError) {
+        document.getElementById('walletBalanceDisplay').textContent = 'Unavailable';
+        if (railBadge) railBadge.textContent = '—';
+    }
 }
 loadWalletBalance();
 
