@@ -583,6 +583,12 @@
         const { data, error } = await sb.auth.getSession();
         if (!error && data?.session) {
             await loadAuthoritativeCatalog();
+            // deep-link: portal "Access Service" links pass ?cat=nin (etc.) — open that category
+            const deeplink = new URLSearchParams(window.location.search).get('cat')?.toLowerCase();
+            if (['nin', 'bvn', 'ipe', 'cac', 'exam'].includes(deeplink)) {
+                openCategory(deeplink);
+                document.getElementById('railDashboard')?.classList.remove('is-active');
+            }
             document.documentElement.classList.remove('verify-auth-pending');
             return;
         }
