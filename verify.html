@@ -125,8 +125,26 @@
         
         .verifier-grid { display: grid; grid-template-columns: 1.35fr 0.85fr; gap: 24px; align-items: start; }
         @media (max-width: 960px) { .verifier-grid { grid-template-columns: 1fr; } }
-        
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; min-width: 0; }
+        .service-picker-layout { display: grid; grid-template-columns: minmax(180px, 0.72fr) minmax(0, 1.8fr); gap: 18px; align-items: start; }
+        .service-shortcuts { position: sticky; top: 104px; max-height: min(66vh, 650px); overflow-y: auto; padding: 16px 12px; border: 1px solid var(--border); border-radius: 14px; background: #f7f9fc; scrollbar-width: thin; }
+        .service-shortcuts h3 { margin: 0 4px 12px; color: var(--text); font: 700 12px/1.3 'DM Sans', sans-serif; letter-spacing: .09em; text-transform: uppercase; }
+        .shortcut-group + .shortcut-group { margin-top: 12px; }
+        .shortcut-group-title { display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 7px; border: 0; border-radius: 8px; background: transparent; color: var(--brand); font: 700 11px/1.3 'DM Sans', sans-serif; letter-spacing: .06em; text-align: left; text-transform: uppercase; cursor: pointer; }
+        .shortcut-group-title:hover, .shortcut-group-title:focus-visible { background: rgba(36, 93, 168, .08); outline: none; }
+        .shortcut-items { display: grid; gap: 2px; }
+        .service-shortcut { display: block; padding: 7px 8px 7px 15px; border-left: 2px solid transparent; border-radius: 0 7px 7px 0; color: var(--text-muted); font-size: 12px; line-height: 1.35; text-decoration: none; transition: color .18s ease, background .18s ease, border-color .18s ease; }
+        .service-shortcut:hover, .service-shortcut:focus-visible { background: rgba(36, 93, 168, .08); color: var(--brand); outline: none; }
+        .service-shortcut.active { border-left-color: var(--brand); background: rgba(36, 93, 168, .1); color: var(--brand); font-weight: 700; }
+        body.dark-mode .service-shortcuts { border-color: var(--dark-border); background: #10182a; }
+        body.dark-mode .service-shortcuts h3 { color: var(--dark-text); }
+        body.dark-mode .shortcut-group-title { color: var(--teal); }
+        body.dark-mode .shortcut-group-title:hover, body.dark-mode .shortcut-group-title:focus-visible,
+        body.dark-mode .service-shortcut:hover, body.dark-mode .service-shortcut:focus-visible { background: rgba(94, 234, 212, .09); color: var(--teal); }
+        body.dark-mode .service-shortcut { color: var(--dark-muted); }
+        body.dark-mode .service-shortcut.active { border-left-color: var(--teal); background: rgba(94, 234, 212, .1); color: var(--teal); }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; min-width: 0; }
+        @media (max-width: 960px) { .service-shortcuts { position: static; max-height: 320px; } }
+        @media (max-width: 640px) { .service-picker-layout { grid-template-columns: 1fr; } .service-shortcuts { max-height: 240px; } .services-grid { grid-template-columns: 1fr; } }
         @media (max-width: 700px) {
             .services-grid { grid-template-columns: 1fr; }
         }
@@ -218,8 +236,14 @@
                 <section class="verifier-card">
                     <h2><span>1. Select Service</span><small style="font-size:12.5px;font-weight:500;color:var(--text-muted);" id="activeCategoryTitle">Showing all services</small></h2>
                     <p class="hint">Choose the exact lookup, slip type, or clearance task you need completed.</p>
-                    <div class="services-grid" id="servicesGrid">
-                        <!-- Injected dynamically via script -->
+                    <div class="service-picker-layout">
+                        <nav class="service-shortcuts" id="serviceShortcuts" aria-label="Verification service shortcuts">
+                            <h3>Service shortcuts</h3>
+                            <div id="serviceShortcutGroups"></div>
+                        </nav>
+                        <div class="services-grid" id="servicesGrid">
+                            <!-- Injected dynamically via script -->
+                        </div>
                     </div>
                 </section>
 
@@ -321,11 +345,11 @@
                         <!-- Type 6: CAC Corporate Services -->
                         <div class="dynamic-set" id="set-cac">
                             <div class="field">
-                                <label for="inputCacName1">Proposed Business / Company Name (Option 1) *</label>
+                                <label for="inputCacName1">Proposed Business / Company / Organization Name (Option 1) *</label>
                                 <input type="text" id="inputCacName1" placeholder="e.g. MAI GORO VENTURES">
                             </div>
                             <div class="field">
-                                <label for="inputCacName2">Alternative Name (Option 2) *</label>
+                                <label for="inputCacName2">Alternative Business / Company / Organization Name (Option 2) *</label>
                                 <input type="text" id="inputCacName2" placeholder="e.g. MAI GORO DIGITAL INTEGRATED">
                             </div>
                         </div>
@@ -448,15 +472,44 @@ const SERVICE_CATALOG = {
     'bvn-mod': { name: 'BVN Modification Support', price: 2500, fields: ['inputBvn'], category: 'bvn', requestCode: 'bvn_modification' },
     ipe:       { name: 'IPE Clearance',          price: 4500, fields: ['inputTrackingId','inputCenter','inputEnrolYear'], category: 'ipe', requestCode: 'nin_ipe_clearance' },
     'ipe-mod': { name: 'MOD IPE Clearance',      price: 1500, api: '/v1/ipe/mod',          fields: ['inputTrackingId','inputCenter','inputEnrolYear'], category: 'ipe' },
-    cac:       { name: 'CAC Business Name Reg',  price: 18000, fields: ['inputCacName1','inputCacName2'], category: 'cac', requestCode: 'cac_business_name' },
-    'cac-rebrand':{name: 'CAC Rebranding',       price: 20000,api: '/v1/cac/rebrand',      fields: ['inputCacName1','inputCacName2'], category: 'cac' },
-    'cac-scuml':{name: 'SCUML Application',      price: 30000,api: '/v1/cac/scuml',        fields: ['inputCacName1','inputCacName2'], category: 'cac' },
+    cac:       { name: 'CAC Business Name Registration', price: 18000, fields: ['inputCacName1','inputCacName2'], category: 'cac', requestCode: 'cac_business_name' },
+    'cac-limited': { name: 'CAC Limited Company Registration', price: 45000, fields: ['inputCacName1','inputCacName2'], category: 'cac', requestCode: 'cac_company_ltd' },
+    'cac-organization': { name: 'CAC Organization Registration', price: 0, fields: ['inputCacName1','inputCacName2'], category: 'cac', requestCode: 'cac_organization_registration' },
     jamb:      { name: 'JAMB Profile & PIN',      price: 8500, fields: ['inputJambProfile','inputJambEmail'], category: 'exam', requestCode: 'jamb_pin_profile' },
     'pin-neco':{ name: 'NECO Token',             price: 3500, api: '/v1/pin/neco',         fields: ['inputJambProfile'], category: 'exam' },
     'pin-waec':{ name: 'WAEC Result Checker',    price: 5500, api: '/v1/pin/waec',         fields: ['inputJambProfile'], category: 'exam' },
     'pin-nabteb':{name: 'NABTEB Token',          price: 2500, api: '/v1/pin/nabteb',       fields: ['inputJambProfile'], category: 'exam' },
     'pin-nbais':{name: 'NBAIS Token',            price: 2500, api: '/v1/pin/nbais',        fields: ['inputJambProfile'], category: 'exam' }
 };
+
+const SERVICE_GROUPS = {
+    nin: { label: 'NIN Services', icon: 'fa-id-badge' },
+    bvn: { label: 'BVN Services', icon: 'fa-building-columns' },
+    ipe: { label: 'IPE Clearance', icon: 'fa-triangle-exclamation' },
+    cac: { label: 'CAC & Corporate', icon: 'fa-briefcase' },
+    exam: { label: 'Exam & Utilities', icon: 'fa-graduation-cap' }
+};
+
+function syncServiceShortcuts() {
+    document.querySelectorAll('[data-service-shortcut]').forEach(link => {
+        const card = document.querySelector(`.service-card[data-service="${link.dataset.serviceShortcut}"]`);
+        link.hidden = !card || card.dataset.catalogInactive === 'true';
+    });
+    document.querySelectorAll('.shortcut-group').forEach(group => {
+        group.hidden = !group.querySelector('.service-shortcut:not([hidden])');
+    });
+    document.getElementById('serviceShortcuts').hidden = ![...document.querySelectorAll('.service-shortcut')].some(link => !link.hidden);
+}
+
+function applyServiceCategory(category) {
+    const labels = { all: 'Showing all services', nin: 'Showing NIN services', bvn: 'Showing BVN services', ipe: 'Showing IPE clearance', cac: 'Showing CAC & corporate services', exam: 'Showing exam & utility services' };
+    document.querySelectorAll('.cat-tab').forEach(tab => tab.classList.toggle('active', tab.dataset.category === category));
+    document.querySelectorAll('.service-card').forEach(card => {
+        const unavailable = card.dataset.catalogInactive === 'true';
+        card.hidden = unavailable || (category !== 'all' && SERVICE_CATALOG[card.dataset.service]?.category !== category);
+    });
+    document.getElementById('activeCategoryTitle').textContent = labels[category] || labels.all;
+}
 
 async function loadAuthoritativeCatalog() {
     const cards = [...document.querySelectorAll('.service-card')];
@@ -466,11 +519,18 @@ async function loadAuthoritativeCatalog() {
     cards.forEach(card => {
         const item = SERVICE_CATALOG[card.dataset.service];
         const service = item?.requestCode ? services.get(item.requestCode) : null;
-        if (!service || error) { card.hidden = true; return; }
+        if (!service || error) {
+            card.dataset.catalogInactive = 'true';
+            card.hidden = true;
+            return;
+        }
+        delete card.dataset.catalogInactive;
         item.price = Number(service.price);
         item.name = service.name;
         card.querySelector('.s-name').textContent = service.name;
         card.querySelector('.s-price').textContent = '₦' + item.price.toLocaleString('en-NG');
+        const shortcut = document.querySelector(`[data-service-shortcut="${card.dataset.service}"]`);
+        if (shortcut) shortcut.textContent = service.name;
     });
     const counts = { all: 0 };
     document.querySelectorAll('.service-card:not([hidden])').forEach(card => {
@@ -486,6 +546,7 @@ async function loadAuthoritativeCatalog() {
             if (counts[category]) tab.querySelector('.count').textContent = counts[category];
         }
     });
+    syncServiceShortcuts();
     if (error || !services.size) document.getElementById('servicesGrid').innerHTML = '<p role="status">Verification services are temporarily unavailable. Please try again later.</p>';
 }
 
@@ -494,12 +555,21 @@ async function loadAuthoritativeCatalog() {
     const grid = document.getElementById('servicesGrid');
     if (!grid) return;
     grid.innerHTML = Object.entries(SERVICE_CATALOG).map(([key, catalog]) => `
-        <button type="button" class="service-card" data-service="${key}" aria-pressed="false">
+        <button type="button" class="service-card" id="service-${key}" data-service="${key}" aria-pressed="false">
             <span class="v-badge ${catalog.category}">${catalog.category.toUpperCase()}</span>
             <span class="s-name">${catalog.name}</span>
             <span class="s-price">₦${catalog.price.toLocaleString('en-NG')}</span>
         </button>
     `).join('');
+
+    const shortcutGroups = document.getElementById('serviceShortcutGroups');
+    shortcutGroups.innerHTML = Object.entries(SERVICE_GROUPS).map(([category, group]) => {
+        const items = Object.entries(SERVICE_CATALOG).filter(([, item]) => item.category === category);
+        return `<section class="shortcut-group" data-shortcut-category="${category}">
+            <button type="button" class="shortcut-group-title" data-category-shortcut="${category}"><i class="fa-solid ${group.icon}"></i>${group.label}</button>
+            <div class="shortcut-items">${items.map(([key, item]) => `<a class="service-shortcut" href="#service-${key}" data-service-shortcut="${key}">${item.name}</a>`).join('')}</div>
+        </section>`;
+    }).join('');
 
     // Recompute category tab counts from the live catalog (was hardcoded & stale)
     const counts = { all: 0 };
@@ -516,7 +586,28 @@ async function loadAuthoritativeCatalog() {
         const cat = tab.dataset.category;
         if (cat && cat !== 'all' && !counts[cat]) tab.hidden = true;
     });
+    syncServiceShortcuts();
 })();
+
+document.querySelectorAll('.cat-tab').forEach(tab => {
+    tab.addEventListener('click', () => applyServiceCategory(tab.dataset.category));
+});
+
+document.querySelectorAll('.shortcut-group-title').forEach(button => {
+    button.addEventListener('click', () => applyServiceCategory(button.dataset.categoryShortcut));
+});
+
+document.querySelectorAll('.service-shortcut').forEach(link => {
+    link.addEventListener('click', event => {
+        event.preventDefault();
+        const serviceKey = link.dataset.serviceShortcut;
+        const service = SERVICE_CATALOG[serviceKey];
+        const card = document.querySelector(`.service-card[data-service="${serviceKey}"]`);
+        if (!service || !card || card.dataset.catalogInactive === 'true') return;
+        applyServiceCategory(service.category);
+        card.click();
+    });
+});
 
 /* ── Service Card Selection ── */
 document.querySelectorAll('.service-card').forEach(card => {
@@ -532,6 +623,12 @@ document.querySelectorAll('.service-card').forEach(card => {
         });
         card.classList.add('selected');
         card.setAttribute('aria-pressed', 'true');
+        document.querySelectorAll('.service-shortcut').forEach(link => {
+            const isActive = link.dataset.serviceShortcut === card.dataset.service;
+            link.classList.toggle('active', isActive);
+            if (isActive) link.setAttribute('aria-current', 'true');
+            else link.removeAttribute('aria-current');
+        });
         const svc = card.dataset.service;
         document.querySelectorAll('.dynamic-set').forEach(s => s.classList.remove('active'));
         if(svc === 'nin') document.getElementById('set-nin').classList.add('active');
@@ -547,9 +644,7 @@ document.querySelectorAll('.service-card').forEach(card => {
         if(svc === 'ipe') document.getElementById('set-tracking_id').classList.add('active');
         if(svc === 'ipe-mod') document.getElementById('set-tracking_id').classList.add('active');
         if(svc === 'jamb') document.getElementById('set-jamb').classList.add('active');
-        if(svc === 'cac') document.getElementById('set-cac').classList.add('active');
-        if(svc === 'cac-rebrand') document.getElementById('set-cac').classList.add('active');
-        if(svc === 'cac-scuml') document.getElementById('set-cac').classList.add('active');
+        if (SERVICE_CATALOG[svc]?.category === 'cac') document.getElementById('set-cac').classList.add('active');
         if(svc === 'pin-neco') document.getElementById('set-jamb').classList.add('active');
         if(svc === 'pin-waec') document.getElementById('set-jamb').classList.add('active');
         if(svc === 'pin-nabteb') document.getElementById('set-jamb').classList.add('active');

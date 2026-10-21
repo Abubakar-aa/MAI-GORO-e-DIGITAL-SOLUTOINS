@@ -144,8 +144,7 @@ insert into public.verify_services (code, category, name, description, badge, fi
 
   -- CAC Corporate Services
   ('cac_business_name', 'cac',  'CAC Business Name Registration','Full business name reservation, document processing, and official certificate.','GOVT RECORD',  'cac',         18000),
-  ('cac_company_ltd',   'cac',  'CAC Limited Company (LLC)',     'Complete Incorporation of Limited Liability Company with Status Report & Tax.','LLC CORPORATE','cac',         45000),
-  ('cac_status_report', 'cac',  'CAC Status Report & Search',    'Official CAC status report, company search, and certified true copies.',       'CAC REPORT',   'cac',          3500),
+  ('cac_company_ltd',   'cac',  'CAC Limited Company Registration','Corporate Affairs Commission registration support for a limited liability company.','LLC CORPORATE','cac',         45000),
 
   -- Exam & Telecom Utilities
   ('jamb_pin_profile',  'exam', 'JAMB Profile Code & UTME PIN',  'Instant generation of JAMB Profile Code and purchase of official UTME PIN.',   'OFFICIAL PIN',  'jamb',         8500),
@@ -157,3 +156,21 @@ on conflict (code) do update set
   badge = excluded.badge,
   field_kind = excluded.field_kind,
   price = excluded.price;
+
+-- Organization registration is offered, but keep it unavailable until an administrator
+-- enters its confirmed customer price and explicitly activates it.
+insert into public.verify_services (code, category, name, description, badge, field_kind, price, active)
+values (
+  'cac_organization_registration', 'cac', 'CAC Organization Registration',
+  'Corporate Affairs Commission registration support for eligible organizations.',
+  'ORGANIZATION', 'cac', 0, false
+)
+on conflict (code) do update set
+  category = excluded.category,
+  name = excluded.name,
+  description = excluded.description,
+  badge = excluded.badge,
+  field_kind = excluded.field_kind;
+
+-- This is no longer one of the services offered.
+update public.verify_services set active = false where code = 'cac_status_report';

@@ -256,15 +256,23 @@ insert into public.service_catalog (code, name, category, price, api_cost, api_e
   ('ipe_mod',      'MOD IPE Clearance',      'ipe', 1500, 800, '/v1/ipe/mod',          'Modified IPE for complex cases'),
 
   -- CAC Corporate
-  ('cac_reg',      'CAC Business Name Reg',  'cac', 15000, 8000, '/v1/cac/register',   'Register new business name'),
-  ('cac_rebrand',  'CAC Rebranding',         'cac', 20000, 12000, '/v1/cac/rebrand',   'Rebrand existing company'),
-  ('cac_scuml',    'SCUML Application',      'cac', 30000, 20000, '/v1/cac/scuml',     'Apply for SCUML certificate'),
+  ('cac_reg',      'CAC Business Name Registration', 'cac', 15000, 8000, '/v1/cac/register', 'Register a business name'),
 
   -- Exam Pins
   ('pin_neco',     'NECO Token',             'pin', 3500, 3000, '/v1/pin/neco',       'NECO result checker pin'),
   ('pin_waec',     'WAEC Result Checker',    'pin', 5500, 4800, '/v1/pin/waec',       'WAEC result checker pin'),
   ('pin_nabteb',   'NABTEB Token',           'pin', 2500, 2000, '/v1/pin/nabteb',     'NABTEB result checker pin'),
   ('pin_nbais',    'NBAIS Token',            'pin', 2500, 2000, '/v1/pin/nbais',      'NBAIS result checker pin')
+on conflict (code) do nothing;
+
+-- CAC rebranding and SCUML are not part of the current service offering.
+update public.service_catalog set active = false where code in ('cac_rebrand', 'cac_scuml');
+
+-- Keep the two additional CAC offerings in the catalog as unavailable placeholders
+-- until confirmed pricing and provider processing are configured.
+insert into public.service_catalog (code, name, category, price, api_cost, api_endpoint, active, description) values
+  ('cac_company_ltd', 'CAC Limited Company Registration', 'cac', 0, 0, null, false, 'Corporate Affairs Commission registration support for a limited liability company.'),
+  ('cac_organization_registration', 'CAC Organization Registration', 'cac', 0, 0, null, false, 'Corporate Affairs Commission registration support for eligible organizations.')
 on conflict (code) do nothing;
 
 -- ✅ DONE.
