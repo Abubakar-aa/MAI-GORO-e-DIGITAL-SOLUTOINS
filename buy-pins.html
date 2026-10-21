@@ -342,7 +342,8 @@
                 document.getElementById('copyAcct').style.display = 'none';
                 const setupNoteEl = document.getElementById('setupNote');
                 if (setupNoteEl) {
-                    setupNoteEl.innerHTML = '<i class="fa-solid fa-circle-info"></i> Exam tokens remain available — pay via WhatsApp <a href="https://wa.me/2349067997551" target="_blank" rel="noreferrer">0906 799 7551</a> while online funding launches.';
+                    const waNum = (typeof WHATSAPP_NUMBER === 'string' && /^\d+$/.test(WHATSAPP_NUMBER)) ? WHATSAPP_NUMBER : '2349067997551';
+                    setupNoteEl.innerHTML = '<i class="fa-solid fa-circle-info"></i> Exam tokens remain available — pay via WhatsApp <a href="https://wa.me/' + waNum + '" target="_blank" rel="noreferrer">' + waNum.replace(/(\d{3})(\d{3})(\d{3})(\d+)/, '$1 $2 $3 $4') + '</a> while online funding launches.';
                     setupNoteEl.style.display = 'block';
                 }
                 return;
