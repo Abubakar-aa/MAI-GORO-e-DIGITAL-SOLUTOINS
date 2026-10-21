@@ -25,7 +25,7 @@ db.exec(`
     username TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
-    role TEXT DEFAULT 'admin',
+    role TEXT NOT NULL DEFAULT 'customer',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
@@ -78,7 +78,7 @@ db.exec(`
 /**
  * Creates a new user with a hashed password.
  */
-function createUser({ username, email, password_hash, role = 'admin' }) {
+function createUser({ username, email, password_hash, role = 'customer' }) {
   const statement = db.prepare(`
     INSERT INTO users (username, email, password_hash, role)
     VALUES (?, ?, ?, ?)

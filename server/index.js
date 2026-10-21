@@ -37,12 +37,22 @@ const requireAuth = require('./authMiddleware');
 // Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key_change_in_production';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET || JWT_SECRET.length < 32) {
+    throw new Error('JWT_SECRET must be configured with at least 32 characters before the API can start.');
+}
 
 // Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+function requireAdmin(req, res, next) {
+    requireAuth(req, res, () => {
+        if (req.user?.role !== 'admin') return res.status(403).json({ success: false, error: 'Administrator access required.' });
+        next();
+    });
+}
 
 // Helper function to generate JWT Token
 function generateToken(user) {
@@ -152,7 +162,7 @@ app.post('/api/auth/register', async (req, res) => {
             username: username.trim(),
             email: email.trim(),
             password_hash,
-            role: 'admin'
+            role: 'customer'
         });
 
         const token = generateToken(newUser);
@@ -271,7 +281,7 @@ app.post('/api/contact', (req, res) => {
     }
 });
 
-app.get('/api/contact', (req, res) => {
+app.get('/api/contact', requireAdmin, (req, res) => {
     try {
         const messages = getAllContactMessages();
         res.json({ success: true, count: messages.length, messages });
@@ -280,7 +290,7 @@ app.get('/api/contact', (req, res) => {
     }
 });
 
-app.delete('/api/contact/:id', (req, res) => {
+app.delete('/api/contact/:id', requireAdmin, (req, res) => {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) return res.status(400).json({ success: false, error: 'Invalid ID.' });
 
@@ -295,7 +305,7 @@ app.delete('/api/contact/:id', (req, res) => {
 // ============================================================
 
 // POST /api/vault/upload — Upload files to server disk (Protected)
-app.post('/api/vault/upload', requireAuth, uploadVault.array('files', 10), (req, res) => {
+app.post('/api/vault/upload', requireAdmin, uploadVault.array('files', 10), (req, res) => {
     if (!req.files || req.files.length === 0) {
         return res.status(400).json({ success: false, error: 'No files selected for upload.' });
     }
@@ -325,7 +335,7 @@ app.post('/api/vault/upload', requireAuth, uploadVault.array('files', 10), (req,
 });
 
 // GET /api/vault/files — List all uploaded vault files (Protected)
-app.get('/api/vault/files', requireAuth, (req, res) => {
+app.get('/api/vault/files', requireAdmin, (req, res) => {
     try {
         const files = getAllVaultFiles();
         return res.json({ success: true, count: files.length, files });
@@ -346,7 +356,8 @@ app.get('/api/vault/download/:id', (req, res) => {
     }
 
     try {
-        jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(token, JWT_SECRET);
+        if (decoded.role !== 'admin') return res.status(403).json({ success: false, error: 'Administrator access required.' });
     } catch (err) {
         return res.status(401).json({ success: false, error: 'Invalid or expired token.' });
     }
@@ -366,7 +377,7 @@ app.get('/api/vault/download/:id', (req, res) => {
 });
 
 // DELETE /api/vault/files/:id — Delete a file from disk and database (Protected)
-app.delete('/api/vault/files/:id', requireAuth, (req, res) => {
+app.delete('/api/vault/files/:id', requireAdmin, (req, res) => {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) return res.status(400).json({ success: false, error: 'Invalid file ID.' });
 
@@ -395,7 +406,7 @@ app.delete('/api/vault/files/:id', requireAuth, (req, res) => {
 // 5. ACTIVITIES (DAILY LOG) ROUTES
 // ============================================================
 
-app.get('/api/activities', (req, res) => {
+app.get('/api/activities', requireAdmin, (req, res) => {
     try {
         const activities = getAllActivities();
         res.json({ success: true, count: activities.length, activities });
@@ -404,7 +415,7 @@ app.get('/api/activities', (req, res) => {
     }
 });
 
-app.post('/api/activities', (req, res) => {
+app.post('/api/activities', requireAdmin, (req, res) => {
     const { title, notes, entry_date } = req.body;
     if (!title) return res.status(400).json({ success: false, error: 'Title is required.' });
 
@@ -416,7 +427,7 @@ app.post('/api/activities', (req, res) => {
     }
 });
 
-app.delete('/api/activities/:id', (req, res) => {
+app.delete('/api/activities/:id', requireAdmin, (req, res) => {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) return res.status(400).json({ success: false, error: 'Invalid ID.' });
 
@@ -430,62 +441,29 @@ app.delete('/api/activities/:id', (req, res) => {
 // 5. NAIJAVERIFY IDENTITY & VIRTUAL ACCOUNTS GATEWAY
 // ============================================================
 const https = require('https');
-const VERIFY_API_KEY = process.env.VERIFY_API_KEY || 'dv_8ad56f1fad4ca725aa66befb2dbb6b6c_1792487888';
+const VERIFY_API_KEY = process.env.VERIFY_API_KEY;
 const VERIFY_API_BASE = process.env.VERIFY_API_BASE || 'https://naijaverify.com';
 
 // GET /api/verify/gateway-status — Check API Key & Gateway Connectivity
 app.get('/api/verify/gateway-status', (req, res) => {
     res.json({
-        success: true,
-        gateway: 'Naijaverify / Dotaverify API',
+        success: Boolean(VERIFY_API_KEY),
+        gateway: 'Configured verification provider',
         configured: Boolean(VERIFY_API_KEY),
-        key_masked: VERIFY_API_KEY ? VERIFY_API_KEY.slice(0, 7) + '••••••••' + VERIFY_API_KEY.slice(-6) : null,
-        capabilities: ['nin_verification', 'nin_slip', 'bvn_verification', 'virtual_account_generation']
+        capabilities: VERIFY_API_KEY ? ['nin_verification'] : []
     });
 });
 
-// POST /api/user/generate-virtual-account — Generate Dedicated Account from 11-digit BVN
-app.post('/api/user/generate-virtual-account', (req, res) => {
-    const { bvn, full_name, phone } = req.body;
-
-    if (!bvn || !/^\d{11}$/.test(bvn.trim())) {
-        return res.status(400).json({
-            success: false,
-            error: 'A valid 11-digit Bank Verification Number (BVN) is required.'
-        });
-    }
-
-    // Generate Dedicated Virtual Account Number (Wema Bank format)
-    const cleanPhone = (phone || '').replace(/\D/g, '');
-    const suffix = cleanPhone.length >= 7 ? cleanPhone.slice(-7) : bvn.slice(-7);
-    const virtualAccountNumber = '906' + suffix;
-
-    const accountHolder = (full_name && full_name.trim().length > 2)
-        ? `MAI GORO - ${full_name.trim().toUpperCase()}`
-        : 'MAI GORO - VERIFIED CUSTOMER';
-
-    const accountData = {
-        bank: 'Wema Bank',
-        bankCode: '035',
-        accountNumber: virtualAccountNumber,
-        accountName: accountHolder,
-        bvnLinked: true,
-        bvnMasked: bvn.slice(0, 3) + '•••••' + bvn.slice(-3),
-        status: 'Active',
-        createdAt: new Date().toISOString()
-    };
-
-    console.log(`🏦 Dedicated Virtual Account generated for BVN: ${accountData.bvnMasked} -> ${accountData.accountNumber}`);
-
-    return res.json({
-        success: true,
-        message: 'Dedicated virtual account generated successfully! Transfers will fund your wallet 24/7.',
-        account: accountData
+// Keep the former path explicit while no real, eligible payment provider is configured.
+app.post('/api/user/generate-virtual-account', requireAuth, (req, res) => {
+    return res.status(503).json({
+        success: false,
+        error: 'Virtual account funding is not configured yet. No account has been created.'
     });
 });
 
 // POST /api/verify/nin — Instant NIN Verification via API Key
-app.post('/api/verify/nin', async (req, res) => {
+app.post('/api/verify/nin', requireAuth, async (req, res) => {
     const { nin, slip_type, user_name } = req.body;
 
     if (!nin || !/^\d{11}$/.test(nin.trim())) {
@@ -498,6 +476,10 @@ app.post('/api/verify/nin', async (req, res) => {
     const cleanNin = nin.trim();
     const type = slip_type || 'standard';
 
+    if (!VERIFY_API_KEY) {
+        return res.status(503).json({ success: false, error: 'NIN verification is temporarily unavailable.' });
+    }
+
     console.log(`🔍 Processing NIN Verification for: ${cleanNin.slice(0, 3)}•••••${cleanNin.slice(-3)} via Naijaverify API`);
 
     // Call upstream API or construct verified response
@@ -509,8 +491,8 @@ app.post('/api/verify/nin', async (req, res) => {
         });
 
         const upstreamReq = https.request({
-            hostname: 'naijaverify.com',
-            path: '/api',
+            hostname: new URL(VERIFY_API_BASE).hostname,
+            path: new URL(VERIFY_API_BASE).pathname.replace(/\/$/, '') + '/api',
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -523,10 +505,12 @@ app.post('/api/verify/nin', async (req, res) => {
             let body = '';
             upstreamRes.on('data', chunk => body += chunk);
             upstreamRes.on('end', () => {
-                // If upstream returns structured JSON data
+                if (upstreamRes.statusCode < 200 || upstreamRes.statusCode >= 300) {
+                    return res.status(502).json({ success: false, error: 'Verification provider could not complete the request.' });
+                }
                 try {
                     const parsed = JSON.parse(body);
-                    if (parsed && (parsed.status === 'success' || parsed.data)) {
+                    if (parsed && (parsed.status === 'success' || parsed.success === true) && parsed.data) {
                         return res.json({
                             success: true,
                             source: 'api_live',
@@ -535,43 +519,15 @@ app.post('/api/verify/nin', async (req, res) => {
                     }
                 } catch(e) {}
 
-                // Upstream response formatting fallback
-                const trackingId = '1000' + cleanNin.slice(0, 6) + Math.random().toString().slice(2, 6);
-                return res.json({
-                    success: true,
-                    source: 'gateway_verified',
-                    message: 'NIN Verified and authenticated via NIMC secure gateway.',
-                    data: {
-                        nin: cleanNin,
-                        full_name: (user_name || 'VERIFIED CITIZEN').toUpperCase(),
-                        gender: 'Verified',
-                        tracking_id: trackingId,
-                        slip_type: type === 'premium' ? 'Holographic Premium Card' : 'Official Standard Slip (PDF)',
-                        status: 'VERIFIED & ACTIVE',
-                        verification_ref: 'VR-' + Date.now().toString(36).toUpperCase()
-                    }
-                });
+                return res.status(502).json({ success: false, error: 'The provider returned an unreadable response. No verification was completed.' });
             });
         });
 
         upstreamReq.on('error', (err) => {
-            console.warn('Upstream API warning (fallback active):', err.message);
-            const trackingId = '1000' + cleanNin.slice(0, 6) + Math.random().toString().slice(2, 6);
-            return res.json({
-                success: true,
-                source: 'gateway_verified',
-                message: 'NIN Verified and authenticated via NIMC secure gateway.',
-                data: {
-                    nin: cleanNin,
-                    full_name: (user_name || 'VERIFIED CITIZEN').toUpperCase(),
-                    gender: 'Verified',
-                    tracking_id: trackingId,
-                    slip_type: type === 'premium' ? 'Holographic Premium Card' : 'Official Standard Slip (PDF)',
-                    status: 'VERIFIED & ACTIVE',
-                    verification_ref: 'VR-' + Date.now().toString(36).toUpperCase()
-                }
-            });
+            console.warn('Verification provider request failed:', err.message);
+            return res.status(502).json({ success: false, error: 'The verification provider is unavailable. No verification was completed.' });
         });
+        upstreamReq.setTimeout(8000, () => upstreamReq.destroy(new Error('Provider timeout')));
 
         upstreamReq.write(payload);
         upstreamReq.end();
@@ -625,21 +581,15 @@ app.use((req, res, next) => {
 // AUTOMATIC ADMIN SEEDING (FOR EASY FIRST-TIME SETUP)
 // ============================================================
 async function ensureDefaultAdmin() {
-    const existingUsers = getAllUsers();
-    if (existingUsers.length === 0) {
-        console.log('🌱 No users found. Creating initial default admin account...');
-        const salt = await bcrypt.genSalt(10);
-        const password_hash = await bcrypt.hash('AdminPassword2026!', salt);
-        createUser({
-            username: 'admin',
-            email: 'admin@maigoro.com',
-            password_hash,
-            role: 'admin'
-        });
-        console.log('✅ Default Admin created:');
-        console.log('   Email: admin@maigoro.com');
-        console.log('   Password: AdminPassword2026!');
+    if (getAllUsers().some(user => user.role === 'admin')) return;
+    const { ADMIN_EMAIL, ADMIN_USERNAME, ADMIN_PASSWORD } = process.env;
+    if (!ADMIN_EMAIL || !ADMIN_USERNAME || !ADMIN_PASSWORD || ADMIN_PASSWORD.length < 16) {
+        console.warn('No administrator exists. Set ADMIN_EMAIL, ADMIN_USERNAME, and a 16+ character ADMIN_PASSWORD to provision one securely.');
+        return;
     }
+    const password_hash = await bcrypt.hash(ADMIN_PASSWORD, 12);
+    createUser({ username: ADMIN_USERNAME, email: ADMIN_EMAIL, password_hash, role: 'admin' });
+    console.log('Administrator account provisioned from environment configuration.');
 }
 
 // ============================================================

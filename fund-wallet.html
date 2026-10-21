@@ -125,11 +125,10 @@
         <section class="fund-hero">
             <div class="eyebrow">Wallet</div>
             <h1>Fund Your <span>Wallet</span></h1>
-            <p>Add funds to your wallet via bank transfer. Once confirmed, you can instantly use any verification service or buy exam pins without waiting for admin approval.</p>
+            <p>Automated wallet funding is being prepared. The page will show transfer details only when a real provider account is assigned to your profile.</p>
             <div class="trust">
-                <span><i class="fa-solid fa-bolt"></i> Instant credit after confirmation</span>
-                <span><i class="fa-solid fa-shield-halved"></i> Secure & transparent</span>
-                <span><i class="fa-solid fa-receipt"></i> Full transaction history</span>
+                <span><i class="fa-solid fa-shield-halved"></i> Verified account details only</span>
+                <span><i class="fa-solid fa-receipt"></i> Funding status shown clearly</span>
             </div>
         </section>
 
@@ -138,10 +137,12 @@
             <div class="amount" id="balanceDisplay">₦0.00<small> NGN</small></div>
         </div>
 
+        <div class="notice info" id="setupNote" role="status" aria-live="polite" style="display:none"></div>
+
         <form id="fundForm">
             <section class="fund-card">
                 <h2>Add Funds</h2>
-                <p class="hint">Enter the amount you want to deposit (minimum ₦1,000), make the transfer, and submit the reference. Your wallet will be credited once admin confirms the payment.</p>
+                <p class="hint">Temporary manual funding requests require a real transfer to the bank details shown below and an administrator review. Submitting a reference does not itself confirm payment or credit your balance.</p>
 
                 <div class="field">
                     <label for="fundAmount">Amount to Fund (₦)</label>
@@ -166,7 +167,7 @@
                     <div class="hint">Copy the 10-to-30 digit Transaction Ref / Session ID from your mobile banking receipt.</div>
                 </div>
 
-                <button type="submit" class="fund-btn" id="fundBtn"><i class="fa-solid fa-wallet"></i> Submit Funding Request</button>
+                <button type="submit" class="fund-btn" id="fundBtn"><i class="fa-solid fa-wallet"></i> Submit Payment Reference</button>
                 <div class="notice error" id="fundNotice" role="alert" aria-live="polite"></div>
             </section>
         </form>
@@ -174,13 +175,13 @@
         <section class="fund-card">
             <h2>How It Works</h2>
             <div class="steps">
-                <div class="step"><div class="num">1</div><p>Enter amount and submit your bank transfer reference</p></div>
-                <div class="step"><div class="num">2</div><p>Our team verifies the payment (usually within minutes)</p></div>
-                <div class="step"><div class="num">3</div><p>Wallet credited instantly — use for any service immediately</p></div>
+                <div class="step"><div class="num">1</div><p>Transfer only to the real account details shown above</p></div>
+                <div class="step"><div class="num">2</div><p>Submit your bank reference for manual review</p></div>
+                <div class="step"><div class="num">3</div><p>Balance changes only after payment confirmation</p></div>
             </div>
         </section>
 
-        <div class="pay-box" style="margin-top: 20px;">
+        <div class="pay-box" id="bankBox" style="margin-top: 20px;">
             <div class="pay-line"><span class="k">Bank Name</span><span class="v" id="bankName">—</span></div>
             <div class="pay-line"><span class="k">Account Number</span><span class="v" id="bankNumber">—</span><button type="button" class="copy-btn" id="copyAcct"><i class="fa-regular fa-copy"></i> Copy</button></div>
             <div class="pay-line"><span class="k">Account Name</span><span class="v" id="bankHolder">—</span></div>
@@ -214,16 +215,18 @@
             el('bankNumber').textContent = '—';
             el('bankHolder').textContent = 'Mai Goro Support';
             el('copyAcct').style.display = 'none';
-            const note = el('setupNote') || el('bankBox');
             if (el('setupNote')) {
-                el('setupNote').innerHTML = '<i class="fa-solid fa-circle-info"></i> Online wallet funding launches shortly. To fund now, WhatsApp <a href="https://wa.me/2349067997551" target="_blank" rel="noreferrer">0906 799 7551</a>.';
+                el('setupNote').textContent = 'No verified funding account is configured. Funding requests are disabled. Contact support for current payment instructions.';
                 el('setupNote').style.display = 'block';
             }
+            el('fundForm').style.display = 'none';
+            el('bankBox').style.display = 'none';
             return;
         }
         document.getElementById('bankName').textContent = BANK_DETAILS.bank;
         document.getElementById('bankNumber').textContent = BANK_DETAILS.accountNumber;
         document.getElementById('bankHolder').textContent = BANK_DETAILS.accountName;
+        document.getElementById('bankBox').style.display = 'block';
     })();
     document.getElementById('copyAcct').addEventListener('click', async () => {
         if (!BANK_DETAILS.accountNumber || /^0+$/.test(BANK_DETAILS.accountNumber)) return;
@@ -283,7 +286,7 @@
 
         btn.disabled = false;
         btn.classList.remove('is-loading');
-        btn.textContent = 'Submit Funding Request';
+        btn.textContent = 'Submit Payment Reference';
 
         if (error) {
             showNotice('Could not submit funding request: ' + (error.message || 'try again'), 'error');
@@ -292,7 +295,7 @@
 
         notice.style.display = 'block';
         notice.className = 'notice ok';
-        notice.textContent = 'Funding request submitted! Our team will verify the payment and credit your wallet within minutes. You\'ll receive a confirmation.';
+        notice.textContent = 'Payment reference submitted for manual review. Your balance has not changed; it will be updated only after the transfer is confirmed.';
         document.getElementById('fundForm').reset();
         setTimeout(() => { notice.style.display = 'none'; }, 8000);
     });

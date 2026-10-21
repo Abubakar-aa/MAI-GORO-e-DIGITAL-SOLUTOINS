@@ -25,3 +25,6 @@ server/uploads/vault/*
 Thumbs.db
 .DS_Store
 
+# Internal QA tooling
+_responsive-test.html
+

@@ -506,18 +506,14 @@
                 </div>
             </section>
 
-            <!-- 2. Post-Registration Dedicated Virtual Account Generator (BVN Required) -->
+            <!-- 2. Wallet funding status -->
             <section class="bvn-account-banner" id="bvnGenerateSection">
                 <div class="bvn-banner-info">
                     <div class="bvn-banner-icon"><i class="fa-solid fa-building-columns"></i></div>
                     <div class="bvn-banner-text">
-                        <h3>Generate Your Dedicated Virtual Bank Account</h3>
-                        <p>In compliance with CBN guidelines, enter your 11-digit Bank Verification Number (BVN) to generate your permanent, dedicated virtual bank account (Wema Bank / Moniepoint) for automated 24/7 wallet funding.</p>
+                        <h3>Automated wallet funding is being set up</h3>
+                        <p>We are not currently issuing virtual bank accounts. We will show verified account details here after a payment provider assigns an account to your profile. Please do not send funds to account details from an earlier session.</p>
                     </div>
-                </div>
-                <div class="bvn-form-wrap">
-                    <input type="tel" id="inputUserBvn" class="bvn-input" maxlength="11" inputmode="numeric" placeholder="Enter 11-Digit BVN">
-                    <button type="button" class="btn-gen-account" id="btnGenAccount"><i class="fa-solid fa-bolt"></i> Generate Account</button>
                 </div>
             </section>
 
@@ -531,10 +527,10 @@
                     </div>
                     <div>
                         <div class="dash-card-val" id="walletBalance">₦0.00</div>
-                        <div class="dash-card-sub">Instant Automated Wallet · 0% transaction surcharge</div>
+                        <div class="dash-card-sub">Wallet balance from your account</div>
                     </div>
                     <div style="margin-top:16px;">
-                        <a href="verify.html" class="v-btn v-btn-copy" style="width:100%;justify-content:center;padding:9px 16px;"><i class="fa-solid fa-plus"></i> Use Service / Fund</a>
+                        <a href="fund-wallet.html" class="v-btn v-btn-copy" style="width:100%;justify-content:center;padding:9px 16px;"><i class="fa-solid fa-plus"></i> Wallet funding</a>
                     </div>
                 </article>
 
@@ -547,7 +543,7 @@
                     <div class="acct-details-box">
                         <div class="acct-line">
                             <span class="k">Bank</span>
-                            <span class="v" id="dashBankName">Wema Bank</span>
+                        <span class="v" id="dashBankName">Not available</span>
                         </div>
                         <div class="acct-line">
                             <span class="k">Account No</span>
@@ -556,11 +552,11 @@
                         </div>
                         <div class="acct-line">
                             <span class="k">Account Name</span>
-                            <span class="v" id="dashBankHolder">MAI GORO - VERIFIED</span>
+                        <span class="v" id="dashBankHolder">No account assigned</span>
                         </div>
                     </div>
                     <div class="dash-card-sub" style="margin-top:8px;">
-                        <i class="fa-solid fa-circle-check" style="color:#059669;"></i> Direct transfer to this account funds your wallet in seconds.
+                        Account details will appear here only after a payment provider assigns them.
                     </div>
                 </article>
 
@@ -571,9 +567,9 @@
                         <div class="dash-card-icon amber"><i class="fa-solid fa-shield-halved"></i></div>
                     </div>
                     <div>
-                        <div class="dash-card-val" style="font-size:22px;color:#059669;"><i class="fa-solid fa-circle-check"></i> Tier 1 Verified</div>
-                        <div class="dash-card-sub" id="secPinStatus">Security PIN: <b>4-Digit PIN Active</b></div>
-                        <div class="dash-card-sub" style="margin-top:4px;">NIMC &amp; NDPR Encrypted Gateway Active</div>
+                        <div class="dash-card-val" style="font-size:22px;color:var(--brand);"><i class="fa-solid fa-shield-halved"></i> Account support</div>
+                        <div class="dash-card-sub">Contact our team if your profile details need updating.</div>
+                        <div class="dash-card-sub" style="margin-top:4px;">Verification and funding status appears in your account history.</div>
                     </div>
                     <div style="margin-top:16px;">
                         <a href="https://wa.me/2349067997551" target="_blank" class="v-btn v-btn-wa" style="width:100%;justify-content:center;padding:9px 16px;"><i class="fa-brands fa-whatsapp"></i> Support Desk</a>
@@ -786,8 +782,8 @@
             document.getElementById('portalPhone').textContent = meta.phone || 'Not added';
             document.getElementById('portalInitial').textContent = fullName.trim().charAt(0).toUpperCase() || 'M';
 
-            // Check Dedicated Virtual Account status
-            renderVirtualAccount(meta);
+            // Do not treat browser metadata or local storage as proof of a bank account.
+            renderVirtualAccount();
 
             document.getElementById('portalLoading').classList.add('gone');
             document.getElementById('portalMain').classList.add('ready');
@@ -806,79 +802,14 @@
         })();
 
         /* ── Render or Setup Dedicated Virtual Account ── */
-        function renderVirtualAccount(meta) {
+        function renderVirtualAccount() {
             const banner = document.getElementById('bvnGenerateSection');
-            const card = document.getElementById('virtualAccountCard');
-            const storedAcct = meta.virtual_account || JSON.parse(localStorage.getItem('mg_virtual_acct_' + currentUser.id) || 'null');
-
-            if (storedAcct && storedAcct.accountNumber) {
-                // Account already generated
-                banner.style.display = 'none';
-                document.getElementById('dashBankName').textContent = storedAcct.bank || 'Wema Bank';
-                document.getElementById('dashBankNum').textContent = storedAcct.accountNumber;
-                document.getElementById('dashBankHolder').textContent = storedAcct.accountName || ('MAI GORO - ' + (meta.full_name || 'CUSTOMER').toUpperCase());
-                document.getElementById('kycBadge').innerHTML = '<i class="fa-solid fa-circle-check"></i> BVN Verified';
-            } else {
-                // Not generated yet — display prompt
-                banner.style.display = 'flex';
-                document.getElementById('dashBankNum').textContent = 'Enter BVN to Generate';
-            }
+            banner.style.display = 'flex';
+            document.getElementById('dashBankName').textContent = 'Not available';
+            document.getElementById('dashBankNum').textContent = 'No account assigned';
+            document.getElementById('dashBankHolder').textContent = 'No account assigned';
+            document.getElementById('copyVirtualAcct').disabled = true;
         }
-
-        /* ── Generate Dedicated Virtual Account on BVN Submission ── */
-        document.getElementById('btnGenAccount').addEventListener('click', async () => {
-            const bvnInput = document.getElementById('inputUserBvn');
-            const bvn = bvnInput.value.trim();
-
-            if (!/^\d{11}$/.test(bvn)) {
-                alert('Please enter a valid 11-digit Bank Verification Number (BVN).');
-                bvnInput.focus();
-                return;
-            }
-
-            const btn = document.getElementById('btnGenAccount');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating…';
-
-            const meta = currentUser.user_metadata || {};
-            const cleanPhone = (meta.phone || '08144372466').replace(/\D/g, '');
-            const virtualAccountNumber = '906' + (cleanPhone.length >= 7 ? cleanPhone.slice(-7) : bvn.slice(-7));
-            const accountHolder = 'MAI GORO - ' + (meta.full_name || 'CUSTOMER').toUpperCase();
-
-            const generatedAcct = {
-                bank: 'Wema Bank',
-                bankCode: '035',
-                accountNumber: virtualAccountNumber,
-                accountName: accountHolder,
-                bvnLinked: true,
-                bvnMasked: bvn.slice(0, 3) + '•••••' + bvn.slice(-3),
-                generatedAt: new Date().toISOString()
-            };
-
-            // Save to localStorage
-            localStorage.setItem('mg_virtual_acct_' + currentUser.id, JSON.stringify(generatedAcct));
-
-            // Save to Supabase User Metadata
-            try {
-                await sb.auth.updateUser({
-                    data: {
-                        bvn_verified: true,
-                        virtual_account: generatedAcct
-                    }
-                });
-            } catch(e) {}
-
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-check"></i> Account Generated!';
-
-            alert('Congratulations! Your dedicated Wema Bank funding account has been generated:\n\n' +
-                  'Bank: ' + generatedAcct.bank + '\n' +
-                  'Account Number: ' + generatedAcct.accountNumber + '\n' +
-                  'Account Name: ' + generatedAcct.accountName + '\n\n' +
-                  'Any bank transfer sent to this account will fund your wallet automatically 24/7.');
-
-            renderVirtualAccount({ ...meta, virtual_account: generatedAcct });
-        });
 
         // Copy Dedicated Account Number
         document.getElementById('copyVirtualAcct').addEventListener('click', async () => {

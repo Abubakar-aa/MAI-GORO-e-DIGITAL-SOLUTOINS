@@ -6,7 +6,7 @@ body.menu-open { overflow: hidden; }
 .table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .table-scroll table { min-width: 640px; }
 
-/* ═══════════════════════════════════════════════
+/* ═══════════════════════════════════════════════ */
 :root {
     color-scheme: light;
 
@@ -1637,3 +1637,64 @@ html { scroll-behavior: smooth; }
 .services-page-hero + .services {
     margin-top: 24px;
 }
+
+/* Theme consistency: keep page surfaces and text tied to the active palette. */
+:root {
+    --page-bg: #f3f7fb;
+    --text: #172536;
+    --text-muted: #536579;
+    --surface: #ffffff;
+    --border: #dce5ef;
+    color-scheme: light;
+}
+
+body {
+    background-color: var(--page-bg);
+    color: var(--text);
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+body.dark-mode {
+    --page-bg: var(--night);
+    --text: var(--dark-text);
+    --text-muted: var(--dark-muted);
+    --surface: var(--dark-surface);
+    --border: var(--dark-border);
+    background-color: var(--page-bg);
+    color: var(--text);
+}
+
+/* Ordinary content sections inherit the page surface; colored hero/value blocks keep their own colors. */
+.section-padding:not(.gray-bg) { background-color: var(--page-bg); }
+
+/* Use brand-color primary actions instead of white pills that disappear against the hero. */
+.btn-hero,
+.btn-buy {
+    background: var(--brand);
+    color: #fff;
+}
+
+.btn-hero:hover { background: var(--brand-dark); }
+
+body.dark-mode .btn-hero,
+body.dark-mode .btn-buy {
+    background: var(--teal);
+    color: var(--night);
+    box-shadow: 0 10px 26px rgba(94, 234, 212, 0.2);
+}
+
+body.dark-mode .btn-hero:hover,
+body.dark-mode .btn-buy:hover:not(:disabled) { background: #7ff2de; }
+
+body.dark-mode input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+body.dark-mode select,
+body.dark-mode textarea {
+    background-color: var(--dark-surface);
+    border-color: var(--dark-border);
+    color: var(--dark-text);
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder { color: #91a1b4; opacity: 1; }
+
+body.dark-mode .wallet-hero .fund-btn { color: var(--night); }

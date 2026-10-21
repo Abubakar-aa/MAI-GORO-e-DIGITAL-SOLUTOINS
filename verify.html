@@ -102,8 +102,8 @@
         
         /* ── Layout ── */
         .verify-main { max-width: 1200px; margin: 0 auto; padding: 140px 24px 70px; }
-        .verifier-hero { background: linear-gradient(120deg, #0f2a5e 0%, var(--brand) 70%, #4a7bc9 100%); border-radius: 24px; padding: 38px 40px 36px; color: #fff; box-shadow: 0 20px 50px rgba(15, 42, 94, 0.25); margin-bottom: 26px; position: relative; overflow: hidden; }
-        .verifier-hero::after { content: ''; position: absolute; top: -50%; right: -10%; width: 420px; height: 420px; background: radial-gradient(circle, rgba(94, 234, 212, 0.18) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+        .verifier-hero { background: #142846; border-radius: 20px; padding: 38px 40px 36px; color: #fff; box-shadow: 0 14px 34px rgba(15, 42, 94, 0.14); margin-bottom: 26px; position: relative; overflow: hidden; }
+        .verifier-hero::after { content: ''; position: absolute; inset: auto 0 0 auto; width: 180px; height: 4px; background: var(--teal); pointer-events: none; }
         .verifier-hero .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 11.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--teal); font-weight: 700; background: rgba(94, 234, 212, 0.12); padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(94, 234, 212, 0.28); margin-bottom: 16px; }
         .verifier-hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(26px, 4.2vw, 42px); font-weight: 700; line-height: 1.15; margin-bottom: 12px; }
         .verifier-hero h1 span.gold { color: #ffd977; }
@@ -131,6 +131,7 @@
             .services-grid { grid-template-columns: 1fr; }
         }
         .service-card { position: relative; border: 1.5px solid var(--border); border-radius: 16px; padding: 18px 18px 16px; background: transparent; cursor: pointer; text-align: left; transition: all 0.22s ease; display: flex; flex-direction: column; justify-content: space-between; }
+        .service-card[hidden] { display: none; }
         .service-card:hover { transform: translateY(-2px); border-color: rgba(59, 102, 178, 0.45); box-shadow: 0 10px 24px -10px rgba(59, 102, 178, 0.15); }
         .service-card.selected { border-color: var(--brand); background: rgba(59, 102, 178, 0.03); box-shadow: 0 12px 28px -8px rgba(59, 102, 178, 0.35); }
         body.dark-mode .service-card { border-color: var(--dark-border); }
@@ -225,7 +226,7 @@
                 <!-- Step 2: Dynamic Detail Form -->
                 <section class="verifier-card" id="formCard" hidden>
                     <h2>2. Provide Details & Verify Instantly</h2>
-                    <p class="hint" id="formInstruction">Fill in the required details accurately. The amount will be deducted from your wallet instantly.</p>
+                    <p class="hint" id="formInstruction">Enter the required details accurately. Requests are reviewed by our team. The displayed price is a quote; submitting does not charge your wallet.</p>
 
                     <form id="verifierForm">
 
@@ -346,7 +347,7 @@
                         <!-- Live Price Display -->
                         <div class="total-box">
                             <div>
-                                <span class="total-title">Service Fee (from wallet)</span>
+                         <span class="total-title">Request price</span>
                                 <div style="font-size:12px;color:var(--text-muted);" id="selectedServiceName">NIN Standard Slip</div>
                             </div>
                             <div class="total-val" id="priceDisplay">₦400</div>
@@ -358,7 +359,7 @@
                         </div>
 
                         <button type="submit" class="submit-btn" id="submitBtn">
-                            <i class="fa-solid fa-shield-check"></i> Verify Now (Instant)
+                         <i class="fa-solid fa-paper-plane"></i> Submit Request
                         </button>
                         <div class="notice error" id="orderNotice" role="alert" aria-live="polite"></div>
                     </form>
@@ -371,7 +372,7 @@
                 <section class="verifier-card" id="walletBalanceCard">
                     <h2><span>Wallet Balance</span><i class="fa-solid fa-wallet" style="color:var(--teal);font-size:17px;"></i></h2>
                     <div style="text-align:center;padding:20px 0;">
-                        <div style="font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;color:var(--text);" id="walletBalanceDisplay">₦0.00</div>
+                        <div style="font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;color:var(--text);" id="walletBalanceDisplay">Loading…</div>
                         <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Available Balance</div>
                         <a href="fund-wallet.html" class="submit-btn" style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;justify-content:center;">
                             <i class="fa-solid fa-plus"></i> Add Funds
@@ -381,9 +382,9 @@
 
                 <!-- Success Confirmation -->
                 <section class="verifier-card" id="successView" style="display:none">
-                    <h2>Verification Complete!</h2>
+                    <h2>Request received</h2>
                     <div class="success-code" id="successRef">VR-XXXXXX</div>
-                    <p><span class="status-chip"><i class="fa-solid fa-check-circle"></i> Completed</span></p>
+                    <p><span class="status-chip"><i class="fa-solid fa-clock"></i> Pending review</span></p>
                     <p class="hint" id="successSummary"></p>
                     <div class="success-actions">
                         <a class="btn-wa" id="waConfirm" target="_blank" rel="noreferrer"><i class="fa-brands fa-whatsapp"></i> Share Result</a>
@@ -417,6 +418,7 @@
     try {
         const { data, error } = await sb.auth.getSession();
         if (!error && data?.session) {
+            await loadAuthoritativeCatalog();
             document.documentElement.classList.remove('verify-auth-pending');
             return;
         }
@@ -434,27 +436,58 @@
 
 /* ── Service Catalog & Pricing ── */
 const SERVICE_CATALOG = {
-    nin:       { name: 'NIN Verification',       price: 300,  api: '/v1/nin/verify',       fields: ['inputNin'],               category: 'nin' },
-    'nin-slip':{ name: 'NIN Standard Slip',      price: 400,  api: '/v1/nin/slip',         fields: ['inputNin'],               category: 'nin' },
-    'nin-premium':{name: 'NIN Premium Slip',     price: 800,  api: '/v1/nin/premium-slip', fields: ['inputNin'],               category: 'nin' },
+    nin:       { name: 'NIN Verification',       price: 300, fields: ['inputNin'], category: 'nin', requestCode: 'nin_regular_slip' },
+    'nin-slip':{ name: 'NIN Standard Slip',      price: 400, fields: ['inputNin'], category: 'nin', requestCode: 'nin_standard_slip' },
+    'nin-premium':{name: 'NIN Premium Slip',     price: 600, fields: ['inputNin'], category: 'nin', requestCode: 'nin_premium_slip' },
     'nin-mod': { name: 'NIN Modification',       price: 5000, api: '/v1/nin/modify',       fields: ['inputNin'],               category: 'nin' },
-    'nin-val': { name: 'NIN Validation',         price: 200,  api: '/v1/nin/validate',     fields: ['inputNin'],               category: 'nin' },
-    'nin-demo':{ name: 'Demographic Search',     price: 300,  api: '/v1/nin/demographic',  fields: ['inputDemoName','inputDemoDob','inputDemoGender','inputDemoState','inputDemoLga'], category: 'nin' },
-    bvn:       { name: 'BVN Verification',       price: 300,  api: '/v1/bvn/verify',       fields: ['inputBvn'],               category: 'bvn' },
+    'nin-val': { name: 'NIN Validation',         price: 800, fields: ['inputNin'], category: 'ipe', requestCode: 'nin_validation' },
+    'nin-demo':{ name: 'Demographic Search',     price: 1200, fields: ['inputDemoName','inputDemoDob','inputDemoGender','inputDemoState','inputDemoLga'], category: 'nin', requestCode: 'nin_demographics' },
+    bvn:       { name: 'BVN Verification',       price: 350, fields: ['inputBvn'], category: 'bvn', requestCode: 'bvn_verification' },
     'bvn-slip':{ name: 'BVN Premium Slip',       price: 500,  api: '/v1/bvn/premium-slip', fields: ['inputBvn'],               category: 'bvn' },
-    'bvn-retr':{ name: 'BVN Retrieval',          price: 1000, api: '/v1/bvn/retrieve',     fields: ['inputPhoneLookup','inputNetwork'], category: 'bvn' },
-    'bvn-mod': { name: 'BVN Modification',       price: 8000, api: '/v1/bvn/modify',       fields: ['inputBvn'],               category: 'bvn' },
-    ipe:       { name: 'IPE Clearance',          price: 1000, api: '/v1/ipe/clear',        fields: ['inputTrackingId','inputCenter','inputEnrolYear'], category: 'ipe' },
+    'bvn-retr':{ name: 'BVN Retrieval',          price: 1400, fields: ['inputPhoneLookup','inputNetwork'], category: 'bvn', requestCode: 'bvn_retrieval' },
+    'bvn-mod': { name: 'BVN Modification Support', price: 2500, fields: ['inputBvn'], category: 'bvn', requestCode: 'bvn_modification' },
+    ipe:       { name: 'IPE Clearance',          price: 4500, fields: ['inputTrackingId','inputCenter','inputEnrolYear'], category: 'ipe', requestCode: 'nin_ipe_clearance' },
     'ipe-mod': { name: 'MOD IPE Clearance',      price: 1500, api: '/v1/ipe/mod',          fields: ['inputTrackingId','inputCenter','inputEnrolYear'], category: 'ipe' },
-    cac:       { name: 'CAC Business Name Reg',  price: 15000,api: '/v1/cac/register',     fields: ['inputCacName1','inputCacName2'], category: 'cac' },
+    cac:       { name: 'CAC Business Name Reg',  price: 18000, fields: ['inputCacName1','inputCacName2'], category: 'cac', requestCode: 'cac_business_name' },
     'cac-rebrand':{name: 'CAC Rebranding',       price: 20000,api: '/v1/cac/rebrand',      fields: ['inputCacName1','inputCacName2'], category: 'cac' },
     'cac-scuml':{name: 'SCUML Application',      price: 30000,api: '/v1/cac/scuml',        fields: ['inputCacName1','inputCacName2'], category: 'cac' },
-    jamb:      { name: 'JAMB Profile & PIN',      price: 1000, api: '/v1/jamb/profile',     fields: ['inputJambProfile','inputJambEmail'], category: 'exam' },
+    jamb:      { name: 'JAMB Profile & PIN',      price: 8500, fields: ['inputJambProfile','inputJambEmail'], category: 'exam', requestCode: 'jamb_pin_profile' },
     'pin-neco':{ name: 'NECO Token',             price: 3500, api: '/v1/pin/neco',         fields: ['inputJambProfile'], category: 'exam' },
     'pin-waec':{ name: 'WAEC Result Checker',    price: 5500, api: '/v1/pin/waec',         fields: ['inputJambProfile'], category: 'exam' },
     'pin-nabteb':{name: 'NABTEB Token',          price: 2500, api: '/v1/pin/nabteb',       fields: ['inputJambProfile'], category: 'exam' },
     'pin-nbais':{name: 'NBAIS Token',            price: 2500, api: '/v1/pin/nbais',        fields: ['inputJambProfile'], category: 'exam' }
 };
+
+async function loadAuthoritativeCatalog() {
+    const cards = [...document.querySelectorAll('.service-card')];
+    const codes = [...new Set(Object.values(SERVICE_CATALOG).map(item => item.requestCode).filter(Boolean))];
+    const { data, error } = await sb.from('verify_services').select('code,name,price,active').in('code', codes).eq('active', true);
+    const services = new Map((data || []).map(item => [item.code, item]));
+    cards.forEach(card => {
+        const item = SERVICE_CATALOG[card.dataset.service];
+        const service = item?.requestCode ? services.get(item.requestCode) : null;
+        if (!service || error) { card.hidden = true; return; }
+        item.price = Number(service.price);
+        item.name = service.name;
+        card.querySelector('.s-name').textContent = service.name;
+        card.querySelector('.s-price').textContent = '₦' + item.price.toLocaleString('en-NG');
+    });
+    const counts = { all: 0 };
+    document.querySelectorAll('.service-card:not([hidden])').forEach(card => {
+        const category = SERVICE_CATALOG[card.dataset.service].category;
+        counts.all++;
+        counts[category] = (counts[category] || 0) + 1;
+    });
+    document.querySelectorAll('.cat-tab').forEach(tab => {
+        const category = tab.dataset.category;
+        if (category === 'all') tab.querySelector('.count').textContent = counts.all;
+        else {
+            tab.hidden = !counts[category];
+            if (counts[category]) tab.querySelector('.count').textContent = counts[category];
+        }
+    });
+    if (error || !services.size) document.getElementById('servicesGrid').innerHTML = '<p role="status">Verification services are temporarily unavailable. Please try again later.</p>';
+}
 
 /* ── Inject Service Cards ── */
 (function injectServiceCards() {
@@ -470,13 +503,18 @@ const SERVICE_CATALOG = {
 
     // Recompute category tab counts from the live catalog (was hardcoded & stale)
     const counts = { all: 0 };
-    Object.values(SERVICE_CATALOG).forEach(s => {
+    [...document.querySelectorAll('.service-card:not([hidden])')].forEach(card => {
+        const s = SERVICE_CATALOG[card.dataset.service];
         counts.all++;
         counts[s.category] = (counts[s.category] || 0) + 1;
     });
     document.querySelectorAll('.cat-tab .count').forEach(el => {
         const cat = el.closest('.cat-tab')?.dataset.category;
         if (cat && counts[cat] != null) el.textContent = counts[cat];
+    });
+    document.querySelectorAll('.cat-tab').forEach(tab => {
+        const cat = tab.dataset.category;
+        if (cat && cat !== 'all' && !counts[cat]) tab.hidden = true;
     });
 })();
 
@@ -531,11 +569,14 @@ document.querySelectorAll('.service-card').forEach(card => {
 /* ── Wallet Balance ── */
 async function loadWalletBalance() {
     const { data, error } = await sb.auth.getSession();
-    if (error || !data.session) return;
-    const { data: wallet } = await sb.from('wallets').select('balance').eq('user_id', data.session.user.id).single();
+    if (error || !data.session) {
+        document.getElementById('walletBalanceDisplay').textContent = 'Unavailable';
+        return;
+    }
+    const { data: wallet, error: walletError } = await sb.from('wallets').select('balance').eq('user_id', data.session.user.id).single();
     if (wallet) {
         document.getElementById('walletBalanceDisplay').textContent = '₦' + Number(wallet.balance).toLocaleString('en-NG', {maximumFractionDigits: 2});
-    }
+    } else if (walletError) document.getElementById('walletBalanceDisplay').textContent = 'Unavailable';
 }
 loadWalletBalance();
 
@@ -606,90 +647,53 @@ document.getElementById('verifierForm').addEventListener('submit', async (e) => 
     submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying…';
 
     try {
-        // Call the charge_wallet function which handles: check balance, deduct, call API, record request
-        const { data, error } = await sb.rpc('charge_wallet', {
-            p_user_id: customer.id,
-            p_amount: catalog.price,
-            p_service_code: svc,
-            p_service_name: catalog.name,
-            p_input_params: inputParams,
-            p_api_response: {},  // will be filled by the function
-            p_result_summary: ''
+        const { data: service, error: serviceError } = await sb
+            .from('verify_services')
+            .select('id, name, price, active')
+            .eq('code', catalog.requestCode)
+            .eq('active', true)
+            .single();
+        if (serviceError || !service) throw new Error('This service is not available right now. Please choose another service.');
+
+        if (!window.confirm(`Submit ${service.name} for review?\n\nRequest price: ₦${Number(service.price).toLocaleString('en-NG')}\n\nNo wallet charge is made when you submit. The team will review your request and contact you about payment and processing.`)) return;
+
+        const lookupValue = inputParams.inputNin || inputParams.inputBvn || inputParams.inputPhoneLookup ||
+            inputParams.inputTrackingId || inputParams.inputCacName1 || inputParams.inputJambProfile ||
+            inputParams.inputDemoName || Object.values(inputParams)[0] || '';
+        const requestCode = 'VR-' + crypto.randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase();
+        const { error: insertError } = await sb.from('verify_requests').insert({
+            request_code: requestCode,
+            user_id: customer.id,
+            user_email: customer.email,
+            service_id: service.id,
+            lookup_value: lookupValue,
+            extra_details: JSON.stringify(Object.fromEntries(
+                Object.entries(inputParams).filter(([field]) => !['inputNin', 'inputBvn', 'inputPhoneLookup'].includes(field))
+            )),
+            customer_name: custName,
+            customer_phone: custPhone,
+            status: 'pending'
         });
+        if (insertError) throw new Error(insertError.message || 'Could not submit this request. Please try again.');
 
-        if (error) {
-            throw new Error(error.message || 'Transaction failed');
-        }
-
-        // Get the result from the service_requests table
-        const { data: reqData } = await sb.from('service_requests').select('*').eq('id', data).single();
-
-        // Show success
         document.getElementById('verifierForm').style.display = 'none';
         document.getElementById('successView').style.display = 'block';
-        document.getElementById('successRef').textContent = reqData?.request_code || 'VR-' + Date.now().toString(36).toUpperCase().slice(-6);
-        document.getElementById('successSummary').innerHTML =
-            `<b>${catalog.name}</b> completed successfully.<br>` +
-            `Amount charged: <b>₦${catalog.price.toLocaleString('en-NG')}</b>` +
-            (reqData?.result_summary ? `<br>Result: ${reqData.result_summary}` : '');
+        document.getElementById('successRef').textContent = requestCode;
+        document.getElementById('successSummary').textContent = `${service.name} has been submitted for review. Request price: ₦${Number(service.price).toLocaleString('en-NG')}. No wallet charge was made. You can follow its status from your dashboard.`;
 
-        // Update wallet balance display
-        loadWalletBalance();
-
-        const waText = encodeURIComponent(
-            `Hello! I just completed a ${catalog.name} (ref ${document.getElementById('successRef').textContent}) via Mai Goro. Amount: ₦${catalog.price.toLocaleString('en-NG')}.`
-        );
+        const waText = encodeURIComponent(`Hello, I submitted verification request ${requestCode} for ${service.name}.`);
         document.getElementById('waConfirm').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${waText}`;
 
         document.getElementById('successView').scrollIntoView({ behavior: 'smooth' });
 
     } catch (err) {
-        let msg = err.message || 'Verification failed. Please try again.';
-        if (msg.includes('Insufficient wallet balance')) {
-            walletNotice.style.display = 'block';
-            document.getElementById('walletNoticeText').textContent = 'Insufficient wallet balance. Please fund your wallet first.';
-        } else if (msg.includes('function') || msg.includes('charge_wallet') || msg.includes('does not exist')) {
-            // Fallback to direct verify_requests table submission
-            try {
-                const session = (await sb.auth.getSession()).data.session;
-                const reqCode = 'VR-' + Date.now().toString(36).toUpperCase().slice(-6);
-                const lookup = inputParams.inputNin || inputParams.inputBvn || inputParams.inputPhoneLookup || inputParams.inputTrackingId || Object.values(inputParams)[0] || '';
-                await sb.from('verify_requests').insert({
-                    request_code: reqCode,
-                    user_id: session.user.id,
-                    user_email: session.user.email,
-                    service_name: catalog.name,
-                    category: catalog.category || 'nin',
-                    lookup_value: lookup,
-                    extra_details: JSON.stringify(inputParams),
-                    price: catalog.price,
-                    amount: catalog.price,
-                    customer_name: custName,
-                    customer_phone: custPhone,
-                    status: 'pending'
-                });
-                document.getElementById('verifierForm').style.display = 'none';
-                document.getElementById('successView').style.display = 'block';
-                document.getElementById('successRef').textContent = reqCode;
-                document.getElementById('successSummary').innerHTML =
-                    `<b>${catalog.name}</b> received successfully.<br>` +
-                    `Amount: <b>₦${catalog.price.toLocaleString('en-NG')}</b><br>Our verification desk is processing your record.`;
-                document.getElementById('successView').scrollIntoView({ behavior: 'smooth' });
-                return;
-            } catch(fallbackErr) {
-                notice.style.display = 'block';
-                notice.className = 'notice error';
-                notice.textContent = fallbackErr.message || msg;
-            }
-        } else {
-            notice.style.display = 'block';
-            notice.className = 'notice error';
-            notice.textContent = msg;
-        }
+        notice.style.display = 'block';
+        notice.className = 'notice error';
+        notice.textContent = err.message || 'Could not submit this request. Please try again.';
     } finally {
         submitBtn.disabled = false;
         submitBtn.style.opacity = '1';
-        submitBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> Verify Now (Instant)';
+        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Request';
     }
 });
 
