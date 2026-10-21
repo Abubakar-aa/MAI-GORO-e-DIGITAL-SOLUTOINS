@@ -31,11 +31,7 @@
         .dynamic-set.active { display: block; animation: fadeIn 0.25s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* ── Wallet Notice ── */
-        .wallet-notice { display: none; background: rgba(227,167,47,0.1); border: 1px solid rgba(227,167,47,0.3); border-radius: 12px; padding: 12px 16px; margin: 16px 0; font-size: 13px; color: #8a620d; }
-        .wallet-notice i { margin-right: 8px; }
-        body.dark-mode .wallet-notice { background: rgba(227,167,47,0.15); color: #ffd977; }
-        
+        /* ── Layout ── */
         /* ── Service Badges ── */
         
         /* ── Form Elements ── */
@@ -174,14 +170,7 @@
         .rail-footer-links { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); display: grid; gap: 3px; }
         body.dark-mode .rail-footer-links { border-top-color: var(--dark-border); }
 
-        /* Drill-down header (category title + back) */
-        .drilldown-header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
-        .back-link { display: inline-flex; align-items: center; gap: 7px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: 700 12.5px/1 'DM Sans', sans-serif; padding: 9px 15px; border-radius: 999px; cursor: pointer; transition: all .18s ease; }
-        .back-link:hover, .back-link:focus-visible { border-color: var(--brand); color: var(--brand); outline: none; }
-        body.dark-mode .back-link { background: var(--dark-surface); border-color: var(--dark-border); color: var(--dark-text); }
-        body.dark-mode .back-link:hover, body.dark-mode .back-link:focus-visible { border-color: var(--teal); color: var(--teal); }
-
-        /* Sub-head sections inside an open category */
+        /* Sub-head sections inside a category panel */
         .subhead-block { min-width: 0; }
         .subhead-block + .subhead-block { margin-top: 18px; }
         .subhead-section[hidden] { display: none; }
@@ -266,11 +255,14 @@
         .category-panel .subhead-section + .subhead-section { margin-top: 22px; }
         .category-panel .services-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
         .category-panel .service-card { min-width: 0; min-height: 218px; border-radius: 13px; box-shadow: 0 8px 22px -14px rgba(23,37,54,.2); }
+        /* The aside's own two columns must also collapse on tablets, not only at phone width. */
+        @media (max-width: 960px) {
+            .verifier-grid > aside { grid-template-columns: 1fr; }
+        }
         .category-panel .service-card .check-btn { align-self: stretch; justify-content: space-between; margin-top: auto; }
         .category-panel { scroll-margin-top: 104px; }
         #categoryCardsView.group-grid { display: grid; grid-template-columns: minmax(0, 1fr); }
         .category-panel-content { min-width: 0; }
-        #categoryServicesView { display: none !important; }
         .rail-toggle { display: none; }
         @media (max-width: 1100px) { .category-panel .services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
         @media (max-width: 700px) {
@@ -282,7 +274,6 @@
         }
 
         /* ── Mobile: service rail becomes a slide-in drawer (keeps colors/format) ── */
-        .rail-toggle { display: none; }
         .rail-backdrop { display: none; }
         @media (max-width: 700px) {
             .rail-toggle {
@@ -378,15 +369,6 @@
                         </nav>
                         <div class="picker-content">
                             <div class="group-grid" id="categoryCardsView" aria-label="Service categories"></div>
-                            <div id="categoryServicesView" hidden>
-                                <div class="drilldown-header">
-                                    <button type="button" class="back-link" id="backToCategories"><i class="fa-solid fa-chevron-left"></i> All Categories</button>
-                                    <h3 id="drilldownTitle" style="margin:0;font-size:16px;font-weight:800;color:var(--text);"></h3>
-                                </div>
-                                <div class="services-grid" id="servicesGrid">
-                                    <!-- Injected dynamically via script -->
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </section>
@@ -526,11 +508,6 @@
                             <div class="total-val" id="priceDisplay">₦400</div>
                         </div>
 
-                        <!-- Wallet Balance Notice -->
-                        <div class="wallet-notice" id="walletNotice" style="display:none;background:rgba(227,167,47,0.1);border:1px solid rgba(227,167,47,0.3);border-radius:12px;padding:12px 16px;margin:16px 0;font-size:13px;color:#8a620d;">
-                            <i class="fa-solid fa-triangle-exclamation"></i> <span id="walletNoticeText"></span>
-                        </div>
-
                         <button type="submit" class="submit-btn" id="submitBtn">
                          <i class="fa-solid fa-paper-plane"></i> Submit Request
                         </button>
@@ -626,6 +603,8 @@
 })();
 
 /* ── Service Catalog & Pricing ── */
+/* Unit-cost label helper: DB prices are the authority; a zero DB price means the final price is quoted on request. */
+const priceText = (p) => Number(p) > 0 ? '₦' + Number(p).toLocaleString('en-NG') : 'Price on request';
 const SERVICE_CATALOG = {
     nin:       { name: 'NIN Search', shortcutName: 'NIN Search', price: 300, icon: 'fa-id-card', desc: 'Returns the full name, date of birth, and other details for a supplied valid NIN.', fields: ['inputNin'], category: 'nin', requestCode: 'nin_search' },
     'nin-search-v3': { name: 'NIN Verification V3', price: 300, icon: 'fa-id-card', desc: 'NIN record lookup. Available for Improved Slip and Premium Slip only.', fields: ['inputNin','inputSlipType'], category: 'nin', requestCode: 'nin_search_v3', slipOptions: ['Improved Slip','Premium Slip'] },
@@ -635,24 +614,24 @@ const SERVICE_CATALOG = {
     'nin-phone-v3': { name: 'Phone Number Search V3', price: 450, icon: 'fa-mobile-screen-button', desc: 'NIN lookup using the registered phone number. Available for Improved Slip and Premium Slip only.', fields: ['inputPhoneLookup','inputNetwork','inputSlipType'], category: 'nin', requestCode: 'nin_by_phone_v3', slipOptions: ['Improved Slip','Premium Slip'] },
     'nin-slip':{ name: 'NIN Standard Slip',      price: 400, icon: 'fa-file-lines',        desc: 'Print a standard NIN slip.', fields: ['inputNin'], category: 'nin', requestCode: 'nin_standard_slip' },
     'nin-premium':{name: 'NIN Premium Slip',     price: 600, icon: 'fa-file-invoice',      desc: 'Print the premium NIN slip.', fields: ['inputNin'], category: 'nin', requestCode: 'nin_premium_slip' },
-    'nin-mod': { name: 'NIN Modification',       price: 5000, api: '/v1/nin/modify', icon: 'fa-pen-to-square', desc: 'Request correction on NIN records.',  fields: ['inputNin'],               category: 'nin' },
+    'nin-mod': { name: 'NIN Modification',       price: 5000, icon: 'fa-pen-to-square', desc: 'Request correction on NIN records.',  fields: ['inputNin'],               category: 'nin', requestCode: 'nin_modification' },
     'nin-val': { name: 'NIN Validation',         price: 800, icon: 'fa-address-card',      desc: 'Validate a NIN record and its status.', fields: ['inputNin'], category: 'nin', requestCode: 'nin_validation' },
     'nin-demo':{ name: 'Demographic Search',     price: 1200, icon: 'fa-magnifying-glass', desc: 'Search NIN records by name, date of birth and state.',  fields: ['inputDemoName','inputDemoDob','inputDemoGender','inputDemoState','inputDemoLga'], category: 'nin', requestCode: 'nin_demographics' },
-    bvn:       { name: 'BVN Verification',       shortcutName: 'BVN Verify', price: 350, icon: 'fa-shield-halved', desc: 'Confirm who owns a Bank Verification Number — full BVN record by the 11-digit BVN.', fields: ['inputBvn'], category: 'bvn', requestCode: 'bvn_verification' },
+    bvn:       { name: 'BVN Verification',       shortcutName: 'BVN Verify', price: 350, icon: 'fa-shield-halved', desc: 'Confirm who owns a Bank Verification Number — full BVN record by the 11-digit BVN.', fields: ['inputBvn'], category: 'bvn', requestCode: 'bvn_search' },
     'bvn-pro': { name: 'BVN Verification PRO',   shortcutName: 'BVN PRO', price: 200, icon: 'fa-shield', desc: 'Extended BVN search with more identity details than the basic search.', fields: ['inputBvn'], category: 'bvn', requestCode: 'bvn_pro' },
-    'bvn-slip':{ name: 'BVN Premium Slip',       price: 500,  api: '/v1/bvn/premium-slip', icon: 'fa-file-invoice', desc: 'Print the BVN premium slip.', fields: ['inputBvn'],               category: 'bvn' },
-    'bvn-retr':{ name: 'BVN Retrieval',          shortcutName: 'BVN by Phone Number', price: 1400, icon: 'fa-phone-flip', desc: 'Request a BVN search using your registered phone number.', fields: ['inputPhoneLookup','inputNetwork'], category: 'bvn', requestCode: 'bvn_retrieval' },
+    'bvn-slip':{ name: 'BVN Premium Slip',       price: 500, icon: 'fa-file-invoice', desc: 'Print the BVN premium slip.', fields: ['inputBvn'],               category: 'bvn', requestCode: 'bvn_premium_slip' },
+    'bvn-retr':{ name: 'BVN Retrieval',          shortcutName: 'BVN by Phone Number', price: 1400, icon: 'fa-phone-flip', desc: 'Request a BVN search using your registered phone number.', fields: ['inputPhoneLookup','inputNetwork'], category: 'bvn', requestCode: 'bvn_by_phone' },
     'bvn-mod': { name: 'BVN Modification Support', shortcutName: 'BVN Modification', price: 2500, icon: 'fa-pen-to-square', desc: 'Request BVN record modification support.', fields: ['inputBvn'], category: 'bvn', requestCode: 'bvn_modification' },
     ipe:       { name: 'IPE Clearance',          price: 4500, icon: 'fa-rectangle-list', desc: 'Clear stuck NIN enrolment tracking IDs.', fields: ['inputTrackingId','inputCenter','inputEnrolYear'], category: 'ipe', requestCode: 'nin_ipe_clearance' },
-    'ipe-mod': { name: 'MOD IPE Clearance',      price: 1500, api: '/v1/ipe/mod', icon: 'fa-rotate', desc: 'MOD category IPE clearance.',          fields: ['inputTrackingId','inputCenter','inputEnrolYear'], category: 'ipe' },
+    'ipe-mod': { name: 'MOD IPE Clearance',      price: 1500, icon: 'fa-rotate', desc: 'MOD category IPE clearance.',          fields: ['inputTrackingId','inputCenter','inputEnrolYear'], category: 'ipe', requestCode: 'ipe_modification' },
     cac:       { name: 'CAC Business Name Registration', price: 18000, icon: 'fa-briefcase', desc: 'Register a business name with the Corporate Affairs Commission.', fields: ['inputCacName1','inputCacName2'], category: 'cac', requestCode: 'cac_business_name' },
     'cac-limited': { name: 'CAC Limited Company Registration', price: 45000, icon: 'fa-city', desc: 'Register a limited liability company with the CAC.', fields: ['inputCacName1','inputCacName2'], category: 'cac', requestCode: 'cac_company_ltd' },
     'cac-organization': { name: 'CAC Organization Registration', price: 0, icon: 'fa-people-group', desc: 'Register an organization or trustee body with the CAC.', fields: ['inputCacName1','inputCacName2'], category: 'cac', requestCode: 'cac_organization_registration' },
     jamb:      { name: 'JAMB Profile & PIN',      price: 8500, icon: 'fa-graduation-cap', desc: 'Generate a JAMB profile code and ePIN.', fields: ['inputJambProfile','inputJambEmail'], category: 'exam', requestCode: 'jamb_pin_profile' },
-    'pin-neco':{ name: 'NECO Token',             price: 3500, api: '/v1/pin/neco', icon: 'fa-receipt', desc: 'Get your NECO result checker token.', fields: ['inputJambProfile'], category: 'exam' },
-    'pin-waec':{ name: 'WAEC Result Checker',    price: 5500, api: '/v1/pin/waec', icon: 'fa-receipt', desc: 'Get your WAEC result checker token.',  fields: ['inputJambProfile'], category: 'exam' },
-    'pin-nabteb':{name: 'NABTEB Token',          price: 2500, api: '/v1/pin/nabteb', icon: 'fa-receipt', desc: 'Get your NABTEB result checker token.', fields: ['inputJambProfile'], category: 'exam' },
-    'pin-nbais':{name: 'NBAIS Token',            price: 2500, api: '/v1/pin/nbais', icon: 'fa-receipt', desc: 'Get your NBAIS result checker token.', fields: ['inputJambProfile'], category: 'exam' }
+    'pin-neco':{ name: 'NECO Token',             price: 3500, icon: 'fa-receipt', desc: 'Get your NECO result checker token.', fields: ['inputJambProfile'], category: 'exam', requestCode: 'neco_token' },
+    'pin-waec':{ name: 'WAEC Result Checker',    price: 5500, api: '/v1/pin/waec', icon: 'fa-receipt', desc: 'Get your WAEC result checker token.',  fields: ['inputJambProfile'], category: 'exam', requestCode: 'waec_result_checker' },
+    'pin-nabteb':{name: 'NABTEB Token',          price: 2500, api: '/v1/pin/nabteb', icon: 'fa-receipt', desc: 'Get your NABTEB result checker token.', fields: ['inputJambProfile'], category: 'exam', requestCode: 'nabteb_token' },
+    'pin-nbais':{name: 'NBAIS Token',            price: 2500, api: '/v1/pin/nbais', icon: 'fa-receipt', desc: 'Get your NBAIS result checker token.', fields: ['inputJambProfile'], category: 'exam', requestCode: 'nbais_token' }
 };
 
 const SERVICE_GROUPS = {
@@ -724,10 +703,10 @@ function activeServiceCount(category) {
 }
 
 /* Category panels contain the available services under their sub-headings. */
-function renderCategoryCards() {
+function renderCategoryCards(detachedBlocks) {
     const view = document.getElementById('categoryCardsView');
     if (!view) return;
-    const serviceBlocks = [...document.querySelectorAll('.subhead-block')];
+    const serviceBlocks = [...(detachedBlocks || document.querySelectorAll('.subhead-block'))];
     view.innerHTML = Object.entries(SERVICE_GROUPS).map(([key, category]) => {
         const active = activeServiceCount(key);
         const countText = `${active} service${active === 1 ? '' : 's'}`;
@@ -740,8 +719,6 @@ function renderCategoryCards() {
         const target = view.querySelector(`[data-category-content="${block.dataset.blockCategory}"]`);
         if (target) target.appendChild(block);
     });
-    const servicesView = document.getElementById('categoryServicesView');
-    if (servicesView) servicesView.hidden = true;
 }
 
 function openCategory(category, subhead = null) {
@@ -797,11 +774,11 @@ async function loadAuthoritativeCatalog() {
         if (service.description) item.desc = service.description;
         card.querySelector('.s-name').textContent = service.name;
         card.querySelector('.s-desc').textContent = item.desc || '';
-        card.querySelector('.unit-badge').textContent = '₦' + item.price.toLocaleString('en-NG');
+        card.querySelector('.unit-badge').textContent = priceText(item.price);
         // also refresh the live submit-box if this service is currently selected
         if (card.classList.contains('selected')) {
             document.getElementById('selectedServiceName').textContent = item.name;
-            document.getElementById('priceDisplay').textContent = '₦' + item.price.toLocaleString('en-NG');
+            document.getElementById('priceDisplay').textContent = priceText(item.price);
         }
         const shortcut = document.querySelector(`[data-service-shortcut="${card.dataset.service}"]`);
         if (shortcut) shortcut.textContent = item.shortcutName || service.name;
@@ -814,10 +791,11 @@ async function loadAuthoritativeCatalog() {
     }
 }
 
-/* ── Inject Service Cards & Drill-down ── */
+/* ── Inject Service Cards & sub-head panels ── */
 (function injectServiceCards() {
-    const grid = document.getElementById('servicesGrid');
-    if (!grid) return;
+    /* Cards are built into a detached holder; renderCategoryCards() then moves
+       each sub-head block into its category panel. No hidden husk remains in the DOM. */
+    const grid = document.createElement('div');
 
     /* Reference-style leaf service cards, grouped under sub-head sections per category */
     const serviceCardHtml = (key) => {
@@ -826,7 +804,7 @@ async function loadAuthoritativeCatalog() {
             <span class="s-icon"><i class="fa-solid ${c.icon || 'fa-id-card'}" aria-hidden="true"></i></span>
             <span class="s-name">${c.name}</span>
             <span class="s-desc">${c.desc || ''}</span>
-            <span class="unit-cost">Unit cost: <span class="unit-badge">₦${c.price.toLocaleString('en-NG')}</span></span>
+            <span class="unit-cost">Unit cost: <span class="unit-badge">${priceText(c.price)}</span></span>
             <span class="check-btn"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Check Service</span>
         </button>`;
     };
@@ -843,7 +821,7 @@ async function loadAuthoritativeCatalog() {
         return `<div class="subhead-block" data-block-category="${category}">${sections}</div>`;
     }).join('');
 
-    renderCategoryCards();
+    renderCategoryCards(grid.querySelectorAll('.subhead-block'));
 
     const shortcutGroups = document.getElementById('serviceShortcutGroups');
 
@@ -888,8 +866,6 @@ async function loadAuthoritativeCatalog() {
 
     syncServiceShortcuts();
 })();
-
-document.getElementById('backToCategories')?.addEventListener('click', backToCategories);
 
 /* ── Mobile: service rail as slide-in drawer ── */
 (function serviceRailDrawer() {
@@ -1012,9 +988,7 @@ document.querySelectorAll('.service-card').forEach(card => {
         // Update price display
         if (catalog) {
             document.getElementById('selectedServiceName').textContent = catalog.name;
-            document.getElementById('priceDisplay').textContent = '₦' + catalog.price.toLocaleString('en-NG');
-            const payAmountInline = document.getElementById('payAmountInline');
-            if (payAmountInline) payAmountInline.textContent = '₦' + catalog.price.toLocaleString('en-NG');
+            document.getElementById('priceDisplay').textContent = priceText(catalog.price);
         }
     });
 });
@@ -1044,13 +1018,10 @@ async function loadWalletBalance() {
 }
 loadWalletBalance();
 
-/* ── Form Submission ── */
-document.getElementById('verifierForm').addEventListener('submit', async (e) => {
+/* ── Form Submission ── */document.getElementById('verifierForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const notice = document.getElementById('orderNotice');
-    const walletNotice = document.getElementById('walletNotice');
     notice.style.display = 'none';
-    walletNotice.style.display = 'none';
 
     if (!document.querySelector('.service-card.selected')) { notice.style.display='block'; notice.className='notice error'; notice.textContent='Select a service first.'; return; }
 
@@ -1160,9 +1131,6 @@ document.getElementById('verifierForm').addEventListener('submit', async (e) => 
         submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Request';
     }
 });
-
-// Load wallet balance on page load
-loadWalletBalance();
 </script>
 </body>
 </html>
